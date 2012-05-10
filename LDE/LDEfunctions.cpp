@@ -32,7 +32,7 @@ LDEdouble LDErand(LDEdouble min, LDEdouble max)
 	return (LDEdouble) (min + ((LDEfloat) rand() / RAND_MAX * (max - min + 1.0)));
 }
 
-// Returns string with only the path of file (las slash excluded)
+// Returns string with only the path of file (last slash excluded)
 std::string LDEpathOfFile(std::string filename)
 {
     return filename.substr( 0, filename.rfind("/") );
