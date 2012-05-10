@@ -45,9 +45,10 @@ void SpriteBatchNode::draw()
     // If clicked
     if ( !keep_select && mouse.size() )
     {
-        // If left clicked on that one
+        // For every click that was done on that frame
         for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
         {
+            // If left click (mousedown)
             if ( mouse[inp].left && mouse[inp].down )
             {
                 for ( LDEuint i = 0; i < sprites.size(); ++i )
