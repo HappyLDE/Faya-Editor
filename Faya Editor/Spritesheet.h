@@ -30,6 +30,9 @@ struct Spritesheet_frame
     ~Spritesheet_frame();
 };
 
+// This struct will contain a spritesheet (that contains frames)
+// In other words, a big PNG image with lots of little PNG images inside
+// used for performance boost
 struct Spritesheet
 {
     vec2i   cursor_pos,
