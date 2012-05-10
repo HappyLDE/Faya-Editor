@@ -42,7 +42,7 @@ void SpriteBatchNode::draw()
 {
     changed = 0;
 
-    // If clicked
+    // If clicked and we must not keep old selected sprites
     if ( !keep_select && mouse.size() )
     {
         // For every click that was done on that frame
@@ -51,6 +51,7 @@ void SpriteBatchNode::draw()
             // If left click (mousedown)
             if ( mouse[inp].left && mouse[inp].down )
             {
+                // Unselect every sprite
                 for ( LDEuint i = 0; i < sprites.size(); ++i )
                 {
                     sprites[i].selected = 0;
