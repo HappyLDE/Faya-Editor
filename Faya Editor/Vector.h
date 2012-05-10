@@ -17,6 +17,7 @@
 
 using namespace std;
 
+// This is used to hold vector paths (for now no curves nor triangulation, but these are to come)
 struct VectorPaths
 {
     vector<vec2i>vertex;
