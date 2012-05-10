@@ -12,7 +12,6 @@
 		F5779A16155AE854002C8B7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F5779A15155AE854002C8B7B /* main.m */; };
 		F5779A1A155AE854002C8B7B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F5779A18155AE854002C8B7B /* Credits.rtf */; };
 		F5779A3B155AE889002C8B7B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F5779A29155AE889002C8B7B /* AppDelegate.m */; };
-		F5779A3C155AE889002C8B7B /* import_v1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A2C155AE889002C8B7B /* import_v1.cpp */; };
 		F5779A3D155AE889002C8B7B /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5779A2E155AE889002C8B7B /* OpenGLView.mm */; };
 		F5779A3E155AE889002C8B7B /* TextureAtlasCreation_item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A30155AE889002C8B7B /* TextureAtlasCreation_item.cpp */; };
 		F5779A3F155AE889002C8B7B /* TextureAtlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A32155AE889002C8B7B /* TextureAtlas.cpp */; };
@@ -118,8 +117,6 @@
 		F5779A19155AE854002C8B7B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		F5779A29155AE889002C8B7B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		F5779A2A155AE889002C8B7B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		F5779A2B155AE889002C8B7B /* import_v1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = import_v1.h; sourceTree = "<group>"; };
-		F5779A2C155AE889002C8B7B /* import_v1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = import_v1.cpp; sourceTree = "<group>"; };
 		F5779A2D155AE889002C8B7B /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		F5779A2E155AE889002C8B7B /* OpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenGLView.mm; sourceTree = "<group>"; };
 		F5779A2F155AE889002C8B7B /* TextureAtlasCreation_item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlasCreation_item.h; sourceTree = "<group>"; };
@@ -311,8 +308,6 @@
 			children = (
 				F5779A29155AE889002C8B7B /* AppDelegate.m */,
 				F5779A2A155AE889002C8B7B /* AppDelegate.h */,
-				F5779A2B155AE889002C8B7B /* import_v1.h */,
-				F5779A2C155AE889002C8B7B /* import_v1.cpp */,
 				F5779A2D155AE889002C8B7B /* OpenGLView.h */,
 				F5779A2E155AE889002C8B7B /* OpenGLView.mm */,
 				F5779A2F155AE889002C8B7B /* TextureAtlasCreation_item.h */,
@@ -606,7 +601,6 @@
 			files = (
 				F5779A16155AE854002C8B7B /* main.m in Sources */,
 				F5779A3B155AE889002C8B7B /* AppDelegate.m in Sources */,
-				F5779A3C155AE889002C8B7B /* import_v1.cpp in Sources */,
 				F5779A3D155AE889002C8B7B /* OpenGLView.mm in Sources */,
 				F5779A3E155AE889002C8B7B /* TextureAtlasCreation_item.cpp in Sources */,
 				F5779A3F155AE889002C8B7B /* TextureAtlas.cpp in Sources */,
@@ -758,6 +752,7 @@
 				F5779A28155AE854002C8B7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
