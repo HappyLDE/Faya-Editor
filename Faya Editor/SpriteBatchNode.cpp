@@ -30,6 +30,7 @@ SpriteBatchNode::SpriteBatchNode()
     test_coi = 0;
     camera_zoom = 1;
     changed = 0;
+    keep_select = 0;
 }
 
 SpriteBatchNode::~SpriteBatchNode()
@@ -40,6 +41,22 @@ SpriteBatchNode::~SpriteBatchNode()
 void SpriteBatchNode::draw()
 {
     changed = 0;
+
+    // If clicked
+    if ( !keep_select && mouse.size() )
+    {
+        // If left clicked on that one
+        for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
+        {
+            if ( mouse[inp].left && mouse[inp].down )
+            {
+                for ( LDEuint i = 0; i < sprites.size(); ++i )
+                {
+                    sprites[i].selected = 0;
+                }
+            }
+        }
+    }
     
     glEnable(GL_TEXTURE_2D);
     for ( LDEuint i = 0; i < sprites.size(); ++i )
@@ -63,7 +80,7 @@ void SpriteBatchNode::draw()
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
             {
                 if ( mouse[inp].left && mouse[inp].down )
-                {
+                {   
                     sprites[i].selected = 1;
                     changed = 1;
                 }
