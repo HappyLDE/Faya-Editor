@@ -48,7 +48,8 @@ struct SpriteBatchNode
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     
     bool    test_coi,
-    changed;
+            changed,
+            keep_select;    // When we click on a sprite, if we keep the previous selected ones
     
     vec2i cursor,
     camera_pos;

@@ -102,6 +102,7 @@
 		F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */; };
 		F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */; };
 		F5779B11155AE8EE002C8B7B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779B10155AE8EE002C8B7B /* OpenGL.framework */; };
+		F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5E726B3155BBE7E009B8759 /* FayaEditor.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -250,6 +251,7 @@
 		F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_close_pressed.ldet; sourceTree = "<group>"; };
 		F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_inactive.ldet; sourceTree = "<group>"; };
 		F5779B10155AE8EE002C8B7B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F5E726B3155BBE7E009B8759 /* FayaEditor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FayaEditor.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,7 +270,7 @@
 		F57799FA155AE853002C8B7B = {
 			isa = PBXGroup;
 			children = (
-				F5779B10155AE8EE002C8B7B /* OpenGL.framework */,
+				F5E726B3155BBE7E009B8759 /* FayaEditor.icns */,
 				F5779A45155AE8B5002C8B7B /* LDE */,
 				F5779A0F155AE854002C8B7B /* Faya Editor */,
 				F5779A08155AE854002C8B7B /* Frameworks */,
@@ -287,6 +289,7 @@
 		F5779A08155AE854002C8B7B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F5779B10155AE8EE002C8B7B /* OpenGL.framework */,
 				F5779A09155AE854002C8B7B /* Cocoa.framework */,
 				F5779A0B155AE854002C8B7B /* Other Frameworks */,
 			);
@@ -589,6 +592,7 @@
 				F5779B0D155AE8D3002C8B7B /* window_close_hover.ldet in Resources */,
 				F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */,
 				F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */,
+				F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

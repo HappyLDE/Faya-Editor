@@ -55,9 +55,9 @@ void SpriteBatchNode::draw()
                  vec4i( sprites[i].texture_uv.x, sprites[i].texture_uv.y, sprites[i].texture_uv.z, sprites[i].texture_uv.w),
                  vec4i( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y) );
         
-        // On vérifie si on a cliqué dessus
+        // Check for click on the sprite
         if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= sprites[i].pos.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= sprites[i].pos.x + sprites[i].size.x &&
-            (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= sprites[i].pos.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= sprites[i].pos.y + sprites[i].size.y && test_coi )
+             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= sprites[i].pos.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= sprites[i].pos.y + sprites[i].size.y && test_coi )
         {
             // If left clicked on that one
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
@@ -70,7 +70,6 @@ void SpriteBatchNode::draw()
             }
         }
     }
-    
     
     // Here draw an outline for the selected sprites, on top of all of them to see the selection
     glDisable(GL_TEXTURE_2D);
