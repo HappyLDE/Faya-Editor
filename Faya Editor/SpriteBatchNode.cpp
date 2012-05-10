@@ -85,6 +85,12 @@ void SpriteBatchNode::draw()
                 {   
                     sprites[i].selected = 1;
                     changed = 1;
+                    
+                    if ( !keep_select )
+                    {
+                        for ( LDEuint u = 0; u < i; ++u )
+                            sprites[u].selected = 0;	// les autres sprites ne sont plus sélectionnés
+                    }
                 }
             }
         }
