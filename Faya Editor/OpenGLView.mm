@@ -21,6 +21,7 @@ LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 vector<VectorPaths>paths;
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
 
+vec2i sprite_drag_size_temp;
 Sprite sprite_drag; // When we drag a sprite from window to world, use this to show it
 SpriteBatchNode spriteBatchNode;    // this is the class containing ALL the sprites in the world
 
@@ -294,8 +295,10 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             // If we release the drag on the world (not on any gui window), create the sprite!
             if ( gui.unused )
             {
-                sprite_drag.pos.x = (LDEfloat)app.cursor.x/camera_zoom - camera_pos.x;
-                sprite_drag.pos.y = (LDEfloat)app.cursor.y/camera_zoom - camera_pos.y;
+                sprite_drag.pos.x = (LDEfloat)(app.cursor.x - sprite_drag_size_temp.x/2)/camera_zoom - camera_pos.x;
+                sprite_drag.pos.y = (LDEfloat)(app.cursor.y - sprite_drag_size_temp.y/2)/camera_zoom - camera_pos.y;
+                
+                sprite_drag.selected = 1;
                 
                 spriteBatchNode.sprites.push_back( sprite_drag );
                 
@@ -700,9 +703,13 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     glPopMatrix();
     
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, transf_tool.id);
-    LDErect( spriteBatchNode.selected_pos.x, spriteBatchNode.selected_pos.y, transf_tool.size.x, transf_tool.size.y);
     
+    if ( spriteBatchNode.selected_pos.x )
+    {
+        glBindTexture(GL_TEXTURE_2D, transf_tool.id);
+        LDErect( spriteBatchNode.selected_pos.x - 13, spriteBatchNode.selected_pos.y - 14, transf_tool.size.x, transf_tool.size.y);
+    }
+        
     glLineWidth(1);
     
     // Vector Mode
@@ -1316,25 +1323,25 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     if ( sprite_drag.size.x )
     {
-        vec2i size_temp = sprite_drag.size_100;
+        sprite_drag_size_temp = sprite_drag.size_100;
         
         if ( gui.unused )
         {
-            size_temp = sprite_drag.size;
+            sprite_drag_size_temp = sprite_drag.size;
             
-            size_temp.x = (LDEfloat)size_temp.x * camera_zoom;
-            size_temp.y = (LDEfloat)size_temp.y * camera_zoom;
+            sprite_drag_size_temp.x = (LDEfloat)sprite_drag_size_temp.x * camera_zoom;
+            sprite_drag_size_temp.y = (LDEfloat)sprite_drag_size_temp.y * camera_zoom;
         }
         
         glBindTexture(GL_TEXTURE_2D, sprite_drag.image_id );
         LDErectp( sprite_drag.image_size,
                  vec4i( sprite_drag.texture_uv.x, sprite_drag.texture_uv.y, sprite_drag.texture_uv.z, sprite_drag.texture_uv.w),
-                 vec4i( app.cursor.x, app.cursor.y, size_temp.x, size_temp.y) );
+                 vec4i( app.cursor.x - sprite_drag_size_temp.x/2, app.cursor.y - sprite_drag_size_temp.y/2, sprite_drag_size_temp.x, sprite_drag_size_temp.y) );
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_LINE_STIPPLE);
         glLineStipple(1,0x0101);
         glColor3f( 0, 1, 0 );
-        LDErectw( app.cursor.x, app.cursor.y, size_temp.x, size_temp.y );
+        LDErectw( app.cursor.x - sprite_drag_size_temp.x/2, app.cursor.y - sprite_drag_size_temp.y/2, sprite_drag_size_temp.x, sprite_drag_size_temp.y );
         glColor3f(1,1,1);
         glDisable(GL_LINE_STIPPLE);
         glEnable(GL_TEXTURE_2D);

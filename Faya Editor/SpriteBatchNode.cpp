@@ -98,17 +98,23 @@ void SpriteBatchNode::draw()
     glEnable(GL_LINE_STIPPLE);
     glLineStipple(5,0x1C47);
     glColor3f(0, 1, 0);
+    bool some_selected = 0;
     for ( LDEuint i = 0; i < sprites.size(); ++i )
     {
         if ( sprites[i].selected )
         {
+            some_selected = 1;
+            
             LDErectw( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y );
             
-            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
-            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
+            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x + sprites[i].size.x/2)*camera_zoom;
+            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y + sprites[i].size.y/2)*camera_zoom;
         }
     }
     glColor3f(1, 1, 1);
     glDisable(GL_LINE_STIPPLE);
     glEnable(GL_TEXTURE_2D);
+    
+    if ( !some_selected )
+        selected_pos.reset();
 }
