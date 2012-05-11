@@ -86,11 +86,8 @@ void SpriteBatchNode::draw()
                     sprites[i].selected = 1;
                     changed = 1;
                     
-                    if ( !keep_select )
-                    {
-                        for ( LDEuint u = 0; u < i; ++u )
-                            sprites[u].selected = 0;	// les autres sprites ne sont plus sélectionnés
-                    }
+                    for ( LDEuint u = 0; u < i; ++u )
+                        sprites[u].selected = 0;	// les autres sprites ne sont plus sélectionnés
                 }
             }
         }
@@ -106,6 +103,9 @@ void SpriteBatchNode::draw()
         if ( sprites[i].selected )
         {
             LDErectw( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y );
+            
+            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
+            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
         }
     }
     glColor3f(1, 1, 1);

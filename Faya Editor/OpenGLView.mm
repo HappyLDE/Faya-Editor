@@ -700,6 +700,9 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     glPopMatrix();
     
     glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, transf_tool.id);
+    LDErect( spriteBatchNode.selected_pos.x, spriteBatchNode.selected_pos.y, transf_tool.size.x, transf_tool.size.y);
+    
     glLineWidth(1);
     
     // Vector Mode

@@ -51,8 +51,9 @@ struct SpriteBatchNode
             changed,
             keep_select;    // When we click on a sprite, if we keep the previous selected ones
     
-    vec2i cursor,
-    camera_pos;
+    vec2i   cursor,
+            selected_pos,
+            camera_pos;
     
     LDEfloat camera_zoom;
     

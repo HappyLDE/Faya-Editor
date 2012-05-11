@@ -65,8 +65,14 @@ LDEldet texture_window,
 LDEldef font_windowTitle,
         font_elements;
 
+LDEldet transf_tool;
+
 void load_gui_theme( string path )
 {
+    // Transformation tool
+    transf_tool.load(path+"transf_tool.ldet");
+    transf_tool.opengl(0);
+    
 	texture_atlas_bg.load(path+"texture_atlas_bg.ldet");
 	texture_atlas_bg.opengl(0);
 	

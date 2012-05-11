@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */; };
 		F5779A0A155AE854002C8B7B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779A09155AE854002C8B7B /* Cocoa.framework */; };
 		F5779A14155AE854002C8B7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5779A12155AE854002C8B7B /* InfoPlist.strings */; };
 		F5779A16155AE854002C8B7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F5779A15155AE854002C8B7B /* main.m */; };
@@ -106,6 +107,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = transf_tool.ldet; sourceTree = "<group>"; };
 		F5779A05155AE854002C8B7B /* Faya Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Faya Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5779A09155AE854002C8B7B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F5779A0C155AE854002C8B7B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -431,6 +433,7 @@
 		F5779AAE155AE8C3002C8B7B /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
+				F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */,
 				F5779AAF155AE8D3002C8B7B /* theme */,
 			);
 			name = Ressources;
@@ -593,6 +596,7 @@
 				F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */,
 				F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */,
 				F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */,
+				F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
