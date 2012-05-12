@@ -57,6 +57,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 	
 	glEnable(GL_SCISSOR_TEST);
 	//LDEscissor( button.x + 3, button.y, button.size.x - 6, button.size.y );
+    glScissor( button.x + 3, app_size.y - (button.y+button.size.y), button.size.x - 6, button.size.y );
 	glColor3f(0, 0, 0);
 	
 	if ( focus )

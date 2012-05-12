@@ -289,6 +289,7 @@ void LDEgui_elements::draw(  LDEint x, LDEint y, vec2i cursor, LDEfloat frametim
         editbox[i]->button.x = x + editbox[i]->button.pos.x;
         editbox[i]->button.y = y + editbox[i]->button.pos.y;
 		editbox[i]->button.test_coi = test_coi;
+        editbox[i]->app_size = app_size;
 		editbox[i]->input = input;
 		editbox[i]->button.mouse = mouse;
         editbox[i]->draw( cursor, frametime );

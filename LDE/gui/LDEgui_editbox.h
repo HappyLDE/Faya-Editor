@@ -38,8 +38,9 @@ struct LDEgui_editbox
 	
 	LDEgui_button button;
 	
-	vec2i pos,
-		  size;
+	vec2i   pos,
+            size,
+            app_size;
 	
 	string name;
 	
