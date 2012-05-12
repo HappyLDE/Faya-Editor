@@ -1215,10 +1215,23 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // If the window sprites list is not closed
     if ( !window_sprites_list->closed )
     {
+        // Resize behaviour
         if ( window_sprites_list->button_resize.pressed )
         {
             list_sprites->size.x = window_sprites_list->size.x;
-            list_sprites->size.y = window_sprites_list->size.y-60;
+            list_sprites->size.y = window_sprites_list->size.y-140;
+            
+            text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-135 );
+            editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-137 );
+            editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-137 );
+            text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-110 );
+            editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-113 );
+            editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-113 );
+            text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-80 );
+            editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-83 );
+            text_sprite_size->pos = vec2i( 5, window_sprites_list->size.y-50 );
+            editbox_sprite_size_x->pos = vec2i( 75, window_sprites_list->size.y-53 );
+            editbox_sprite_size_y->pos = vec2i( 145, window_sprites_list->size.y-53 );
         }
         
         if ( list_sprites->changed )
