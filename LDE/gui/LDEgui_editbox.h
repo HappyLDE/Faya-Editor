@@ -35,7 +35,8 @@ struct LDEgui_editbox
 	
 	bool    focus,
             cursor_flag,
-            changed;
+            changed,
+            changed_temp;
 	
 	LDEgui_button button;
 	

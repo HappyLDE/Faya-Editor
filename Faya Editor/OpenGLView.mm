@@ -1232,7 +1232,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     ////////// Sprites Windows
     if ( !window_spritesheets->closed )
-    {    
+    {
+        // Resize behaviour
         if ( window_spritesheets->button_resize.pressed )
         {
             drawable_spritesheets->size = vec2i( window_spritesheets->size.x - 16, window_spritesheets->size.y - 43 );
@@ -1293,6 +1294,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             {
                 spriteBatchNode.sprites[list_sprites->item[i].key].selected = list_sprites->item[i].selected;
             }
+        }
+        
+        if ( editbox_sprite_pos_x->changed )
+        {
+            cout<<editbox_sprite_pos_x->name<<"\n";
         }
         
         if ( spriteBatchNode.changed )
