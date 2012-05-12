@@ -36,7 +36,7 @@ struct Sprite
     LDEuint image_id;
     
     LDEfloat rot,       // Rotation in degrees
-    opacity;
+             opacity;
     
     Sprite();
     ~Sprite();

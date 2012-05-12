@@ -297,11 +297,20 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             {
                 sprite_drag.pos.x = (LDEfloat)(app.cursor.x - sprite_drag_size_temp.x/2)/camera_zoom - camera_pos.x;
                 sprite_drag.pos.y = (LDEfloat)(app.cursor.y - sprite_drag_size_temp.y/2)/camera_zoom - camera_pos.y;
-                
                 sprite_drag.offset = sprite_drag.size/2;
-                
                 sprite_drag.selected = 1;
                 
+                // Update sprite properties panel
+                editbox_sprite_pos_x->name = LDEnts(sprite_drag.pos.x);
+                editbox_sprite_pos_y->name = LDEnts(sprite_drag.pos.y);
+                
+                editbox_sprite_ap_x->name = LDEnts(sprite_drag.offset.x);
+                editbox_sprite_ap_y->name = LDEnts(sprite_drag.offset.y);
+                
+                editbox_sprite_size_x->name = LDEnts(sprite_drag.size.x);
+                editbox_sprite_size_y->name = LDEnts(sprite_drag.size.y);
+                
+                // Add the sprite in the world
                 spriteBatchNode.sprites.push_back( sprite_drag );
                 
                 LDEint sprite_id = spriteBatchNode.sprites.size()-1;
