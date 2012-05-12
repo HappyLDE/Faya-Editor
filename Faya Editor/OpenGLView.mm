@@ -302,7 +302,7 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 
                 // Update sprite properties panel
                 editbox_sprite_pos_x->name = LDEnts(sprite_drag.pos.x);
-                editbox_sprite_pos_y->name = LDEnts(sprite_drag.pos.y);
+                editbox_sprite_pos_y->name = LDEnts(-sprite_drag.pos.y);
                 
                 editbox_sprite_ap_x->name = LDEnts(sprite_drag.offset.x);
                 editbox_sprite_ap_y->name = LDEnts(sprite_drag.offset.y);
@@ -315,6 +315,8 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 
                 LDEint sprite_id = spriteBatchNode.sprites.size()-1;
                 list_sprites->addItem( sprite_id, sprite_drag.name+LDEnts(sprite_id) );
+                
+                list_sprites->select( sprite_id, 0);
             }
             
             sprite_drag.image_id = 0;
@@ -389,6 +391,16 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 -(BOOL) acceptsFirstResponder
 {
     return YES;
+}
+
+-(void) keyDown:(NSEvent *)theEvent
+{
+    
+}
+
+-(void) keyUp:(NSEvent *)theEvent
+{
+    
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
