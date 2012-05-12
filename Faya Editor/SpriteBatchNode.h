@@ -21,10 +21,11 @@
 struct Sprite
 {
     vec2i   pos,    // Pos in px
-    size,   // Size in px
-    size_100,
-    image_size,
-    flip;   // Texture orientation
+            size,   // Size in px
+            size_100,
+            image_size,
+            offset,
+            flip;   // Texture orientation
     
     bool    selected;
     

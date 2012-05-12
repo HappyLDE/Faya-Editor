@@ -107,8 +107,8 @@ void SpriteBatchNode::draw()
             
             LDErectw( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y );
             
-            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x + sprites[i].size.x/2)*camera_zoom;
-            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y + sprites[i].size.y/2)*camera_zoom;
+            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x + sprites[i].offset.x)*camera_zoom;
+            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y + sprites[i].offset.y)*camera_zoom;
         }
     }
     glColor3f(1, 1, 1);

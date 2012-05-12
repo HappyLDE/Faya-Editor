@@ -298,6 +298,8 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 sprite_drag.pos.x = (LDEfloat)(app.cursor.x - sprite_drag_size_temp.x/2)/camera_zoom - camera_pos.x;
                 sprite_drag.pos.y = (LDEfloat)(app.cursor.y - sprite_drag_size_temp.y/2)/camera_zoom - camera_pos.y;
                 
+                sprite_drag.offset = sprite_drag.size/2;
+                
                 sprite_drag.selected = 1;
                 
                 spriteBatchNode.sprites.push_back( sprite_drag );
