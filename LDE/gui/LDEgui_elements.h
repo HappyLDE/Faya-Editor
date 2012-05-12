@@ -24,6 +24,7 @@ using namespace std;
 #include "LDEgui_scrollbar.h"
 #include "LDEgui_text.h"
 #include "LDEgui_combobox.h"
+#include "LDEgui_checkbox.h"
 
 class LDEgui_elements
 {
@@ -37,7 +38,8 @@ class LDEgui_elements
 	vector<LDEgui_scrollbar*>scrollbar;
 	vector<LDEgui_text*>text;
 	vector<LDEgui_combobox*>combobox;
-	
+	vector<LDEgui_checkbox*>checkbox;
+    
 	vector<LDEinput>input;
 	vector<LDEmouse_event>mouse; // list of mouse events in one frame
 
@@ -84,6 +86,11 @@ class LDEgui_elements
 			*texture_combobox,
 			*texture_combobox_hover,
 			*texture_combobox_pressed,
+    
+            *texture_checkbox,
+            *texture_checkbox_hover,
+            *texture_checkbox_pressed,
+            *texture_checkbox_checked,
 	
 			*texture_editbox,
 			*texture_editbox_hover,
@@ -117,6 +124,7 @@ class LDEgui_elements
     void addMenu( LDEgui_menu *arg );
 	void addScrollbar( LDEgui_scrollbar *arg );
 	void addCombobox( LDEgui_combobox *arg );
+    void addCheckbox( LDEgui_checkbox *arg );
 	
 	void reset();
     void draw( LDEint x, LDEint y, vec2i cursor, LDEfloat frametime );

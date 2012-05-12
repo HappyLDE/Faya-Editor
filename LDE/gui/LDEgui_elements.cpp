@@ -127,13 +127,34 @@ void LDEgui_elements::addCombobox( LDEgui_combobox *arg )
     combobox[pointer]->texture_item_pressed = texture_button_pre;
 	
 	combobox[pointer]->size = vec2i( 80, 16 );
-
+    
 	combobox[pointer]->button.uv_up = 8;
     combobox[pointer]->button.uv_down = 8;
     combobox[pointer]->button.uv_left = 9;
     combobox[pointer]->button.uv_right = 14;
-
+    
 	combobox[pointer]->menu_item = menu_item;
+}
+
+void LDEgui_elements::addCheckbox( LDEgui_checkbox *arg )
+{
+	checkbox.push_back( arg );
+	
+	LDEuint pointer = checkbox.size()-1;
+	
+	checkbox[pointer]->button.font = font_elements;
+	checkbox[pointer]->button.texture_rel = texture_checkbox;
+	checkbox[pointer]->button.texture_coi = texture_checkbox_hover;
+    checkbox[pointer]->button.texture_pre = texture_checkbox_pressed;
+    checkbox[pointer]->button.texture_icon = texture_checkbox_checked;
+	checkbox[pointer]->button.name = "";
+	
+	checkbox[pointer]->button.size = vec2i( 16, 16 );
+
+	checkbox[pointer]->button.uv_up = 6;
+    checkbox[pointer]->button.uv_down = 6;
+    checkbox[pointer]->button.uv_left = 6;
+    checkbox[pointer]->button.uv_right = 6;
 }
 
 void LDEgui_elements::addEditbox( LDEgui_editbox *arg )
@@ -308,6 +329,19 @@ void LDEgui_elements::draw(  LDEint x, LDEint y, vec2i cursor, LDEfloat frametim
         combobox[i]->draw( cursor, frametime );
 		
 		if ( combobox[i]->button.pressed )
+			active = 1;
+    }
+    
+    for ( LDEuint i = 0; i < checkbox.size(); ++i )
+    {
+		checkbox[i]->button.pos = checkbox[i]->pos;
+        checkbox[i]->button.x = x + checkbox[i]->button.pos.x;
+        checkbox[i]->button.y = y + checkbox[i]->button.pos.y;
+		checkbox[i]->button.test_coi = test_coi;
+		checkbox[i]->button.mouse = mouse;
+        checkbox[i]->draw( cursor, frametime );
+		
+		if ( checkbox[i]->button.pressed )
 			active = 1;
     }
 	

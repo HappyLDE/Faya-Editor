@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */; };
+		F548CEEB155E9EFC009BCFF1 /* LDEgui_checkbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */; };
+		F548CEF0155EAA0F009BCFF1 /* checkbox_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEC155EAA0F009BCFF1 /* checkbox_checked.ldet */; };
+		F548CEF2155EAA0F009BCFF1 /* checkbox_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */; };
+		F548CEF3155EAA0F009BCFF1 /* checkbox.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */; };
+		F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */; };
 		F5779A0A155AE854002C8B7B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779A09155AE854002C8B7B /* Cocoa.framework */; };
 		F5779A14155AE854002C8B7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5779A12155AE854002C8B7B /* InfoPlist.strings */; };
 		F5779A16155AE854002C8B7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F5779A15155AE854002C8B7B /* main.m */; };
@@ -108,6 +113,12 @@
 
 /* Begin PBXFileReference section */
 		F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = transf_tool.ldet; sourceTree = "<group>"; };
+		F548CEE9155E9EFC009BCFF1 /* LDEgui_checkbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDEgui_checkbox.h; sourceTree = "<group>"; };
+		F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LDEgui_checkbox.cpp; sourceTree = "<group>"; };
+		F548CEEC155EAA0F009BCFF1 /* checkbox_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_checked.ldet; sourceTree = "<group>"; };
+		F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_pressed.ldet; sourceTree = "<group>"; };
+		F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox.ldet; sourceTree = "<group>"; };
+		F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_hover.ldet; sourceTree = "<group>"; };
 		F5779A05155AE854002C8B7B /* Faya Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Faya Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5779A09155AE854002C8B7B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F5779A0C155AE854002C8B7B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -426,6 +437,8 @@
 				F5779A5F155AE8B5002C8B7B /* LDEgui_text.h */,
 				F5779A60155AE8B5002C8B7B /* LDEgui_window.cpp */,
 				F5779A61155AE8B5002C8B7B /* LDEgui_window.h */,
+				F548CEE9155E9EFC009BCFF1 /* LDEgui_checkbox.h */,
+				F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -452,6 +465,10 @@
 				F5779AB7155AE8D3002C8B7B /* combobox.ldet */,
 				F5779AB8155AE8D3002C8B7B /* combobox_hover.ldet */,
 				F5779AB9155AE8D3002C8B7B /* combobox_pressed.ldet */,
+				F548CEEC155EAA0F009BCFF1 /* checkbox_checked.ldet */,
+				F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */,
+				F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */,
+				F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */,
 				F5779ABA155AE8D3002C8B7B /* cour.ldef */,
 				F5779ABB155AE8D3002C8B7B /* courbd.ldef */,
 				F5779ABC155AE8D3002C8B7B /* editbox.ldet */,
@@ -597,6 +614,10 @@
 				F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */,
 				F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */,
 				F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */,
+				F548CEF0155EAA0F009BCFF1 /* checkbox_checked.ldet in Resources */,
+				F548CEF2155EAA0F009BCFF1 /* checkbox_pressed.ldet in Resources */,
+				F548CEF3155EAA0F009BCFF1 /* checkbox.ldet in Resources */,
+				F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -649,6 +670,7 @@
 				F5779AAB155AE8B5002C8B7B /* LDEvec3i.cpp in Sources */,
 				F5779AAC155AE8B5002C8B7B /* LDEvec4f.cpp in Sources */,
 				F5779AAD155AE8B5002C8B7B /* LDEvec4i.cpp in Sources */,
+				F548CEEB155E9EFC009BCFF1 /* LDEgui_checkbox.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

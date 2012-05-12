@@ -75,10 +75,11 @@ LDEgui_editbox* editbox_sprite_ap_y = new LDEgui_editbox();
 LDEgui_text *text_sprite_rot = new LDEgui_text();
 LDEgui_editbox* editbox_sprite_rot = new LDEgui_editbox();
 
-// Sprite pos
+// Sprite size
 LDEgui_text *text_sprite_size = new LDEgui_text();
 LDEgui_editbox* editbox_sprite_size_x = new LDEgui_editbox();
 LDEgui_editbox* editbox_sprite_size_y = new LDEgui_editbox();
+LDEgui_checkbox* checkbox_sprite_size_keep_ratio = new LDEgui_checkbox();
 
 void init_gui()
 {
@@ -145,8 +146,8 @@ void init_gui()
     
     // window containing spritesheeets created in the world
     gui.addWindow(window_sprites_list);
-    window_sprites_list->pos = vec2i(app.size.x - 230, 30 );
-    window_sprites_list->size = vec2i( 200, app.size.y- 60 );
+    window_sprites_list->pos = vec2i(app.size.x - 260, 30 );
+    window_sprites_list->size = vec2i( 230, app.size.y - 50 );
     window_sprites_list->min_size = vec2i( 200, 250 );
     window_sprites_list->title = "World Sprites";
     window_sprites_list->show_close_button = false;
@@ -209,6 +210,9 @@ void init_gui()
     editbox_sprite_size_y->pos = vec2i( 145, window_sprites_list->size.y-53 );
     editbox_sprite_size_y->size.x = 50;
     editbox_sprite_size_y->name = "0";
+    
+    window_sprites_list->elements.addCheckbox(checkbox_sprite_size_keep_ratio);
+    checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
     
     //////////////// VECTOR MODE //////////////////////
     

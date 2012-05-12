@@ -47,6 +47,8 @@ LDEgui_button::LDEgui_button()
 
 	scissor = 0;
 
+    draw_icon = 0;
+    
 	text_color = vec3f( 1,1,1 );
 	text_color_inactive = vec3f( 1,1,1 );
 	
@@ -185,51 +187,44 @@ void LDEgui_button::draw( vec2i cursor, LDEfloat frametime )
 		//LDEscissor( x , y , size.x /* - decrease_scissor.x */, size.y /* - decrease_scissor.y */ );
 	}
 
-			// an icon
-			/*if ( texture_icon )
-			{
-				glPushMatrix();
-				glColor4d(1,1,1, 1.f - transp / 2);
-				if ( icon_side )
-				glTranslatef( pos.x + icon_pos.x + icon_texture_size.x / 2, pos.y + size.y / 2 + icon_pos.y, 0 );
-				else
-				glTranslatef( pos.x + icon_pos.x + size.x / 2, pos.y + icon_pos.y + size.y / 2, 0 );
-				glRotatef( icon_angle, 0, 0, 1 );
-				LDEtexture(texture_icon);
-				LDErectuv( 0,1,-1,1,-1,0,0,0, -icon_texture_size.x / 2, -icon_texture_size.y / 2, icon_texture_size.x, icon_texture_size.y );
-				glPopMatrix();
-			}*/
+    // an icon
+    if ( draw_icon && texture_icon )
+    {
+        glColor3f(1,1,1);
+        glBindTexture(GL_TEXTURE_2D, texture_icon->id);
+        LDErect( x + icon_pos.x, y + icon_pos.y, texture_icon->size.x, texture_icon->size.y );
+    }
 
-			// text name
-			if ( name.size() )
-			{
-				if ( locked )
-                    glColor3d(0.6,0.6,0.6);
-				else
-                    glColor3d(text_color.x,text_color.y,text_color.z);
+    // text name
+    if ( name.size() )
+    {
+        if ( locked )
+            glColor3d(0.6,0.6,0.6);
+        else
+            glColor3d(text_color.x,text_color.y,text_color.z);
 
-				// center text
-				if ( text_side == 0 )
-				{
-					font->setText( name );
-					font->setPos( LDEint(x + ((size.x / 2)) - (font->size.x / 2)), LDEint(y + ((size.y/2)-font->char_size/2)) );
-					font->draw();
-				}
-				// left side text
-				else if ( text_side == 1 )
-				{
-					font->setText( name );
-					font->setPos( x + 5, LDEint(y + ((size.y/2)-font->char_size/2)) );
-					font->draw();
-				}
-				// right side text
-				else if ( text_side >= 2 )
-				{
-					font->setText( name );
-					font->setPos( LDEint(x + size.x - font->size.x), LDEint(y + ( size.y / 2 - 3 )) );
-					font->draw();
-				}
-			}
+        // center text
+        if ( text_side == 0 )
+        {
+            font->setText( name );
+            font->setPos( LDEint(x + ((size.x / 2)) - (font->size.x / 2)), LDEint(y + ((size.y/2)-font->char_size/2)) );
+            font->draw();
+        }
+        // left side text
+        else if ( text_side == 1 )
+        {
+            font->setText( name );
+            font->setPos( x + 5, LDEint(y + ((size.y/2)-font->char_size/2)) );
+            font->draw();
+        }
+        // right side text
+        else if ( text_side >= 2 )
+        {
+            font->setText( name );
+            font->setPos( LDEint(x + size.x - font->size.x), LDEint(y + ( size.y / 2 - 3 )) );
+            font->draw();
+        }
+    }
 
 	if ( scissor )
 	{

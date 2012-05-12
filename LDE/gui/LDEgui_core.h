@@ -65,6 +65,11 @@ class LDEgui
 			*texture_combobox_hover,
 			*texture_combobox_pressed,
 	
+            *texture_checkbox,
+            *texture_checkbox_hover,
+            *texture_checkbox_pressed,
+            *texture_checkbox_checked,
+    
 			*texture_scrollbar_button_up,
 			*texture_scrollbar_button_up_hover,
 			*texture_scrollbar_button_up_pressed,

@@ -50,6 +50,7 @@ class LDEgui_button
 			clicked_away,
 			texture_type,
 			icon_side,
+            draw_icon,
 			moveable_info,
 			scissor,
 
@@ -81,7 +82,8 @@ class LDEgui_button
    LDEldet  *texture_rel,
             *texture_coi,
             *texture_pre,
-            *texture_locked;
+            *texture_locked,
+            *texture_icon;
 
 	vec3f	text_color,
 			text_color_inactive;

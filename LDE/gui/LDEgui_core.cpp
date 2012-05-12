@@ -141,6 +141,12 @@ void LDEgui::addWindow( LDEgui_window *arg )
 	window[window.size()-1]->elements.texture_combobox_hover = texture_combobox_hover;
 	window[window.size()-1]->elements.texture_combobox_pressed = texture_combobox_pressed;
 	
+    // Combobox
+	window[window.size()-1]->elements.texture_checkbox = texture_checkbox;
+	window[window.size()-1]->elements.texture_checkbox_hover = texture_checkbox_hover;
+	window[window.size()-1]->elements.texture_checkbox_pressed = texture_checkbox_pressed;
+    window[window.size()-1]->elements.texture_checkbox_checked = texture_checkbox_checked;
+    
 	// Editbox
 	window[window.size()-1]->elements.texture_editbox = texture_editbox;
 	window[window.size()-1]->elements.texture_editbox_hover = texture_editbox_hover;

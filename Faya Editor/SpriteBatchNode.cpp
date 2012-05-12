@@ -56,6 +56,7 @@ void SpriteBatchNode::setSize( vec2i size )
         if ( sprites[i].selected )
         {
             sprites[i].size = size;
+            sprites[i].offset = size/2;
         }
     }
 }

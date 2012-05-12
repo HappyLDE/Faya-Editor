@@ -51,6 +51,11 @@ LDEldet texture_window,
 		texture_combobox_hover,
 		texture_combobox_pressed,
 
+        texture_checkbox,
+        texture_checkbox_hover,
+        texture_checkbox_pressed,
+        texture_checkbox_checked,
+
 		texture_editbox,
 		texture_editbox_hover,
 		texture_editbox_active,
@@ -218,6 +223,23 @@ void load_gui_theme( string path )
 	texture_combobox_pressed.opengl(0);
 	gui.texture_combobox_pressed = &texture_combobox_pressed;
 	
+    // Checkbox
+	texture_checkbox.load(path+"checkbox.ldet");
+	texture_checkbox.opengl(0);
+	gui.texture_checkbox = &texture_checkbox;
+	
+	texture_checkbox_hover.load(path+"checkbox_hover.ldet");
+	texture_checkbox_hover.opengl(0);
+	gui.texture_checkbox_hover = &texture_checkbox_hover;
+	
+	texture_checkbox_pressed.load(path+"checkbox_pressed.ldet");
+	texture_checkbox_pressed.opengl(0);
+	gui.texture_checkbox_pressed = &texture_checkbox_pressed;
+    
+    texture_checkbox_checked.load(path+"checkbox_checked.ldet");
+	texture_checkbox_checked.opengl(0);
+	gui.texture_checkbox_checked = &texture_checkbox_checked;
+    
 	/// editbox
 	texture_editbox.load(path+"editbox.ldet");
 	texture_editbox.opengl(0);
