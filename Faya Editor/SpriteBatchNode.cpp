@@ -49,12 +49,20 @@ void SpriteBatchNode::setPosition( vec2i pos_temp )
     }
 }
 
+void SpriteBatchNode::unselectAll()
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        sprites[i].selected = 0;
+    }
+}
+
 void SpriteBatchNode::draw()
 {
     changed = 0;
 
     // If clicked and we must not keep old selected sprites
-    if ( !keep_select && mouse.size() )
+    if ( test_coi && !keep_select && mouse.size() )
     {
         // For every click that was done on that frame
         for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
@@ -62,11 +70,7 @@ void SpriteBatchNode::draw()
             // If left click (mousedown)
             if ( mouse[inp].left && mouse[inp].down )
             {
-                // Unselect every sprite
-                for ( LDEuint i = 0; i < sprites.size(); ++i )
-                {
-                    sprites[i].selected = 0;
-                }
+                unselectAll();
             }
         }
     }

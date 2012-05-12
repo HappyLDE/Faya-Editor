@@ -1297,10 +1297,32 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
         
         
-        // Sprite properties panel
-        if ( editbox_sprite_pos_x->changed )
+        ///////// Sprite properties panel /////////
+        
+        // Position editboxes
+        if ( editbox_sprite_pos_x->changed || editbox_sprite_pos_y->changed )
         {
-            editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name);
+            vec2i new_position;
+            
+            if ( editbox_sprite_pos_x->name.length() )
+            {
+                new_position.x = LDEstn( editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name) );
+                
+                editbox_sprite_pos_x->name = LDEnts(new_position.x);
+            }
+            else
+                editbox_sprite_pos_x->name = "0";
+            
+            if ( editbox_sprite_pos_y->name.length() )
+            {
+                new_position.y = -LDEstn( editbox_sprite_pos_y->name = str_replace(",", ".", editbox_sprite_pos_y->name) );
+                
+                editbox_sprite_pos_y->name = LDEnts(new_position.y);
+            }
+            else
+                editbox_sprite_pos_y->name = "0";
+            
+            spriteBatchNode.setPosition( new_position );
         }
         
         if ( spriteBatchNode.changed )
