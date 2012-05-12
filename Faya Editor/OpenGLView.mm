@@ -287,6 +287,8 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                                                spritesheets[i].frames[spritesheets[i].selected].size.x, spritesheets[i].frames[spritesheets[i].selected].size.y );
                 sprite_drag.size = spritesheets[i].frames[spritesheets[i].selected].size;
                 sprite_drag.size_100 = spritesheets[i].frames[spritesheets[i].selected].size_100;
+                
+                spriteBatchNode.unselectAll();
             }
         }
         
