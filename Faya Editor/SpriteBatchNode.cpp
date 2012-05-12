@@ -38,6 +38,17 @@ SpriteBatchNode::~SpriteBatchNode()
     
 }
 
+void SpriteBatchNode::setPosition( vec2i pos_temp )
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].pos = pos_temp;
+        }
+    }
+}
+
 void SpriteBatchNode::draw()
 {
     changed = 0;

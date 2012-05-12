@@ -60,6 +60,7 @@ struct SpriteBatchNode
     
     LDEuint last_texture_id;
     
+    void setPosition( vec2i pos_temp );
     void draw();
     
     SpriteBatchNode();

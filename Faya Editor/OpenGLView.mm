@@ -1296,9 +1296,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             }
         }
         
+        
+        // Sprite properties panel
         if ( editbox_sprite_pos_x->changed )
         {
-            cout<<editbox_sprite_pos_x->name<<"\n";
+            editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name);
         }
         
         if ( spriteBatchNode.changed )
