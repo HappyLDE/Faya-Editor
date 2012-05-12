@@ -60,13 +60,15 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
     glScissor( button.x + 3, app_size.y - (button.y+button.size.y), button.size.x - 6, button.size.y );
 	glColor3f(0, 0, 0);
 	
+    // If the editbox has FOCUS
 	if ( focus )
 	{
+        // If keys on tkeyboard was pressed
 		if ( input.size() )
 		{
 			for ( LDEuint i = 0; i < input.size(); ++i )
 			{
-				if ( input[i].backspace && name.size() )
+				if ( input[i].backspace && input[i].key_down && name.size() )
 				{
 					name = name.substr( 0, name.size()-1 );
 					
@@ -75,7 +77,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 					else
 						text_offset = 0;
 				}
-				else if ( input[i].characters.size() )
+				else if ( input[i].characters.size() && input[i].key_down )
 					name += input[i].characters;
 			}
 			
@@ -87,6 +89,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 			cursor_pos = button.font->size.x - text_offset;
 		}
 		
+        //
 		cursor_toggle_time += 0.3 + frametime;
 	
 		if ( cursor_toggle_time > 10 )

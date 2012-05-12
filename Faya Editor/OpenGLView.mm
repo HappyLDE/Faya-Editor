@@ -395,12 +395,44 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 
 -(void) keyDown:(NSEvent *)theEvent
 {
+    LDEinput input_temp;
+    input_temp.characters = [[theEvent characters] UTF8String];
+    input_temp.key_down = 1;
+
+    switch ([theEvent keyCode])
+    {
+        case 36: input_temp.characters = ""; input_temp.enter = 1;  break; // Enter/Return key
+        case 48: input_temp.characters = ""; input_temp.tab = 1;  break; // Enter
+        case 51: input_temp.characters = ""; input_temp.backspace = 1;  break; // Backspace
+        case 53: input_temp.characters = ""; input_temp.esc = 1;  break; // Escape key
+        case 123: input_temp.characters = ""; input_temp.left = 1;  break; // Left arrow key
+        case 124: input_temp.characters = ""; input_temp.right = 1;  break; // Right arrow key
+        case 125: input_temp.characters = ""; input_temp.down = 1;  break; // Down arrow key
+        case 126: input_temp.characters = ""; input_temp.up = 1;  break; // Up arrow key
+    }
     
+    app.input.push_back(input_temp);
 }
 
 -(void) keyUp:(NSEvent *)theEvent
 {
+    LDEinput input_temp;
+    input_temp.characters = [[theEvent characters] UTF8String];
+    input_temp.key_down = 0;
     
+    switch ([theEvent keyCode])
+    {
+        case 36: input_temp.characters = ""; input_temp.enter = 1;  break; // Enter/Return key
+        case 48: input_temp.characters = ""; input_temp.tab = 1;  break; // Enter
+        case 51: input_temp.characters = ""; input_temp.backspace = 1;  break; // Backspace
+        case 53: input_temp.characters = ""; input_temp.esc = 1;  break; // Escape key
+        case 123: input_temp.characters = ""; input_temp.left = 1;  break; // Left arrow key
+        case 124: input_temp.characters = ""; input_temp.right = 1;  break; // Right arrow key
+        case 125: input_temp.characters = ""; input_temp.down = 1;  break; // Down arrow key
+        case 126: input_temp.characters = ""; input_temp.up = 1;  break; // Up arrow key
+    }
+    
+    app.input.push_back(input_temp);
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
