@@ -1306,6 +1306,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         {
             vec2i new_position;
             
+            // X pos
             if ( editbox_sprite_pos_x->name.length() )
             {
                 new_position.x = LDEstn( editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name) );
@@ -1315,18 +1316,50 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_pos_x->name = "0";
             
+            // Y pos
             if ( editbox_sprite_pos_y->name.length() )
             {
                 new_position.y = -LDEstn( editbox_sprite_pos_y->name = str_replace(",", ".", editbox_sprite_pos_y->name) );
                 
-                editbox_sprite_pos_y->name = LDEnts(new_position.y);
+                editbox_sprite_pos_y->name = LDEnts(-new_position.y);
             }
             else
                 editbox_sprite_pos_y->name = "0";
             
+            spriteBatchNode.test_coi = 0;
             spriteBatchNode.setPosition( new_position );
         }
         
+        // Size editboxes
+        if ( editbox_sprite_size_x->changed || editbox_sprite_size_y->changed )
+        {
+            vec2i new_size;
+            
+            // X size
+            if ( editbox_sprite_size_x->name.length() )
+            {
+                new_size.x = LDEstn( editbox_sprite_size_x->name = str_replace(",", ".", editbox_sprite_size_x->name) );
+                
+                editbox_sprite_size_x->name = LDEnts(new_size.x);
+            }
+            else
+                editbox_sprite_size_x->name = "0";
+            
+            // Y size
+            if ( editbox_sprite_size_y->name.length() )
+            {
+                new_size.y = LDEstn( editbox_sprite_size_y->name = str_replace(",", ".", editbox_sprite_size_y->name) );
+                
+                editbox_sprite_size_y->name = LDEnts(new_size.y);
+            }
+            else
+                editbox_sprite_size_y->name = "0";
+            
+            spriteBatchNode.test_coi = 0;
+            spriteBatchNode.setSize( new_size );
+        }
+        
+        ////
         if ( spriteBatchNode.changed )
         {
             list_sprites->deselect();

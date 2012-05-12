@@ -62,7 +62,8 @@ struct SpriteBatchNode
     
     void unselectAll();
     
-    void setPosition( vec2i pos_temp );
+    void setPosition( vec2i pos );
+    void setSize( vec2i size );
     void draw();
     
     SpriteBatchNode();
