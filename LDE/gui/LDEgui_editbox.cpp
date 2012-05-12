@@ -16,6 +16,7 @@ LDEgui_editbox::LDEgui_editbox()
 	cursor_flag = 0;
 	cursor_pos = 0;
 	text_offset = 0;
+    changed = 0;
 }
 
 LDEgui_editbox::~LDEgui_editbox()
@@ -41,6 +42,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 		cursor_flag = 1;
 		focus = 1;
 		button.font->setText( name );
+        changed = 0;
 		
 		if ( button.font->size.x + text_offset > button.size.x )
 			text_offset = -(button.font->size.x - button.size.x + 9);
@@ -72,13 +74,19 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 				{
 					name = name.substr( 0, name.size()-1 );
 					
+                    changed = 1;
+                    
 					if ( text_offset < 0 )
 						 text_offset += 10;
 					else
 						text_offset = 0;
 				}
 				else if ( input[i].characters.size() && input[i].key_down )
+                {
 					name += input[i].characters;
+                    
+                    changed = 1;
+                }
 			}
 			
 			button.font->setText( name );

@@ -33,8 +33,9 @@ struct LDEgui_editbox
 			*texture_editbox_hover,
 			*texture_editbox_active;
 	
-	bool focus,
-		 cursor_flag;
+	bool    focus,
+            cursor_flag,
+            changed;
 	
 	LDEgui_button button;
 	
