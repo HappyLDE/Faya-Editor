@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 struct Sprite
 {
@@ -63,6 +64,8 @@ struct SpriteBatchNode
     void unselectAll();
     
     void setPosition( vec2i pos );
+    void setRotation( LDEfloat rotation );
+    void setOpacity( LDEfloat opacity );
     LDEint setSizeX( LDEint size_x, bool keep_ratio );
     LDEint setSizeY( LDEint size_y, bool keep_ratio );
     void draw();

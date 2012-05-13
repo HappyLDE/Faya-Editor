@@ -1275,19 +1275,22 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         if ( window_sprites_list->button_resize.pressed )
         {
             list_sprites->size.x = window_sprites_list->size.x;
-            list_sprites->size.y = window_sprites_list->size.y-140;
+            list_sprites->size.y = window_sprites_list->size.y-157;
             
-            text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-135 );
-            editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-137 );
-            editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-137 );
-            text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-110 );
-            editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-113 );
-            editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-113 );
-            text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-80 );
-            editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-83 );
+            text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-150 );
+            editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-153 );
+            editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-153 );
+            text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-125 );
+            editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-128 );
+            editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-128 );
+            text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-100 );
+            editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-103 );
+            text_sprite_opacity->pos = vec2i( 20, window_sprites_list->size.y-75 );
+            editbox_sprite_opacity->pos = vec2i( 75, window_sprites_list->size.y-78 );
             text_sprite_size->pos = vec2i( 5, window_sprites_list->size.y-50 );
             editbox_sprite_size_x->pos = vec2i( 75, window_sprites_list->size.y-53 );
             editbox_sprite_size_y->pos = vec2i( 145, window_sprites_list->size.y-53 );
+            checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
         }
         
         if ( list_sprites->changed )
@@ -1330,7 +1333,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             spriteBatchNode.setPosition( new_position );
         }
 
-        // Size editboxes
+        // Size X editbox
         if ( editbox_sprite_size_x->changed )
         {
             vec2i new_size;
@@ -1348,6 +1351,62 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             new_size.y = spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
             
             editbox_sprite_size_y->name = LDEnts(new_size.y);
+        }
+        
+        // Size Y editbox
+        if ( editbox_sprite_size_y->changed )
+        {
+            vec2i new_size;
+            
+            // Y size
+            if ( editbox_sprite_size_y->name.length() )
+            {
+                new_size.y = LDEstn( editbox_sprite_size_y->name = str_replace(",", ".", editbox_sprite_size_y->name) );
+                
+                editbox_sprite_size_y->name = LDEnts(new_size.y);
+            }
+            else
+                editbox_sprite_size_y->name = "100";
+            
+            new_size.x = spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
+            
+            editbox_sprite_size_x->name = LDEnts(new_size.x);
+        }
+        
+        //
+        if ( editbox_sprite_rot->changed )
+        {
+            LDEfloat new_rot = 0;
+            
+            // Y size
+            if ( editbox_sprite_rot->name.length() )
+            {
+                new_rot = LDEstn( editbox_sprite_rot->name = str_replace(",", ".", editbox_sprite_rot->name) );
+                
+                editbox_sprite_rot->name = LDEnts(new_rot);
+            }
+            else
+                editbox_sprite_rot->name = "0";
+            
+            spriteBatchNode.setRotation( new_rot );
+        }
+        
+        //
+        if ( editbox_sprite_opacity->changed )
+        {
+            LDEfloat new_opacity = 0;
+            
+            // Y size
+            if ( editbox_sprite_opacity->name.length() )
+            {
+                new_opacity = LDEstn( editbox_sprite_opacity->name = str_replace(",", ".", editbox_sprite_opacity->name) );
+                
+                editbox_sprite_opacity->name = LDEnts(new_opacity);
+            }
+            else
+                editbox_sprite_opacity->name = "1";
+            
+            spriteBatchNode.setOpacity( new_opacity );
         }
         
         ////

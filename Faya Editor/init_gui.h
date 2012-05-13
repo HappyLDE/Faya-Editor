@@ -72,8 +72,13 @@ LDEgui_text *text_sprite_ap = new LDEgui_text(); // Anchor point
 LDEgui_editbox* editbox_sprite_ap_x = new LDEgui_editbox();
 LDEgui_editbox* editbox_sprite_ap_y = new LDEgui_editbox();
 
+// Rotation
 LDEgui_text *text_sprite_rot = new LDEgui_text();
 LDEgui_editbox* editbox_sprite_rot = new LDEgui_editbox();
+
+// Opacity
+LDEgui_text *text_sprite_opacity = new LDEgui_text();
+LDEgui_editbox* editbox_sprite_opacity = new LDEgui_editbox();
 
 // Sprite size
 LDEgui_text *text_sprite_size = new LDEgui_text();
@@ -148,53 +153,63 @@ void init_gui()
     gui.addWindow(window_sprites_list);
     window_sprites_list->pos = vec2i(app.size.x - 260, 30 );
     window_sprites_list->size = vec2i( 230, app.size.y - 50 );
-    window_sprites_list->min_size = vec2i( 200, 250 );
+    window_sprites_list->can_resize = 0;
     window_sprites_list->title = "World Sprites";
     window_sprites_list->show_close_button = false;
     
     window_sprites_list->elements.addList(list_sprites);
 	list_sprites->size.x = window_sprites_list->size.x;
-	list_sprites->size.y = window_sprites_list->size.y-140;
+	list_sprites->size.y = window_sprites_list->size.y-157;
     
     // Pos of sprite
     window_sprites_list->elements.addText(text_sprite_pos);
     text_sprite_pos->value = "Pos: x      y";
-    text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-135 );
+    text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-150 );
     
     window_sprites_list->elements.addEditbox(editbox_sprite_pos_x);
-    editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-137 );
+    editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-153 );
     editbox_sprite_pos_x->size.x = 50;
     editbox_sprite_pos_x->name = "0";
     
     window_sprites_list->elements.addEditbox(editbox_sprite_pos_y);
-    editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-137 );
+    editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-153 );
     editbox_sprite_pos_y->size.x = 50;
     editbox_sprite_pos_y->name = "0";
     
     // Anchor point of sprite
     window_sprites_list->elements.addText(text_sprite_ap);
     text_sprite_ap->value = "APt: x      y";
-    text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-110 );
+    text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-125 );
     
     window_sprites_list->elements.addEditbox(editbox_sprite_ap_x);
-    editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-113 );
+    editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-128 );
     editbox_sprite_ap_x->size.x = 50;
     editbox_sprite_ap_x->name = "0";
     
     window_sprites_list->elements.addEditbox(editbox_sprite_ap_y);
-    editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-113 );
+    editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-128 );
     editbox_sprite_ap_y->size.x = 50;
     editbox_sprite_ap_y->name = "0";
     
     // Rotation sprite
     window_sprites_list->elements.addText(text_sprite_rot);
     text_sprite_rot->value = "Angle:      deg";
-    text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-80 );
+    text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-100 );
     
     window_sprites_list->elements.addEditbox(editbox_sprite_rot);
-    editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-83 );
+    editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-103 );
     editbox_sprite_rot->size.x = 50;
     editbox_sprite_rot->name = "0";
+    
+    // Opacity sprite
+    window_sprites_list->elements.addText(text_sprite_opacity);
+    text_sprite_opacity->value = "Opac:";
+    text_sprite_opacity->pos = vec2i( 20, window_sprites_list->size.y-75 );
+    
+    window_sprites_list->elements.addEditbox(editbox_sprite_opacity);
+    editbox_sprite_opacity->pos = vec2i( 75, window_sprites_list->size.y-78 );
+    editbox_sprite_opacity->size.x = 50;
+    editbox_sprite_opacity->name = "0";
     
     // Size of sprite
     window_sprites_list->elements.addText(text_sprite_size);

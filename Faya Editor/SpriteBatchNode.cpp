@@ -59,29 +59,10 @@ LDEint SpriteBatchNode::setSizeX( LDEint size_x, bool keep_ratio )
         {
             if ( keep_ratio )
             {
-                // Let's calculate the thumbnail's size
-                LDEfloat ratio = 0;
+                LDEfloat ratio = (LDEfloat)size_x / sprites[i].size.x;
                 
-                // Si la largeur est plus grande que la hauteur
-                if ( sprites[i].size.x > sprites[i].size.y )
-                {
-                    // Déterminer le ratio
-                    ratio = (LDEfloat)size_x / sprites[i].size.x;
-                    
-                    new_size.x = size_x;
-                    
-                    new_size.y = (LDEint)sprites[i].size.y * ratio;
-                }
-                // Sinon, si la hauteur est plus grande que la largeur
-                else
-                {
-                    // Déterminer le ratio
-                    ratio = (LDEfloat)size_x / sprites[i].size.y;
-                    
-                    new_size.y = size_x;
-                    
-                    new_size.x = (LDEint)sprites[i].size.x * ratio;
-                }
+                new_size.x = size_x;
+                new_size.y = round( (LDEfloat)sprites[i].size.y * ratio );
             }
             else
                 new_size = vec2i( size_x, sprites[i].size.y );
@@ -92,6 +73,54 @@ LDEint SpriteBatchNode::setSizeX( LDEint size_x, bool keep_ratio )
     }
     
     return new_size.y;
+}
+
+LDEint SpriteBatchNode::setSizeY( LDEint size_y, bool keep_ratio )
+{
+    vec2i new_size;
+    
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            if ( keep_ratio )
+            {
+                LDEfloat ratio = (LDEfloat)size_y / sprites[i].size.y;
+                
+                new_size.y = size_y;
+                new_size.x = round( (LDEfloat)sprites[i].size.x * ratio );
+            }
+            else
+                new_size = vec2i( sprites[i].size.x, size_y );
+            
+            sprites[i].size = new_size;
+            sprites[i].offset = new_size/2;
+        }
+    }
+    
+    return new_size.x;
+}
+
+void SpriteBatchNode::setRotation( LDEfloat rotation )
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].rot = rotation;
+        }
+    }
+}
+
+void SpriteBatchNode::setOpacity( LDEfloat opacity )
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].opacity = opacity;
+        }
+    }
 }
 
 void SpriteBatchNode::unselectAll()
@@ -130,9 +159,14 @@ void SpriteBatchNode::draw()
             //last_texture_id = sprites[i].image_id;
         }
         
+        glColor4f(1, 1, 1, sprites[i].opacity);
+        glPushMatrix();
+        glTranslatef( sprites[i].pos.x + sprites[i].offset.x, sprites[i].pos.y + sprites[i].offset.y, 0);
+        glRotatef(sprites[i].rot, 0, 0, 1);
         LDErectp( sprites[i].image_size,
                  vec4i( sprites[i].texture_uv.x, sprites[i].texture_uv.y, sprites[i].texture_uv.z, sprites[i].texture_uv.w),
-                 vec4i( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y) );
+                 vec4i( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y) );
+        glPopMatrix();
         
         // Check for click on the sprite
         if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= sprites[i].pos.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= sprites[i].pos.x + sprites[i].size.x &&
@@ -165,7 +199,11 @@ void SpriteBatchNode::draw()
         {
             some_selected = 1;
             
-            LDErectw( sprites[i].pos.x, sprites[i].pos.y, sprites[i].size.x, sprites[i].size.y );
+            glPushMatrix();
+            glTranslatef( sprites[i].pos.x + sprites[i].offset.x, sprites[i].pos.y + sprites[i].offset.y, 0);
+            glRotatef( sprites[i].rot, 0, 0, 1);
+            LDErectw( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y );
+            glPopMatrix();
             
             selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x + sprites[i].offset.x)*camera_zoom;
             selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y + sprites[i].offset.y)*camera_zoom;
