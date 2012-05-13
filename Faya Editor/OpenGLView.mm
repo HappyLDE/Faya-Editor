@@ -766,7 +766,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         glBindTexture(GL_TEXTURE_2D, transf_tool.id);
         LDErect( spriteBatchNode.selected_pos.x - 13, spriteBatchNode.selected_pos.y - 14, transf_tool.size.x, transf_tool.size.y);
     }
-        
+
     glLineWidth(1);
     
     // Vector Mode
@@ -1331,6 +1331,35 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             spriteBatchNode.test_coi = 0;
             spriteBatchNode.setPosition( new_position );
+        }
+        
+        // Anchor point editboxes
+        if ( editbox_sprite_ap_x->changed || editbox_sprite_ap_y->changed )
+        {
+            vec2i new_ap;
+            
+            // X pos
+            if ( editbox_sprite_ap_x->name.length() )
+            {
+                new_ap.x = LDEstn( editbox_sprite_ap_x->name = str_replace(",", ".", editbox_sprite_ap_x->name) );
+                
+                editbox_sprite_ap_x->name = LDEnts(new_ap.x);
+            }
+            else
+                editbox_sprite_ap_x->name = "0";
+            
+            // Y pos
+            if ( editbox_sprite_ap_y->name.length() )
+            {
+                new_ap.y = LDEstn( editbox_sprite_ap_y->name = str_replace(",", ".", editbox_sprite_ap_y->name) );
+                
+                editbox_sprite_ap_y->name = LDEnts(new_ap.y);
+            }
+            else
+                editbox_sprite_ap_y->name = "0";
+            
+            spriteBatchNode.test_coi = 0;
+            spriteBatchNode.setOffset( new_ap );
         }
 
         // Size X editbox

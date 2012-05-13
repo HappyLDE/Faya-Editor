@@ -49,6 +49,17 @@ void SpriteBatchNode::setPosition( vec2i pos )
     }
 }
 
+void SpriteBatchNode::setOffset( vec2i offset )
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].offset = offset;
+        }
+    }
+}
+
 LDEint SpriteBatchNode::setSizeX( LDEint size_x, bool keep_ratio )
 {
     vec2i new_size;
@@ -161,7 +172,7 @@ void SpriteBatchNode::draw()
         
         glColor4f(1, 1, 1, sprites[i].opacity);
         glPushMatrix();
-        glTranslatef( sprites[i].pos.x + sprites[i].offset.x, sprites[i].pos.y + sprites[i].offset.y, 0);
+        glTranslatef( sprites[i].pos.x, sprites[i].pos.y, 0);
         glRotatef(sprites[i].rot, 0, 0, 1);
         LDErectp( sprites[i].image_size,
                  vec4i( sprites[i].texture_uv.x, sprites[i].texture_uv.y, sprites[i].texture_uv.z, sprites[i].texture_uv.w),
@@ -200,13 +211,13 @@ void SpriteBatchNode::draw()
             some_selected = 1;
             
             glPushMatrix();
-            glTranslatef( sprites[i].pos.x + sprites[i].offset.x, sprites[i].pos.y + sprites[i].offset.y, 0);
+            glTranslatef( sprites[i].pos.x, sprites[i].pos.y, 0);
             glRotatef( sprites[i].rot, 0, 0, 1);
             LDErectw( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y );
             glPopMatrix();
             
-            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x + sprites[i].offset.x)*camera_zoom;
-            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y + sprites[i].offset.y)*camera_zoom;
+            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
+            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
         }
     }
     glColor3f(1, 1, 1);

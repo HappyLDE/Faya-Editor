@@ -66,6 +66,7 @@ struct SpriteBatchNode
     void setPosition( vec2i pos );
     void setRotation( LDEfloat rotation );
     void setOpacity( LDEfloat opacity );
+    void setOffset( vec2i offset );
     LDEint setSizeX( LDEint size_x, bool keep_ratio );
     LDEint setSizeY( LDEint size_y, bool keep_ratio );
     void draw();
