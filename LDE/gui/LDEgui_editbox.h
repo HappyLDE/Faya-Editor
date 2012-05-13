@@ -51,6 +51,8 @@ struct LDEgui_editbox
 	
 	LDEfloat cursor_toggle_time;
 	
+    void blur();
+    
 	void draw( vec2i cursor, LDEfloat frametime );
 };
 

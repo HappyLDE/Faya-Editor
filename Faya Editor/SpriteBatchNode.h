@@ -63,7 +63,8 @@ struct SpriteBatchNode
     void unselectAll();
     
     void setPosition( vec2i pos );
-    void setSize( vec2i size );
+    LDEint setSizeX( LDEint size_x, bool keep_ratio );
+    LDEint setSizeY( LDEint size_y, bool keep_ratio );
     void draw();
     
     SpriteBatchNode();

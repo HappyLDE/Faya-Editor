@@ -49,16 +49,49 @@ void SpriteBatchNode::setPosition( vec2i pos )
     }
 }
 
-void SpriteBatchNode::setSize( vec2i size )
+LDEint SpriteBatchNode::setSizeX( LDEint size_x, bool keep_ratio )
 {
+    vec2i new_size;
+    
     for ( LDEuint i = 0; i < sprites.size(); ++i )
     {
         if ( sprites[i].selected )
         {
-            sprites[i].size = size;
-            sprites[i].offset = size/2;
+            if ( keep_ratio )
+            {
+                // Let's calculate the thumbnail's size
+                LDEfloat ratio = 0;
+                
+                // Si la largeur est plus grande que la hauteur
+                if ( sprites[i].size.x > sprites[i].size.y )
+                {
+                    // Déterminer le ratio
+                    ratio = (LDEfloat)size_x / sprites[i].size.x;
+                    
+                    new_size.x = size_x;
+                    
+                    new_size.y = (LDEint)sprites[i].size.y * ratio;
+                }
+                // Sinon, si la hauteur est plus grande que la largeur
+                else
+                {
+                    // Déterminer le ratio
+                    ratio = (LDEfloat)size_x / sprites[i].size.y;
+                    
+                    new_size.y = size_x;
+                    
+                    new_size.x = (LDEint)sprites[i].size.x * ratio;
+                }
+            }
+            else
+                new_size = vec2i( size_x, sprites[i].size.y );
+            
+            sprites[i].size = new_size;
+            sprites[i].offset = new_size/2;
         }
     }
+    
+    return new_size.y;
 }
 
 void SpriteBatchNode::unselectAll()

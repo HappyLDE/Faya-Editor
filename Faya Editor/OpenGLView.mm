@@ -1329,9 +1329,9 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             spriteBatchNode.test_coi = 0;
             spriteBatchNode.setPosition( new_position );
         }
-        
+
         // Size editboxes
-        if ( editbox_sprite_size_x->changed || editbox_sprite_size_y->changed )
+        if ( editbox_sprite_size_x->changed )
         {
             vec2i new_size;
             
@@ -1343,20 +1343,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 editbox_sprite_size_x->name = LDEnts(new_size.x);
             }
             else
-                editbox_sprite_size_x->name = "0";
+                editbox_sprite_size_x->name = "100";
             
-            // Y size
-            if ( editbox_sprite_size_y->name.length() )
-            {
-                new_size.y = LDEstn( editbox_sprite_size_y->name = str_replace(",", ".", editbox_sprite_size_y->name) );
-                
-                editbox_sprite_size_y->name = LDEnts(new_size.y);
-            }
-            else
-                editbox_sprite_size_y->name = "0";
+            new_size.y = spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
             
-            spriteBatchNode.test_coi = 0;
-            spriteBatchNode.setSize( new_size );
+            editbox_sprite_size_y->name = LDEnts(new_size.y);
         }
         
         ////

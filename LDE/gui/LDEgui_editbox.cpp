@@ -25,6 +25,18 @@ LDEgui_editbox::~LDEgui_editbox()
 
 }
 
+void LDEgui_editbox::blur()
+{
+    if ( changed_temp )
+        changed = 1;
+    
+    changed_temp = 0;
+    
+    focus = 0;
+    button.texture_rel = texture_editbox;
+    button.texture_coi = texture_editbox_hover;
+}
+
 void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 {
     changed = 0;
@@ -54,16 +66,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 	}
 	
 	if ( button.clicked_away )
-	{
-        if ( changed_temp )
-            changed = 1;
-        
-        changed_temp = 0;
-        
-		focus = 0;
-		button.texture_rel = texture_editbox;
-		button.texture_coi = texture_editbox_hover;
-	}
+        blur();
 	
 	glEnable(GL_SCISSOR_TEST);
 	//LDEscissor( button.x + 3, button.y, button.size.x - 6, button.size.y );
@@ -78,6 +81,9 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 		{
 			for ( LDEuint i = 0; i < input.size(); ++i )
 			{
+                if ( input[i].enter && input[i].key_down )
+                    blur();
+                
 				if ( input[i].backspace && input[i].key_down && name.size() )
 				{
 					name = name.substr( 0, name.size()-1 );
