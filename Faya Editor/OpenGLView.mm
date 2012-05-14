@@ -297,8 +297,8 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             // If we release the drag on the world (not on any gui window), create the sprite!
             if ( gui.unused )
             {
-                sprite_drag.pos.x = (LDEfloat)(app.cursor.x - sprite_drag_size_temp.x/2)/camera_zoom - camera_pos.x;
-                sprite_drag.pos.y = (LDEfloat)(app.cursor.y - sprite_drag_size_temp.y/2)/camera_zoom - camera_pos.y;
+                sprite_drag.pos.x = (LDEfloat)(app.cursor.x)/camera_zoom - camera_pos.x;
+                sprite_drag.pos.y = (LDEfloat)(app.cursor.y)/camera_zoom - camera_pos.y;
                 sprite_drag.offset = sprite_drag.size/2;
                 sprite_drag.selected = 1;
                 
