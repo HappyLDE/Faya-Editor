@@ -12,6 +12,7 @@
 #include "Spritesheet.h"
 #include "Vector.h"
 #include "SpriteBatchNode.h"
+#include "transf_tool.h"
 
 // Pixel to Meter Ratio
 #define PTM_RATIO 64

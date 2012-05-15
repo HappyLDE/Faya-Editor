@@ -189,12 +189,12 @@ void SpriteBatchNode::draw()
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
             {
                 if ( mouse[inp].left && mouse[inp].down )
-                {   
+                {
                     sprites[i].selected = 1;
                     changed = 1;
                     
                     for ( LDEuint u = 0; u < i; ++u )
-                        sprites[u].selected = 0;	// les autres sprites ne sont plus sélectionnés
+                        sprites[u].selected = 0;	// les autres sprites (en dessous de celui-ci) ne sont plus sélectionnés
                 }
             }
         }

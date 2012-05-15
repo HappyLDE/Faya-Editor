@@ -14,6 +14,8 @@ LDEint FAYA_VERSION = 1;
 
 LDEfloat rot_temp = 0;
 
+LDEtransf_tool transf_tool;
+
 vec2i camera_pos;
 LDEfloat camera_zoom = 1;
 LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
@@ -778,10 +780,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     }
     
     if ( spriteBatchNode.tool_pos.x )
-    {
-        glBindTexture(GL_TEXTURE_2D, transf_tool.id);
-        LDErect( spriteBatchNode.tool_pos.x - 13, spriteBatchNode.tool_pos.y - 14, transf_tool.size.x, transf_tool.size.y);
-    }
+        transf_tool.draw( spriteBatchNode.tool_pos );
 
     glLineWidth(1);
     
