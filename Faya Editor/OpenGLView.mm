@@ -779,15 +779,20 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         editbox_sprite_opacity->name = LDEnts( spriteBatchNode.selected_opacity );
     }
     
-    if ( spriteBatchNode.tool_pos.x )
-        transf_tool.draw( spriteBatchNode.tool_pos );
+    //if ( spriteBatchNode.tool_pos.x )
+    {
+        transf_tool.cursor = app.cursor;
+        transf_tool.mouse = app.mouse;
+        transf_tool.test_coi = gui.unused;
+        //transf_tool.draw( spriteBatchNode.tool_pos );
+        transf_tool.draw( vec2i(300, 300) );
+    }
 
     glLineWidth(1);
     
     // Vector Mode
     if ( editor_mode == 0 )
     {
-        
         if ( gui.unused )
         {
             for ( LDEuint i = 0; i < app.mouse.size(); ++i )

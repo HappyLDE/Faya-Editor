@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F536418715629546000803A9 /* transf_tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F536418615629546000803A9 /* transf_tool.cpp */; };
-		F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */; };
+		F536418A1562CD8F000803A9 /* transf_tool.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F53641891562CD8F000803A9 /* transf_tool.ldet */; };
 		F548CEEB155E9EFC009BCFF1 /* LDEgui_checkbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */; };
 		F548CEF0155EAA0F009BCFF1 /* checkbox_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEC155EAA0F009BCFF1 /* checkbox_checked.ldet */; };
 		F548CEF2155EAA0F009BCFF1 /* checkbox_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */; };
@@ -115,7 +115,7 @@
 /* Begin PBXFileReference section */
 		F536418515629546000803A9 /* transf_tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transf_tool.h; sourceTree = "<group>"; };
 		F536418615629546000803A9 /* transf_tool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transf_tool.cpp; sourceTree = "<group>"; };
-		F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = transf_tool.ldet; sourceTree = "<group>"; };
+		F53641891562CD8F000803A9 /* transf_tool.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = transf_tool.ldet; sourceTree = "<group>"; };
 		F548CEE9155E9EFC009BCFF1 /* LDEgui_checkbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDEgui_checkbox.h; sourceTree = "<group>"; };
 		F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LDEgui_checkbox.cpp; sourceTree = "<group>"; };
 		F548CEEC155EAA0F009BCFF1 /* checkbox_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_checked.ldet; sourceTree = "<group>"; };
@@ -451,7 +451,7 @@
 		F5779AAE155AE8C3002C8B7B /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
-				F548CEE7155D94E0009BCFF1 /* transf_tool.ldet */,
+				F53641891562CD8F000803A9 /* transf_tool.ldet */,
 				F5779AAF155AE8D3002C8B7B /* theme */,
 			);
 			name = Ressources;
@@ -618,11 +618,11 @@
 				F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */,
 				F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */,
 				F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */,
-				F548CEE8155D94E0009BCFF1 /* transf_tool.ldet in Resources */,
 				F548CEF0155EAA0F009BCFF1 /* checkbox_checked.ldet in Resources */,
 				F548CEF2155EAA0F009BCFF1 /* checkbox_pressed.ldet in Resources */,
 				F548CEF3155EAA0F009BCFF1 /* checkbox.ldet in Resources */,
 				F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */,
+				F536418A1562CD8F000803A9 /* transf_tool.ldet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
