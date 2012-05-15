@@ -55,6 +55,7 @@ struct SpriteBatchNode
     
     vec2i   cursor,
             selected_pos,
+            tool_pos,
             camera_pos;
     
     LDEfloat camera_zoom;

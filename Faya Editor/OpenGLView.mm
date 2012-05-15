@@ -764,13 +764,13 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     if ( spriteBatchNode.changed )
     {
         editbox_sprite_pos_x->name = LDEnts( spriteBatchNode.selected_pos.x );
-        editbox_sprite_pos_y->name = LDEnts( spriteBatchNode.selected_pos.y );
+        editbox_sprite_pos_y->name = LDEnts( -spriteBatchNode.selected_pos.y );
     }
     
-    if ( spriteBatchNode.selected_pos.x )
+    if ( spriteBatchNode.tool_pos.x )
     {
         glBindTexture(GL_TEXTURE_2D, transf_tool.id);
-        LDErect( spriteBatchNode.selected_pos.x - 13, spriteBatchNode.selected_pos.y - 14, transf_tool.size.x, transf_tool.size.y);
+        LDErect( spriteBatchNode.tool_pos.x - 13, spriteBatchNode.tool_pos.y - 14, transf_tool.size.x, transf_tool.size.y);
     }
 
     glLineWidth(1);

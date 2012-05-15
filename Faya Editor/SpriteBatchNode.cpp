@@ -216,8 +216,10 @@ void SpriteBatchNode::draw()
             LDErectw( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y );
             glPopMatrix();
             
-            selected_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
-            selected_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
+            tool_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
+            tool_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
+            
+            selected_pos = sprites[i].pos;
         }
     }
     glColor3f(1, 1, 1);
@@ -225,5 +227,5 @@ void SpriteBatchNode::draw()
     glEnable(GL_TEXTURE_2D);
     
     if ( !some_selected )
-        selected_pos.reset();
+        tool_pos.reset();
 }
