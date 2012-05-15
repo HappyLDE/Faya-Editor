@@ -30,8 +30,17 @@ LDEtransf_tool::~LDEtransf_tool()
     
 }
 
-void LDEtransf_tool::draw( vec2i pos )
+void LDEtransf_tool::draw( vec2i my_pos )
 {
+    if ( hover_arrow_right )
+        pos.x = cursor.x - click_offset.x;
+    else if ( hover_arrow_bottom )
+        pos.y = cursor.y - click_offset.y;
+    else if ( hover_circle )
+        pos = vec2i( cursor.x - click_offset.x, cursor.y - click_offset.y );
+    else
+        pos = my_pos;
+    
     changed = 0;
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
@@ -58,24 +67,12 @@ void LDEtransf_tool::draw( vec2i pos )
                      vec4i( 109, 0, 19, 45),
                      vec4i(pos.x - 9, pos.y + 3, 19, 45) );
             
-            if ( mouse_down )
-            {
-                hover_arrow_bottom = 1;
-                wait = 1;
-            }
-        }
-        
-        // Circle
-        if ( (cursor.x > pos.x - 5 && cursor.x < pos.x + 8 &&
-              cursor.y > pos.y - 6 && cursor.y < pos.y + 8 && !wait) || hover_circle )
-        {
-            LDErectp(   image->size,
-                     vec4i( 111, 45, 23, 23),
-                     vec4i(pos.x - 7, pos.y - 8, 23, 23) );
+            if ( !wait )
+                click_offset.y = cursor.y - pos.y;
             
             if ( mouse_down )
             {
-                hover_circle = 1;
+                hover_arrow_bottom = 1;
                 wait = 1;
             }
         }
@@ -88,9 +85,30 @@ void LDEtransf_tool::draw( vec2i pos )
                      vec4i( 0, 107, 46, 21),
                      vec4i(pos.x + 4, pos.y - 11, 46, 21) );
             
+            if ( !wait )
+                click_offset.x = cursor.x - pos.x;
+            
             if ( mouse_down )
             {
                 hover_arrow_right = 1;
+                wait = 1;
+            }
+        }
+        
+        // Circle
+        if ( (cursor.x > pos.x - 5 && cursor.x < pos.x + 8 &&
+              cursor.y > pos.y - 6 && cursor.y < pos.y + 8 && !wait) || hover_circle )
+        {
+            LDErectp(   image->size,
+                     vec4i( 111, 45, 23, 23),
+                     vec4i(pos.x - 7, pos.y - 8, 23, 23) );
+            
+            if ( !wait )
+                click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
+            
+            if ( mouse_down )
+            {
+                hover_circle = 1;
                 wait = 1;
             }
         }
@@ -138,6 +156,12 @@ void LDEtransf_tool::draw( vec2i pos )
                 hover_rotate = 1;
                 wait = 1;
             }
+        }
+        
+        ///////////////// MOVE //////////////
+        if ( hover_arrow_right )
+        {
+            
         }
     }
     

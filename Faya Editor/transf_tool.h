@@ -12,7 +12,9 @@ struct LDEtransf_tool
 {
     LDEldet *image;
     
-    vec2i   new_pos,
+    vec2i   pos,
+            click_offset,
+            new_pos,
             cursor, // cursor pos
             new_size;
 
@@ -32,7 +34,7 @@ struct LDEtransf_tool
     
     bool changed;
     
-    void draw( vec2i pos );
+    void draw( vec2i my_pos );
     
     LDEtransf_tool();
     ~LDEtransf_tool();

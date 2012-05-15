@@ -786,6 +786,29 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         transf_tool.test_coi = gui.unused;
         //transf_tool.draw( spriteBatchNode.tool_pos );
         transf_tool.draw( vec2i(300, 300) );
+        
+        if ( transf_tool.hover_arrow_right )
+        {
+            vec2i initial_position;
+            
+            // X pos
+            if ( editbox_sprite_pos_x->name.length() )
+            {
+                initial_position.x = LDEstn( editbox_sprite_pos_x->name );
+                
+                //editbox_sprite_pos_x->name = LDEnts(new_position.x);
+            }
+            
+            // Y pos
+            if ( editbox_sprite_pos_y->name.length() )
+            {
+                initial_position.y = LDEstn( editbox_sprite_pos_y->name );
+                
+                //editbox_sprite_pos_y->name = LDEnts(-new_position.y);
+            }
+            
+            //spriteBatchNode.setPosition( new_position );
+        }
     }
 
     glLineWidth(1);
@@ -1349,7 +1372,6 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_pos_y->name = "0";
             
-            spriteBatchNode.test_coi = 0;
             spriteBatchNode.setPosition( new_position );
         }
         
