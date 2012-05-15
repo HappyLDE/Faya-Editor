@@ -765,6 +765,16 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     {
         editbox_sprite_pos_x->name = LDEnts( spriteBatchNode.selected_pos.x );
         editbox_sprite_pos_y->name = LDEnts( -spriteBatchNode.selected_pos.y );
+        
+        editbox_sprite_size_x->name = LDEnts( spriteBatchNode.selected_size.x );
+        editbox_sprite_size_y->name = LDEnts( spriteBatchNode.selected_size.y );
+        
+        editbox_sprite_ap_x->name = LDEnts( spriteBatchNode.selected_ap.x );
+        editbox_sprite_ap_y->name = LDEnts( spriteBatchNode.selected_ap.y );
+        
+        editbox_sprite_rot->name = LDEnts( spriteBatchNode.selected_rot );
+        
+        editbox_sprite_opacity->name = LDEnts( spriteBatchNode.selected_opacity );
     }
     
     if ( spriteBatchNode.tool_pos.x )

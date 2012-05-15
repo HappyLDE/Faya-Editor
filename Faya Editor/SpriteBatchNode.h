@@ -53,8 +53,14 @@ struct SpriteBatchNode
             changed,
             keep_select;    // When we click on a sprite, if we keep the previous selected ones
     
+    LDEfloat selected_rot,
+            selected_opacity;
+                
+    
     vec2i   cursor,
             selected_pos,
+            selected_size,
+            selected_ap,
             tool_pos,
             camera_pos;
     

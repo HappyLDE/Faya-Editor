@@ -31,6 +31,8 @@ SpriteBatchNode::SpriteBatchNode()
     camera_zoom = 1;
     changed = 0;
     keep_select = 0;
+    selected_opacity = 1;
+    selected_rot  = 0;
 }
 
 SpriteBatchNode::~SpriteBatchNode()
@@ -220,6 +222,10 @@ void SpriteBatchNode::draw()
             tool_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
             
             selected_pos = sprites[i].pos;
+            selected_rot = sprites[i].rot;
+            selected_size = sprites[i].size;
+            selected_ap = sprites[i].offset;
+            selected_opacity = sprites[i].opacity;
         }
     }
     glColor3f(1, 1, 1);
