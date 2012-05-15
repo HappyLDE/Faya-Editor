@@ -180,8 +180,8 @@ void SpriteBatchNode::draw()
         glPopMatrix();
         
         // Check for click on the sprite
-        if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= sprites[i].pos.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= sprites[i].pos.x + sprites[i].size.x &&
-             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= sprites[i].pos.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= sprites[i].pos.y + sprites[i].size.y && test_coi )
+        if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= sprites[i].pos.x - sprites[i].offset.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= sprites[i].pos.x + sprites[i].size.x - sprites[i].offset.x &&
+             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= sprites[i].pos.y - sprites[i].offset.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= sprites[i].pos.y + sprites[i].size.y - sprites[i].offset.y && test_coi )
         {
             // If left clicked on that one
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )

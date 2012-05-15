@@ -761,6 +761,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     glEnable(GL_TEXTURE_2D);
     
+    if ( spriteBatchNode.changed )
+    {
+        editbox_sprite_pos_x->name = LDEnts( spriteBatchNode.selected_pos.x );
+        editbox_sprite_pos_y->name = LDEnts( spriteBatchNode.selected_pos.y );
+    }
+    
     if ( spriteBatchNode.selected_pos.x )
     {
         glBindTexture(GL_TEXTURE_2D, transf_tool.id);
