@@ -79,6 +79,18 @@ void vec2i::operator /= ( LDEint value )
 
 //// ADD ///////////////////////////////////////////////////
 
+//
+vec2i vec2i::operator + ( vec2i value )
+{
+    return vec2i( x + value.x, y + value.y );
+}
+
+//
+vec2i vec2i::operator - ( vec2i value )
+{
+    return vec2i( x - value.x, y - value.y );
+}
+
 // return added values
 vec2i vec2i::operator + ( LDEint value )
 {

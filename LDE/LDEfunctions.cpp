@@ -136,3 +136,8 @@ LDEfloat LDedist2f(vec2f &start, vec2f &end)
 {
 	return sqrtf( ((start.x - end.x)*(start.x - end.x)) + ((start.y - end.y)*(start.y - end.y)) );
 }
+
+LDEdouble LDEangle2i( vec2i a, vec2i b )
+{
+    return atan2( b.y - a.y, b.x - a.x) * 180 / 3.14159265;
+}

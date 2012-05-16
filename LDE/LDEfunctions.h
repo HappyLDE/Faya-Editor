@@ -18,7 +18,7 @@
 
 #include "LDEvariables.h"
 #include "LDEvec2f.h"
-
+#include "LDEvec2i.h"
 #include <iostream>
 
 // Finds the next power of two number (used for OpenGL images for example)
@@ -59,5 +59,7 @@ const char *LDEstc( std::string name );
 
 // Returns the distance between two 2D points
 LDEfloat LDEdist2f(vec2f &start, vec2f &end);
+
+LDEdouble LDEangle2i( vec2i a, vec2i b );
 
 #endif

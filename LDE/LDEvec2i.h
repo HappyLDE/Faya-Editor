@@ -23,36 +23,39 @@ struct vec2i
 	/// Modify local volues with given one
 
 	// Add to all values this one value
-	void operator += ( LDEint vlue );
+	void operator += ( LDEint value );
 
 	// Substract to all values this one value
-	void operator -= ( LDEint vlue );
+	void operator -= ( LDEint value );
 
 	// Multiply all values with this one
-	void operator *= ( LDEint vlue );
+	void operator *= ( LDEint value );
 
 	// Subtivide all values with this one
-	void operator /= ( LDEint vlue );
+	void operator /= ( LDEint value );
 
 	/// Return value with given one without modifying local values
 
+    vec2i operator + ( vec2i value );
+    vec2i operator - ( vec2i value );
+    
 	// return added values
-	vec2i operator + ( LDEint vlue );
+	vec2i operator + ( LDEint value );
 
 	// return susbtracted values
-	vec2i operator - ( LDEint vlue );
+	vec2i operator - ( LDEint value );
 
 	// return mulitplied values
-	vec2i operator * ( LDEint vlue );
+	vec2i operator * ( LDEint value );
 
 	// return divided values
-	vec2i operator / ( LDEint vlue );
+	vec2i operator / ( LDEint value );
 
 	/// Assign local values to given one
-	void operator = ( LDEint vlue );
+	void operator = ( LDEint value );
 
 	/// Assign local values to given ones
-	void operator = ( vec2i vlue );
+	void operator = ( vec2i value );
 
 	vec2i();
 	vec2i( LDEint x_, LDEint y_ );

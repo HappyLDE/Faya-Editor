@@ -23,6 +23,10 @@ LDEtransf_tool::LDEtransf_tool()
     mouse_down = 0;
     
     wait = 0;
+    
+    rot = 0;
+    
+    click_offset_angle = 0;
 }
 
 LDEtransf_tool::~LDEtransf_tool()
@@ -41,6 +45,9 @@ void LDEtransf_tool::draw( vec2i my_pos )
     else
         pos = my_pos;
     
+    if ( hover_rotate )
+        rot = LDEangle2i( pos, cursor ) - click_offset_angle;
+    
     changed = 0;
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
@@ -53,9 +60,14 @@ void LDEtransf_tool::draw( vec2i my_pos )
     
     glBindTexture(GL_TEXTURE_2D, image->id);
 
+    glPushMatrix();
+    glTranslatef( pos.x, pos.y, 0);
+    
+    glRotatef( rot, 0, 0, 1 );
+    
     LDErectp(   image->size,
                 vec4i(0,0,94,96),
-                vec4i(pos.x - 13, pos.y - 14, 94,96) );
+                vec4i( -15, -14, 94,96) ); // -13, -14
 
     if ( test_coi )
     {
@@ -65,7 +77,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 109, 0, 19, 45),
-                     vec4i(pos.x - 9, pos.y + 3, 19, 45) );
+                     vec4i( -11, 3, 19, 45) );
             
             if ( !wait )
                 click_offset.y = cursor.y - pos.y;
@@ -83,7 +95,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 0, 107, 46, 21),
-                     vec4i(pos.x + 4, pos.y - 11, 46, 21) );
+                     vec4i( 2, -11, 46, 21) );
             
             if ( !wait )
                 click_offset.x = cursor.x - pos.x;
@@ -101,7 +113,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 111, 45, 23, 23),
-                     vec4i(pos.x - 7, pos.y - 8, 23, 23) );
+                     vec4i( -9, -8, 23, 23) );
             
             if ( !wait )
                 click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
@@ -119,7 +131,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 46, 107, 21, 21),
-                     vec4i(pos.x + 49, pos.y - 11, 21, 21) );
+                     vec4i( 47, -11, 21, 21) );
             
             if ( mouse_down )
             {
@@ -134,7 +146,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 46, 107, 21, 21),
-                     vec4i(pos.x - 6, pos.y + 45, 21, 21) );
+                     vec4i( -8, 45, 21, 21) );
             
             if ( mouse_down )
             {
@@ -149,7 +161,14 @@ void LDEtransf_tool::draw( vec2i my_pos )
         {
             LDErectp(   image->size,
                      vec4i( 94, 96, 34, 32),
-                     vec4i(pos.x + 5, pos.y + 3, 34, 32) );
+                     vec4i( 3, 3, 34, 32) );
+            
+            if ( !wait )
+            {
+                click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
+                
+                click_offset_angle = LDEangle2i( pos, cursor );
+            }
             
             if ( mouse_down )
             {
@@ -157,12 +176,21 @@ void LDEtransf_tool::draw( vec2i my_pos )
                 wait = 1;
             }
         }
-        
-        ///////////////// MOVE //////////////
-        if ( hover_arrow_right )
-        {
-            
-        }
+    }
+    
+    glPopMatrix();
+    
+    if ( hover_rotate )
+    {
+        glDisable(GL_TEXTURE_2D);
+        glLineWidth(1);
+        glEnable(GL_LINE_STIPPLE);
+        glBegin(GL_LINES);
+        glVertex2i( pos.x, pos.y );
+        glVertex2i( cursor.x, cursor.y);
+        glEnd();
+        glDisable(GL_LINE_STIPPLE);
+        glEnable(GL_TEXTURE_2D);
     }
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
@@ -179,6 +207,11 @@ void LDEtransf_tool::draw( vec2i my_pos )
             mouse_down = 0;
             
             wait = 0;
+            
+            rot = 0;
+            
+            click_offset.reset();
+            click_offset_angle = 0;
         }
     }
 }

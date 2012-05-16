@@ -6,6 +6,7 @@
 #include "LDEldet.h"
 #include "LDEprimitives.h"
 #include "LDEmouse_event.h"
+#include "LDEfunctions.h"
 #include <vector>
 
 struct LDEtransf_tool
@@ -14,7 +15,6 @@ struct LDEtransf_tool
     
     vec2i   pos,
             click_offset,
-            new_pos,
             cursor, // cursor pos
             new_size;
 
@@ -30,7 +30,8 @@ struct LDEtransf_tool
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     
-    LDEfloat new_rot;
+    LDEfloat rot,
+            click_offset_angle;
     
     bool changed;
     
