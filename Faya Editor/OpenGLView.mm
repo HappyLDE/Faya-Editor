@@ -779,22 +779,43 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         editbox_sprite_opacity->name = LDEnts( spriteBatchNode.selected_opacity );
     }
     
-    //if ( spriteBatchNode.tool_pos.x )
+    if ( spriteBatchNode.tool_pos.x )
     {
         transf_tool.cursor = app.cursor;
         transf_tool.mouse = app.mouse;
         transf_tool.test_coi = gui.unused;
-        //transf_tool.draw( spriteBatchNode.tool_pos );
-        transf_tool.draw( vec2i(300, 300) );
+        transf_tool.draw( spriteBatchNode.tool_pos );
+        //transf_tool.draw( vec2i(300, 300) );
 
-        /*if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
+        if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
         {
             vec2i new_pos( round( (LDEfloat)transf_tool.pos.x / camera_zoom ) - camera_pos.x, (LDEfloat)transf_tool.pos.y / camera_zoom - camera_pos.y );
             spriteBatchNode.setPosition( new_pos );
             
             editbox_sprite_pos_x->name = LDEnts(transf_tool.pos.x);
             editbox_sprite_pos_y->name = LDEnts(transf_tool.pos.y);
-        }*/
+        }
+        else if ( transf_tool.hover_rotate )
+        {
+            LDEint angle = LDEstn(editbox_sprite_rot->name);
+            
+            if ( !transf_tool.init_angle )
+            {
+                if ( angle )
+                    transf_tool.click_offset_angle -= angle;
+                
+                transf_tool.init_angle = 1;
+            }
+            
+            LDEfloat rotation = round(transf_tool.rot);
+            
+            spriteBatchNode.setRotation( rotation );
+            editbox_sprite_rot->name = LDEnts( rotation );
+        }
+        else if ( transf_tool.hover_square_right || transf_tool.hover_square_bottom )
+        {
+            vec2i new_size;
+        }
     }
 
     glLineWidth(1);

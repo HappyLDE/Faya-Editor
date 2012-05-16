@@ -27,6 +27,8 @@ LDEtransf_tool::LDEtransf_tool()
     rot = 0;
     
     click_offset_angle = 0;
+    
+    init_angle = 0;
 }
 
 LDEtransf_tool::~LDEtransf_tool()
@@ -212,6 +214,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
             
             click_offset.reset();
             click_offset_angle = 0;
+            
+            init_angle = 0;
         }
     }
 }

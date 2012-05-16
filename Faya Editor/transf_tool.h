@@ -26,6 +26,7 @@ struct LDEtransf_tool
             hover_square_bottom,
             hover_rotate,
             mouse_down,
+            init_angle,
             wait;
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
