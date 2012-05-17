@@ -28,7 +28,9 @@ LDEtransf_tool::LDEtransf_tool()
     
     click_offset_angle = 0;
     
-    init_angle = 0;
+    init_change = 0;
+    
+    hover = 1;
 }
 
 LDEtransf_tool::~LDEtransf_tool()
@@ -38,19 +40,25 @@ LDEtransf_tool::~LDEtransf_tool()
 
 void LDEtransf_tool::draw( vec2i my_pos )
 {
+    hover = 0;
+    changed = 0;
+    
     if ( hover_arrow_right )
         pos.x = cursor.x - click_offset.x;
     else if ( hover_arrow_bottom )
         pos.y = cursor.y - click_offset.y;
     else if ( hover_circle )
-        pos = vec2i( cursor.x - click_offset.x, cursor.y - click_offset.y );
+        pos = cursor - click_offset;
     else
         pos = my_pos;
     
     if ( hover_rotate )
         rot = LDEangle2i( pos, cursor ) - click_offset_angle;
     
-    changed = 0;
+    if ( hover_square_right )
+    {
+        size.x = cursor.x - click_offset.x - pos.x;
+    }
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
     {
@@ -81,6 +89,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
                      vec4i( 109, 0, 19, 45),
                      vec4i( -11, 3, 19, 45) );
             
+            hover = 1;
+            
             if ( !wait )
                 click_offset.y = cursor.y - pos.y;
             
@@ -98,6 +108,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
             LDErectp(   image->size,
                      vec4i( 0, 107, 46, 21),
                      vec4i( 2, -11, 46, 21) );
+            
+            hover = 1;
             
             if ( !wait )
                 click_offset.x = cursor.x - pos.x;
@@ -117,6 +129,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
                      vec4i( 111, 45, 23, 23),
                      vec4i( -9, -8, 23, 23) );
             
+            hover = 1;
+            
             if ( !wait )
                 click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
             
@@ -135,6 +149,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
                      vec4i( 46, 107, 21, 21),
                      vec4i( 47, -11, 21, 21) );
             
+            hover = 1;
+            
             if ( mouse_down )
             {
                 hover_square_right = 1;
@@ -150,6 +166,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
                      vec4i( 46, 107, 21, 21),
                      vec4i( -8, 45, 21, 21) );
             
+            hover = 1;
+            
             if ( mouse_down )
             {
                 hover_square_bottom = 1;
@@ -164,6 +182,8 @@ void LDEtransf_tool::draw( vec2i my_pos )
             LDErectp(   image->size,
                      vec4i( 94, 96, 34, 32),
                      vec4i( 3, 3, 34, 32) );
+            
+            hover = 1;
             
             if ( !wait )
             {
@@ -208,6 +228,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
             
             mouse_down = 0;
             
+            hover = 0;
             wait = 0;
             
             rot = 0;
@@ -215,7 +236,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
             click_offset.reset();
             click_offset_angle = 0;
             
-            init_angle = 0;
+            init_change = 0;
         }
     }
 }

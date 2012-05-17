@@ -686,7 +686,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     spriteBatchNode.camera_pos = camera_pos;
     spriteBatchNode.camera_zoom = camera_zoom;
     spriteBatchNode.mouse = app.mouse;
-    spriteBatchNode.test_coi = gui.unused;
+    spriteBatchNode.test_coi = gui.unused && !transf_tool.hover;
     spriteBatchNode.draw();
     
     glDisable(GL_TEXTURE_2D);
@@ -797,14 +797,14 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
         else if ( transf_tool.hover_rotate )
         {
-            LDEint angle = LDEstn(editbox_sprite_rot->name);
-            
-            if ( !transf_tool.init_angle )
+            if ( !transf_tool.init_change )
             {
+                LDEint angle = LDEstn(editbox_sprite_rot->name);
+                
                 if ( angle )
                     transf_tool.click_offset_angle -= angle;
                 
-                transf_tool.init_angle = 1;
+                transf_tool.init_change = 1;
             }
             
             LDEfloat rotation = round(transf_tool.rot);
@@ -814,7 +814,23 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
         else if ( transf_tool.hover_square_right || transf_tool.hover_square_bottom )
         {
+            if ( !transf_tool.init_change )
+            {
+                LDEint size_x = LDEstn( editbox_sprite_size_x->name );
+                
+                transf_tool.size.x = size_x;
+                
+                transf_tool.init_change = 1;
+            }
+            
             vec2i new_size;
+
+            new_size.y = spriteBatchNode.setSizeX( transf_tool.size.x, checkbox_sprite_size_keep_ratio->checked );
+            
+            editbox_sprite_size_x->name = LDEnts(transf_tool.size.x);
+            
+            if ( checkbox_sprite_size_keep_ratio->checked )
+                editbox_sprite_size_y->name = LDEnts(new_size.y);
         }
     }
 

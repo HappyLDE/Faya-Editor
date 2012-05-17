@@ -16,7 +16,7 @@ struct LDEtransf_tool
     vec2i   pos,
             click_offset,
             cursor, // cursor pos
-            new_size;
+            size;
 
     bool    test_coi,
             hover_arrow_right,
@@ -25,8 +25,9 @@ struct LDEtransf_tool
             hover_square_right,
             hover_square_bottom,
             hover_rotate,
+            hover,              // all hover
             mouse_down,
-            init_angle,
+            init_change,
             wait;
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
