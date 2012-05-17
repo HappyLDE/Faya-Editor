@@ -814,25 +814,45 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             spriteBatchNode.setRotation( rotation );
             editbox_sprite_rot->name = LDEnts( rotation );
         }
-        else if ( transf_tool.hover_square_right || transf_tool.hover_square_bottom )
+        else if ( transf_tool.hover_square_right )
         {
             if ( !transf_tool.init_change )
             {
-                LDEint size_x = LDEstn( editbox_sprite_size_x->name );
-                
-                transf_tool.size.x = size_x;
+                transf_tool.old_size = LDEstn( editbox_sprite_size_x->name );
                 
                 transf_tool.init_change = 1;
             }
             
             vec2i new_size;
-
-            new_size.y = spriteBatchNode.setSizeX( transf_tool.size.x, checkbox_sprite_size_keep_ratio->checked );
             
-            editbox_sprite_size_x->name = LDEnts(transf_tool.size.x);
+            new_size.x = (LDEfloat)transf_tool.size / camera_zoom + transf_tool.old_size;
+            
+            new_size.y = spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
+            
+            editbox_sprite_size_x->name = LDEnts( new_size.x );
             
             if ( checkbox_sprite_size_keep_ratio->checked )
                 editbox_sprite_size_y->name = LDEnts(new_size.y);
+        }
+        else if ( transf_tool.hover_square_bottom )
+        {
+            if ( !transf_tool.init_change )
+            {
+                transf_tool.old_size = LDEstn( editbox_sprite_size_y->name );
+                
+                transf_tool.init_change = 1;
+            }
+            
+            vec2i new_size;
+            
+            new_size.y = (LDEfloat)transf_tool.size / camera_zoom + transf_tool.old_size;
+            
+            new_size.x = spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
+            
+            editbox_sprite_size_y->name = LDEnts( new_size.y );
+            
+            if ( checkbox_sprite_size_keep_ratio->checked )
+                editbox_sprite_size_x->name = LDEnts(new_size.x);
         }
     }
 

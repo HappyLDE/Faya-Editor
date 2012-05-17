@@ -37,6 +37,9 @@ void LDEtransf_tool::reset()
     
     rot = 0;
     
+    size = 0;
+    old_size = 0;
+    
     click_offset.reset();
     click_offset_angle = 0;
     
@@ -61,9 +64,9 @@ void LDEtransf_tool::draw( vec2i my_pos )
         rot = LDEangle2i( pos, cursor ) - click_offset_angle;
     
     if ( hover_square_right )
-    {
-        size.x = cursor.x - click_offset.x - pos.x;
-    }
+        size = cursor.x - click_offset.x - pos.x;
+    else if ( hover_square_bottom )
+        size = cursor.y - click_offset.y - pos.y;
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
     {
@@ -156,6 +159,9 @@ void LDEtransf_tool::draw( vec2i my_pos )
             
             hover = 1;
             
+            if ( !wait )
+                click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
+            
             if ( mouse_down )
             {
                 hover_square_right = 1;
@@ -172,6 +178,9 @@ void LDEtransf_tool::draw( vec2i my_pos )
                      vec4i( -8, 45, 21, 21) );
             
             hover = 1;
+            
+            if ( !wait )
+                click_offset = vec2i( cursor.x - pos.x, cursor.y - pos.y );
             
             if ( mouse_down )
             {
@@ -206,6 +215,42 @@ void LDEtransf_tool::draw( vec2i my_pos )
     }
     
     glPopMatrix();
+    
+    if ( hover_square_right )
+    {
+        glColor4f(1,1,1, 0.5);
+        LDErectp(   image->size,
+                 vec4i( 46, 107, 21, 21),
+                 vec4i( cursor.x - 8, pos.y - 11, 21, 21) );
+        glDisable(GL_TEXTURE_2D);
+        glLineWidth(1);
+        glEnable(GL_LINE_STIPPLE);
+        glBegin(GL_LINES);
+        glVertex2i( pos.x + 64, pos.y - 2 );
+        glVertex2i( cursor.x - 7, pos.y - 2 );
+        glEnd();
+        glDisable(GL_LINE_STIPPLE);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1,1,1);
+    }
+    
+    if ( hover_square_bottom )
+    {
+        glColor4f(1,1,1, 0.5);
+        LDErectp(   image->size,
+                 vec4i( 46, 107, 21, 21),
+                 vec4i( pos.x-8, cursor.y - 12, 21, 21) );
+        glDisable(GL_TEXTURE_2D);
+        glLineWidth(1);
+        glEnable(GL_LINE_STIPPLE);
+        glBegin(GL_LINES);
+        glVertex2i( pos.x, pos.y + 63 );
+        glVertex2i( pos.x, cursor.y - 9 );
+        glEnd();
+        glDisable(GL_LINE_STIPPLE);
+        glEnable(GL_TEXTURE_2D);
+        glColor3f(1,1,1);
+    }
     
     if ( hover_rotate )
     {
