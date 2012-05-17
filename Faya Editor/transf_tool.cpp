@@ -10,8 +10,18 @@
 
 LDEtransf_tool::LDEtransf_tool()
 {
-    changed = 0;
+    reset();
+}
+
+LDEtransf_tool::~LDEtransf_tool()
+{
+    
+}
+
+void LDEtransf_tool::reset()
+{
     test_coi = 0;
+    changed = 0;
     
     hover_arrow_right = 0,
     hover_arrow_bottom = 0,
@@ -22,20 +32,15 @@ LDEtransf_tool::LDEtransf_tool()
     
     mouse_down = 0;
     
+    hover = 0;
     wait = 0;
     
     rot = 0;
     
+    click_offset.reset();
     click_offset_angle = 0;
     
     init_change = 0;
-    
-    hover = 1;
-}
-
-LDEtransf_tool::~LDEtransf_tool()
-{
-    
 }
 
 void LDEtransf_tool::draw( vec2i my_pos )
@@ -219,24 +224,7 @@ void LDEtransf_tool::draw( vec2i my_pos )
     {
         if ( !mouse[i].down )
         {
-            hover_arrow_right = 0,
-            hover_arrow_bottom = 0,
-            hover_circle = 0,
-            hover_square_right = 0,
-            hover_square_bottom = 0,
-            hover_rotate = 0;
-            
-            mouse_down = 0;
-            
-            hover = 0;
-            wait = 0;
-            
-            rot = 0;
-            
-            click_offset.reset();
-            click_offset_angle = 0;
-            
-            init_change = 0;
+            reset();
         }
     }
 }

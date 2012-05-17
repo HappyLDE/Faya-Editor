@@ -37,6 +37,7 @@ struct LDEtransf_tool
     
     bool changed;
     
+    void reset();
     void draw( vec2i my_pos );
     
     LDEtransf_tool();

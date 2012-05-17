@@ -321,6 +321,8 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 list_sprites->addItem( sprite_id, sprite_drag.name+LDEnts(sprite_id) );
                 
                 list_sprites->select( sprite_id, 0);
+                
+                transf_tool.reset();
             }
             
             sprite_drag.image_id = 0;
