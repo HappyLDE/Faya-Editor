@@ -17,7 +17,7 @@
 struct LDEgui_menu_item
 {
     LDEgui_button button_parent;
-    vector<LDEgui_button*>button;
+    std::vector<LDEgui_button*>button;
 	
     void addButton( LDEgui_button *arg );
 

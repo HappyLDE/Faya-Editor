@@ -11,8 +11,6 @@
 
 #include <string>
 
-using namespace std;
-
 #include <OpenGL/gl.h>
 
 #include "../LDEvariables.h"
@@ -32,7 +30,7 @@ class LDEgui_button
 {
     public:
 
-	vector<LDEmouse_event>mouse; // list of mouse events in one frame
+	std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
 	
     LDEint	x, y,
 			uv_left,			// left
@@ -57,7 +55,7 @@ class LDEgui_button
 			moveInfo,
 			moveInfoSide;
 
-	string	name;				// Text
+    std::string	name;				// Text
 
 	LDEfloat transp,
 			dbclick_counter,
@@ -65,6 +63,8 @@ class LDEgui_button
 
 	vec2i	icon_pos,
 
+            text_pos,
+    
 			pos,
 			size,
 			size_temp,
@@ -77,7 +77,8 @@ class LDEgui_button
 
     LDEldef *font;
 
-   LDEuint	text_side;
+   LDEuint	text_side,
+            coi_side;
 
    LDEldet  *texture_rel,
             *texture_coi,
@@ -91,7 +92,7 @@ class LDEgui_button
 	void	lock();
 	void	unlock();
 	void	reset();
-    void    setText( string myname );
+    void    setText( std::string myname );
 
 	LDEgui_button();			// Constructor
 	~LDEgui_button();			// Destructor

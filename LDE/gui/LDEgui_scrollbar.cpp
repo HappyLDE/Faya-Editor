@@ -40,7 +40,6 @@ LDEgui_scrollbar::LDEgui_scrollbar()
 	scroll_height = 0;
 	scroll_amount = 0;
 	button_middle_offset = 0;
-	scroll_value = 0;
 	
 	percent = 0;
 }
@@ -161,7 +160,7 @@ void LDEgui_scrollbar::setPercent( LDEfloat value )
 			button_middle_offset = percent * (height-button_middle.size.y);
 			
 			scroll_amount = percent * (scroll_height-size.y);
-			
+            
 			if ( scroll_amount < 0 )
 				scroll_amount = 0;
 		}
@@ -170,6 +169,13 @@ void LDEgui_scrollbar::setPercent( LDEfloat value )
 		
 		button_middle.transp = 1;
 	}
+}
+
+void LDEgui_scrollbar::setInnerHeight( LDEint new_height )
+{
+    scroll_height = new_height;
+    
+    button_middle_offset = 0;
 }
 
 void LDEgui_scrollbar::draw( vec2i cursor, LDEfloat frametime )

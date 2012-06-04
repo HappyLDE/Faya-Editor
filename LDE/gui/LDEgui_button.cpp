@@ -8,6 +8,8 @@
 
 #include "LDEgui_button.h"
 
+using namespace std;
+
 LDEgui_button::LDEgui_button()
 {
 	x = 0, y = 0;	// position from LDEgui base.pos
@@ -21,6 +23,8 @@ LDEgui_button::LDEgui_button()
 	dbclick = 0;
 	clicked_away = 0;
 	transp = 0;
+    
+    coi_side = 0;
 
 	get_pos_temp = 1;
 
@@ -113,21 +117,25 @@ void LDEgui_button::draw( vec2i cursor, LDEfloat frametime )
 {
 	click = 0;
 	dbclick = 0;
-	
-	if ( cursor.x >= x && cursor.x <= x + size.x && cursor.y > y && cursor.y <= y+size.y && !clicked_away && test_coi )
-	{
-		coi = 1;
-		
-		if ( transp < 1 && !locked )
-			transp += frametime * 4.5f;
-	}
-	else
-	{
-		coi = 0;
-		
-		if ( transp > 0 )
-			transp -= frametime * 4.5f;
-	}
+	coi_side = 0;
+    
+    coi = cursor.x >= x && cursor.x <= x + size.x && cursor.y > y && cursor.y <= y+size.y;
+    
+    coi_side = cursor.y <= y + 2 + size.y / 2 ? 1 : 3;
+    
+    if ( cursor.y > y + size.y / 2 && cursor.y <= y + 3 + size.y / 2 )
+        coi_side = 2;
+    
+	if ( test_coi && coi && !clicked_away )
+    {
+        if ( transp < 1 && !locked )
+            transp += frametime * 4.5f;
+    }
+    else
+    {
+        if ( transp > 0 )
+            transp -= frametime * 4.5f;
+    }
 
 	for ( LDEuint i = 0; i < mouse.size(); ++i )
 	{
@@ -183,7 +191,7 @@ void LDEgui_button::draw( vec2i cursor, LDEfloat frametime )
 
 	if ( scissor )
 	{
-		glEnable(GL_SCISSOR_TEST);
+		//glEnable(GL_SCISSOR_TEST);
 		//LDEscissor( x , y , size.x /* - decrease_scissor.x */, size.y /* - decrease_scissor.y */ );
 	}
 
@@ -207,28 +215,28 @@ void LDEgui_button::draw( vec2i cursor, LDEfloat frametime )
         if ( text_side == 0 )
         {
             font->setText( name );
-            font->setPos( LDEint(x + ((size.x / 2)) - (font->size.x / 2)), LDEint(y + ((size.y/2)-font->char_size/2)) );
+            font->setPos( LDEint(x + ((size.x / 2)) - (font->size.x / 2)) + text_pos.x, LDEint(y + ((size.y/2)-font->char_size/2)) + text_pos.y );
             font->draw();
         }
         // left side text
         else if ( text_side == 1 )
         {
             font->setText( name );
-            font->setPos( x + 5, LDEint(y + ((size.y/2)-font->char_size/2)) );
+            font->setPos( x + text_pos.x, LDEint(y + ((size.y/2)-font->char_size/2)) + text_pos.y );
             font->draw();
         }
         // right side text
         else if ( text_side >= 2 )
         {
             font->setText( name );
-            font->setPos( LDEint(x + size.x - font->size.x), LDEint(y + ( size.y / 2 - 3 )) );
+            font->setPos( LDEint(x + size.x - font->size.x) + text_pos.x, LDEint(y + ( size.y / 2 - 3 )) + text_pos.y );
             font->draw();
         }
     }
 
 	if ( scissor )
 	{
-		glDisable(GL_SCISSOR_TEST);
+		//glDisable(GL_SCISSOR_TEST);
 	}
 
 	glColor3d(1,1,1);

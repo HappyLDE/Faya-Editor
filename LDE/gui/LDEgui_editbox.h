@@ -34,6 +34,7 @@ struct LDEgui_editbox
 			*texture_editbox_active;
 	
 	bool    focus,
+            blured,
             cursor_flag,
             changed,
             changed_temp;
@@ -51,8 +52,8 @@ struct LDEgui_editbox
 	
 	LDEfloat cursor_toggle_time;
 	
+    void setFocus();
     void blur();
-    
 	void draw( vec2i cursor, LDEfloat frametime );
 };
 

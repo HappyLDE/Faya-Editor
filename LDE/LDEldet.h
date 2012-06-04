@@ -25,8 +25,6 @@
 #include <sstream>
 #include <fstream>
 
-using namespace std;
-
 #include "LDEvariables.h"
 #include "LDEvec2i.h"
 
@@ -37,7 +35,7 @@ class LDEldet
     public:
 
     LDEldet();  // constructor
-	LDEldet( string name, LDEuint filter ); // constructor
+	LDEldet( std::string name, LDEuint filter ); // constructor
 	~LDEldet();
 
     LDEubyte *data;
@@ -51,7 +49,7 @@ class LDEldet
     void resize( LDEuint width, LDEuint height );
 
     // load image from file
-    bool load( string path );
+    bool load( std::string path );
 
     // get color pixel at point
 	void getPixel( LDEuint x, LDEuint y, unsigned char* red, unsigned char* green, unsigned char* blue );

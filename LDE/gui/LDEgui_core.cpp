@@ -106,7 +106,17 @@ void LDEgui::addWindow( LDEgui_window *arg )
 	window[window.size()-1]->elements.texture_list = texture_list;
 	window[window.size()-1]->elements.texture_list_item = texture_list_item;
 	window[window.size()-1]->elements.texture_list_item_selected = texture_list_item_selected;
+    
+    window[window.size()-1]->elements.texture_list_checkbox = texture_list_checkbox;
+	window[window.size()-1]->elements.texture_list_checkbox_checked = texture_list_checkbox_checked;
 	
+    window[window.size()-1]->elements.texture_list_checkbox_folder_hide_children = texture_list_checkbox_folder_hide_children;
+	window[window.size()-1]->elements.texture_list_checkbox_folder_hide_children_checked = texture_list_checkbox_folder_hide_children_checked;
+    
+    window[window.size()-1]->elements.texture_list_traits = texture_list_traits;
+
+    window[window.size()-1]->elements.texture_folder = texture_folder;
+    
 	window[window.size()-1]->elements.texture_scrollbar_button_up = texture_scrollbar_button_up;
 	window[window.size()-1]->elements.texture_scrollbar_button_up_hover = texture_scrollbar_button_up_hover;
 	window[window.size()-1]->elements.texture_scrollbar_button_up_pressed = texture_scrollbar_button_up_pressed;

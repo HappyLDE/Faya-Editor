@@ -228,6 +228,7 @@ void init_gui()
     
     window_sprites_list->elements.addCheckbox(checkbox_sprite_size_keep_ratio);
     checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
+    checkbox_sprite_size_keep_ratio->setCheck( 1 );
     
     //////////////// VECTOR MODE //////////////////////
     
@@ -262,7 +263,8 @@ void init_gui()
 	window_vector_paths_list->elements.addList(list_vector_paths);
 	list_vector_paths->size.x = window_vector_paths_list->size.x;
 	list_vector_paths->size.y = window_vector_paths_list->size.y-60;
-	
+	list_vector_paths->allow_group = 0;
+    
 	window_vector_paths_list->elements.addButton(button_vector_paths_delete);
 	button_vector_paths_delete->pos.x = 8;
 	button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
@@ -285,7 +287,9 @@ void init_gui()
 	window_texture_atlas_sprites_list->elements.addList(list_texture_atlas_sprites);
 	list_texture_atlas_sprites->size.x = window_texture_atlas_sprites_list->size.x;
 	list_texture_atlas_sprites->size.y = window_texture_atlas_sprites_list->size.y-60;
-	
+	list_texture_atlas_sprites->allow_group = 0;
+    list_texture_atlas_sprites->allow_reorder = 0;
+    
 	window_texture_atlas_sprites_list->elements.addButton(button_texture_atlas_sprites_delete);
 	button_texture_atlas_sprites_delete->pos.x = 8;
 	button_texture_atlas_sprites_delete->pos.y = window_texture_atlas_sprites_list->size.y-54;

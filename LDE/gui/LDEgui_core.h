@@ -59,8 +59,18 @@ class LDEgui
 			*texture_list,
 			*texture_list_item_selected,
 	
+            *texture_list_checkbox,
+            *texture_list_checkbox_checked,
+    
+            *texture_list_checkbox_folder_hide_children,
+            *texture_list_checkbox_folder_hide_children_checked,
+    
 			*texture_list_item,
+    
+            *texture_list_traits,
 	
+            *texture_folder,
+    
 			*texture_combobox,
 			*texture_combobox_hover,
 			*texture_combobox_pressed,

@@ -10,7 +10,6 @@
 #define LDE_INPUT_H
 
 #include <string>
-using namespace std;
 
 #include "LDEvec2i.h"
 #include "LDEmouse_event.h"
@@ -50,7 +49,7 @@ struct LDEinput
             decimal,
 			capslock;         //
 
-	string characters;
+    std::string characters;
 	
     LDEinput();
     ~LDEinput();

@@ -21,6 +21,7 @@ struct LDEgui_checkbox
     
     vec2i   pos;
     
+    void setCheck( bool state );
     void draw( vec2i cursor, LDEfloat frametime );
     
     LDEgui_checkbox();

@@ -7,6 +7,8 @@
 
 #include "LDEldet.h"
 
+using namespace std;
+
 LDEldet::LDEldet()
 {
 

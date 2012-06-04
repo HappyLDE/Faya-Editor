@@ -8,6 +8,8 @@
 
 #import "OpenGLView.h"
 
+#include "tree.hh"
+
 using namespace std;
 
 LDEint FAYA_VERSION = 1;
@@ -120,7 +122,6 @@ void openFile(string filename)
     
     paths.erase( paths.begin(), paths.end() );
     list_vector_paths->erase();
-    list_vector_paths->selected = -1;
     
     // Project data
     LDEuint paths_size = 0;
@@ -142,8 +143,8 @@ void openFile(string filename)
             file.read( (char*)&paths[path_id].selected, sizeof(LDEint) );
             file.read( (char*)&paths[path_id].active, sizeof(bool) );
             
-            if ( paths[path_id].active )
-                list_vector_paths->select( path_id, 0 );
+            //if ( paths[path_id].active )
+            //    list_vector_paths->select( path_id, 0 );
             
             LDEuint vertex_size = 0;
             file.read( (char*)&vertex_size, sizeof(LDEuint) );
@@ -320,7 +321,7 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 LDEint sprite_id = spriteBatchNode.sprites.size()-1;
                 list_sprites->addItem( sprite_id, sprite_drag.name+LDEnts(sprite_id) );
                 
-                list_sprites->select( sprite_id, 0);
+                //list_sprites->select( sprite_id, 0);
                 
                 transf_tool.reset();
             }
@@ -407,6 +408,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 
     switch ([theEvent keyCode])
     {
+        case 5: input_temp.g = 1;  break; // G key
         case 36: input_temp.characters = ""; input_temp.enter = 1;  break; // Enter/Return key
         case 48: input_temp.characters = ""; input_temp.tab = 1;  break; // Enter
         case 51: input_temp.characters = ""; input_temp.backspace = 1;  break; // Backspace
@@ -428,6 +430,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     switch ([theEvent keyCode])
     {
+        case 5: input_temp.g = 1;  break; // G key
         case 36: input_temp.characters = ""; input_temp.enter = 1;  break; // Enter/Return key
         case 48: input_temp.characters = ""; input_temp.tab = 1;  break; // Enter
         case 51: input_temp.characters = ""; input_temp.backspace = 1;  break; // Backspace
@@ -547,6 +550,15 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             LDEinput input_temp;
             input_temp.lshift = 1;
             input_temp.key_down = ([event modifierFlags] & NSShiftKeyMask) != 0;
+            app.input.push_back( input_temp );
+            break;
+        }
+            
+        case 59:
+        {
+            LDEinput input_temp;
+            input_temp.lctrl = 1;
+            input_temp.key_down = ([event modifierFlags] & NSControlKeyMask) != 0;
             app.input.push_back( input_temp );
             break;
         }
@@ -861,7 +873,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Vector Mode
     if ( editor_mode == 0 )
     {
-        if ( gui.unused )
+        /*if ( gui.unused )
         {
             for ( LDEuint i = 0; i < app.mouse.size(); ++i )
             {
@@ -884,26 +896,29 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     }
                 }
             }
-        }
+        }*/
         
         if ( button_path_new->click )
         {
-            VectorPaths path_temp;
-            paths.push_back(path_temp);
-            
-            LDEuint path_id = paths.size()-1;
-            
-            list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
-            list_vector_paths->select(path_id, 0);
-            
-            for ( LDEuint i = 0; i < paths.size(); ++i )
+            for ( LDEuint l = 0; l < 10; ++l )
             {
-                paths[i].active = 0;
+                VectorPaths path_temp;
+                paths.push_back(path_temp);
+                
+                LDEuint path_id = paths.size()-1;
+                
+                list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
+                //list_vector_paths->select(path_id, 0);
+                
+                for ( LDEuint i = 0; i < paths.size(); ++i )
+                {
+                    paths[i].active = 0;
+                }
+                
+                paths[path_id].active = 1;
+                
+                button_vector_paths_delete->unlock();
             }
-            
-            paths[path_id].active = 1;
-            
-            button_vector_paths_delete->unlock();
         }
         
         if ( list_vector_paths->changed )
@@ -913,10 +928,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 paths[i].active = 0;
             }
             
-            paths[list_vector_paths->selected].active = 1;
+            //paths[list_vector_paths->selected].active = 1;
         }
         
-        if ( button_vector_paths_delete->click && list_vector_paths->selected > -1 )
+        /*if ( button_vector_paths_delete->click && list_vector_paths->selected > -1 )
         {
             paths.erase( paths.begin() + list_vector_paths->selected );
             list_vector_paths->remove( list_vector_paths->selected );
@@ -947,13 +962,17 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
             }
-        }
+        }*/
         
         //
         //
     }
     else
     {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////                        TEXTURE ATLAS CREATION                        //////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         if ( !window_texture_atlas_sprites_list->closed )
         {
             if ( window_texture_atlas_sprites_list->button_resize.pressed )
@@ -964,7 +983,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 button_texture_atlas_sprites_delete->pos.y = window_texture_atlas_sprites_list->size.y-54;
             }
             
-            if ( list_texture_atlas_sprites->changed )	
+            /*if ( list_texture_atlas_sprites->changed )	
             {
                 LDEuint num_selected = 0;
                 for ( LDEuint i = 0; i < list_texture_atlas_sprites->item.size(); ++i )
@@ -993,7 +1012,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                         list_texture_atlas_sprites->remove( i );
                     }	
                 }
-            }
+            }*/
         }
         
         if ( !window_texture_atlas->closed )
@@ -1356,6 +1375,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////                              WORLD EDIT                              //////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     // If the window sprites list is not closed
     if ( !window_sprites_list->closed )
     {
@@ -1381,14 +1404,26 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
         }
         
-        if ( list_sprites->changed )
+        if ( list_sprites->changed_order )
         {
-            for ( LDEuint i = 0; i < list_sprites->item.size(); ++i )
+            std::vector<Sprite>sprites_temp;
+            sprites_temp.reserve( spriteBatchNode.sprites.size() );
+            
+            tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin();
+            while ( item_itr != list_sprites->items_tree.end() )
             {
-                spriteBatchNode.sprites[list_sprites->item[i].key].selected = list_sprites->item[i].selected;
+                if ( item_itr->type == 0 )
+                {
+                    sprites_temp.push_back( spriteBatchNode.sprites[item_itr->key] );
+                    
+                    item_itr->key = sprites_temp.size()-1;
+                }
+                
+                ++item_itr;
             }
+            
+            spriteBatchNode.sprites = sprites_temp;
         }
-        
         
         ///////// Sprite properties panel /////////
         
@@ -1532,8 +1567,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             for ( LDEuint i = 0; i < spriteBatchNode.sprites.size(); ++i )
             {
-                if ( spriteBatchNode.sprites[i].selected )
-                    list_sprites->select( i, 1 );
+                //if ( spriteBatchNode.sprites[i].selected )
+                //    list_sprites->select( i, 1 );
             }
             
             list_sprites->changed = 0;
@@ -1645,7 +1680,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         glDisable(GL_LINE_STIPPLE);
         glEnable(GL_TEXTURE_2D);
     }
-    
+
 	app.mouse.erase( app.mouse.begin(), app.mouse.end() );
 	app.input.erase( app.input.begin(), app.input.end() );
     

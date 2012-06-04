@@ -17,8 +17,6 @@
 #include <sstream>
 #include <fstream>
 
-using namespace std;
-
 #include "LDEvariables.h"
 #include "LDEvec2i.h"
 #include "LDEvec4f.h"
@@ -47,9 +45,9 @@ struct LDEldef
 	LDEldef();
 	~LDEldef();
 
-	string  name;
+    std::string  name;
 
-    vector<LDEfont_character>character;
+    std::vector<LDEfont_character>character;
 
     LDEuint base;
 
@@ -63,16 +61,16 @@ struct LDEldef
 	bool	loaded;
     wchar_t	current_char;
 
-	wstring	charset;
+    std::wstring	charset;
 
     LDEldet ldet;
 
-    void    setText( string text );
+    void    setText( std::string text );
 
 	void    draw();
 
     void    setPos( LDEint x_, LDEint y_ );
-	void    load( string path );
+	void    load( std::string path );
 };
 
 #endif // LDE_LDEF_H

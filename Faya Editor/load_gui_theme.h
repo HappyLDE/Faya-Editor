@@ -11,6 +11,16 @@ LDEldet texture_window,
 		texture_list,
 		texture_list_item_selected,
 
+        texture_list_checkbox,
+        texture_list_checkbox_checked,
+
+        texture_list_checkbox_folder_hide_children,
+        texture_list_checkbox_folder_hide_children_checked,
+
+        texture_list_traits,
+
+        texture_folder,
+
 		texture_scrollbar_button_up,
 		texture_scrollbar_button_up_hover,
 		texture_scrollbar_button_up_pressed,
@@ -79,15 +89,15 @@ void load_gui_theme( string path )
     texture_transf_tool.opengl(0);
     transf_tool.image = &texture_transf_tool;
     
+    texture_folder.load(path+"folder.ldet");
+	texture_folder.opengl(0);
+    gui.texture_folder = &texture_folder;
+    
 	texture_atlas_bg.load(path+"texture_atlas_bg.ldet");
 	texture_atlas_bg.opengl(0);
 	
 	texture_shadow.load(path+"shadow.ldet");
 	texture_shadow.opengl(0);
-	
-	//sprite.load("/Users/postmaster/Documents/Sprites/sprite1.png");
-	//sprite.crop( sprite.getEmptyPixels() );
-	//sprite.opengl(0);
 	
     /// WINDOW THEME ///
     texture_window.load(path+"window.ldet");
@@ -129,6 +139,26 @@ void load_gui_theme( string path )
 	texture_list_item_selected.opengl(0);
     gui.texture_list_item_selected = &texture_list_item_selected;
 	
+    texture_list_checkbox.load(path+"list_checkbox.ldet");
+	texture_list_checkbox.opengl(0);
+	gui.texture_list_checkbox = &texture_list_checkbox;
+    
+    texture_list_checkbox_checked.load(path+"list_checkbox_checked.ldet");
+	texture_list_checkbox_checked.opengl(0);
+	gui.texture_list_checkbox_checked = &texture_list_checkbox_checked;
+    
+    texture_list_checkbox_folder_hide_children.load(path+"list_checkbox_hide_children.ldet");
+	texture_list_checkbox_folder_hide_children.opengl(0);
+	gui.texture_list_checkbox_folder_hide_children = &texture_list_checkbox_folder_hide_children;
+    
+    texture_list_checkbox_folder_hide_children_checked.load(path+"list_checkbox_hide_children_checked.ldet");
+	texture_list_checkbox_folder_hide_children_checked.opengl(0);
+	gui.texture_list_checkbox_folder_hide_children_checked = &texture_list_checkbox_folder_hide_children_checked;
+    
+    texture_list_traits.load(path+"liste_traits.ldet");
+	texture_list_traits.opengl(0);
+	gui.texture_list_traits = &texture_list_traits;
+    
 	// scrollbar
 	texture_scrollbar_button_up.load(path+"scrollbar_button_up.ldet");
 	texture_scrollbar_button_up.opengl(0);
@@ -228,7 +258,7 @@ void load_gui_theme( string path )
 	texture_checkbox.load(path+"checkbox.ldet");
 	texture_checkbox.opengl(0);
 	gui.texture_checkbox = &texture_checkbox;
-	
+    
 	texture_checkbox_hover.load(path+"checkbox_hover.ldet");
 	texture_checkbox_hover.opengl(0);
 	gui.texture_checkbox_hover = &texture_checkbox_hover;

@@ -53,7 +53,17 @@ class LDEgui_elements
 	
 			*texture_list_item,
 			*texture_list_item_selected,
+    
+            *texture_list_checkbox,
+            *texture_list_checkbox_checked,
 	
+            *texture_list_checkbox_folder_hide_children,
+            *texture_list_checkbox_folder_hide_children_checked,
+    
+            *texture_list_traits,
+    
+            *texture_folder,
+    
 			*texture_scrollbar_button_up,
 			*texture_scrollbar_button_up_hover,
 			*texture_scrollbar_button_up_pressed,

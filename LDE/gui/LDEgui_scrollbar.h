@@ -11,8 +11,6 @@
 
 #include <vector>
 
-using namespace std;
-
 #include "../LDEvariables.h"
 #include "../LDEvec2i.h"
 
@@ -30,7 +28,7 @@ struct LDEgui_scrollbar
 				  button_down,
 				  button_middle;
 	
-	vector<LDEmouse_event>mouse;
+    std::vector<LDEmouse_event>mouse;
 	
 	LDEldet *texture_scrollbar_button_up,
 			*texture_scrollbar_button_up_hover,
@@ -63,7 +61,6 @@ struct LDEgui_scrollbar
 	
 	LDEfloat scroll_height,
 			 scroll_amount,
-			 scroll_value,
 			 button_middle_offset,
 			 percent; // 0.0 to 1.0
 	
@@ -79,6 +76,8 @@ struct LDEgui_scrollbar
 	vec2i pos,
 		  size;
 	
+    void setInnerHeight( LDEint new_height );
+    
 	void setPercent( LDEfloat value );
 	void setSide( bool side_ );
 	void setRightTextures(); // according to side

@@ -14,6 +14,11 @@
 		F548CEF2155EAA0F009BCFF1 /* checkbox_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */; };
 		F548CEF3155EAA0F009BCFF1 /* checkbox.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */; };
 		F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */; };
+		F54CEB331570F4F80009B03D /* list_checkbox_hide_children.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F54CEB311570F4F80009B03D /* list_checkbox_hide_children.ldet */; };
+		F54CEB341570F4F80009B03D /* list_checkbox_hide_children_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F54CEB321570F4F80009B03D /* list_checkbox_hide_children_checked.ldet */; };
+		F57343D8156E56B900D477BB /* folder.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343D7156E56B900D477BB /* folder.ldet */; };
+		F57343DB156ED0F200D477BB /* list_checkbox_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343D9156ED0F200D477BB /* list_checkbox_checked.ldet */; };
+		F57343DC156ED0F200D477BB /* list_checkbox.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343DA156ED0F200D477BB /* list_checkbox.ldet */; };
 		F5779A0A155AE854002C8B7B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779A09155AE854002C8B7B /* Cocoa.framework */; };
 		F5779A14155AE854002C8B7B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F5779A12155AE854002C8B7B /* InfoPlist.strings */; };
 		F5779A16155AE854002C8B7B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F5779A15155AE854002C8B7B /* main.m */; };
@@ -109,6 +114,7 @@
 		F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */; };
 		F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */; };
 		F5779B11155AE8EE002C8B7B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779B10155AE8EE002C8B7B /* OpenGL.framework */; };
+		F5C73C2F1572BB1200535A4B /* liste_traits.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5C73C2E1572BB1200535A4B /* liste_traits.ldet */; };
 		F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5E726B3155BBE7E009B8759 /* FayaEditor.icns */; };
 /* End PBXBuildFile section */
 
@@ -122,6 +128,12 @@
 		F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_pressed.ldet; sourceTree = "<group>"; };
 		F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox.ldet; sourceTree = "<group>"; };
 		F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_hover.ldet; sourceTree = "<group>"; };
+		F54CEB311570F4F80009B03D /* list_checkbox_hide_children.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_hide_children.ldet; sourceTree = "<group>"; };
+		F54CEB321570F4F80009B03D /* list_checkbox_hide_children_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_hide_children_checked.ldet; sourceTree = "<group>"; };
+		F57343D4156D946100D477BB /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
+		F57343D7156E56B900D477BB /* folder.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = folder.ldet; sourceTree = "<group>"; };
+		F57343D9156ED0F200D477BB /* list_checkbox_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_checked.ldet; sourceTree = "<group>"; };
+		F57343DA156ED0F200D477BB /* list_checkbox.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox.ldet; sourceTree = "<group>"; };
 		F5779A05155AE854002C8B7B /* Faya Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Faya Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5779A09155AE854002C8B7B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F5779A0C155AE854002C8B7B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -267,6 +279,7 @@
 		F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_close_pressed.ldet; sourceTree = "<group>"; };
 		F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_inactive.ldet; sourceTree = "<group>"; };
 		F5779B10155AE8EE002C8B7B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F5C73C2E1572BB1200535A4B /* liste_traits.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = liste_traits.ldet; sourceTree = "<group>"; };
 		F5E726B3155BBE7E009B8759 /* FayaEditor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FayaEditor.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -367,6 +380,7 @@
 			children = (
 				F5779A46155AE8B5002C8B7B /* gui */,
 				F5779A62155AE8B5002C8B7B /* LDE.h */,
+				F57343D4156D946100D477BB /* tree.hh */,
 				F5779A63155AE8B5002C8B7B /* LDEcamera.cpp */,
 				F5779A64155AE8B5002C8B7B /* LDEcamera.h */,
 				F5779A65155AE8B5002C8B7B /* LDEcore.cpp */,
@@ -474,6 +488,12 @@
 				F548CEEE155EAA0F009BCFF1 /* checkbox_pressed.ldet */,
 				F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */,
 				F548CEEF155EAA0F009BCFF1 /* checkbox.ldet */,
+				F57343D7156E56B900D477BB /* folder.ldet */,
+				F57343D9156ED0F200D477BB /* list_checkbox_checked.ldet */,
+				F57343DA156ED0F200D477BB /* list_checkbox.ldet */,
+				F54CEB311570F4F80009B03D /* list_checkbox_hide_children.ldet */,
+				F54CEB321570F4F80009B03D /* list_checkbox_hide_children_checked.ldet */,
+				F5C73C2E1572BB1200535A4B /* liste_traits.ldet */,
 				F5779ABA155AE8D3002C8B7B /* cour.ldef */,
 				F5779ABB155AE8D3002C8B7B /* courbd.ldef */,
 				F5779ABC155AE8D3002C8B7B /* editbox.ldet */,
@@ -623,6 +643,12 @@
 				F548CEF3155EAA0F009BCFF1 /* checkbox.ldet in Resources */,
 				F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */,
 				F536418A1562CD8F000803A9 /* transf_tool.ldet in Resources */,
+				F57343D8156E56B900D477BB /* folder.ldet in Resources */,
+				F57343DB156ED0F200D477BB /* list_checkbox_checked.ldet in Resources */,
+				F57343DC156ED0F200D477BB /* list_checkbox.ldet in Resources */,
+				F54CEB331570F4F80009B03D /* list_checkbox_hide_children.ldet in Resources */,
+				F54CEB341570F4F80009B03D /* list_checkbox_hide_children_checked.ldet in Resources */,
+				F5C73C2F1572BB1200535A4B /* liste_traits.ldet in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,6 +748,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -742,6 +769,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
 			};
@@ -752,7 +780,12 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Faya Editor/Faya Editor-Prefix.pch";
+				HEADER_SEARCH_PATHS = /Users/postmaster/Documents/XCODE_PROJECTS/boost_libraries;
 				INFOPLIST_FILE = "Faya Editor/Faya Editor-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../boost_libraries/stage/lib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -763,7 +796,12 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Faya Editor/Faya Editor-Prefix.pch";
+				HEADER_SEARCH_PATHS = /Users/postmaster/Documents/XCODE_PROJECTS/boost_libraries;
 				INFOPLIST_FILE = "Faya Editor/Faya Editor-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../boost_libraries/stage/lib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

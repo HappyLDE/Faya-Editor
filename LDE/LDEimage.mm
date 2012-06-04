@@ -321,7 +321,7 @@ void LDEimage::crop( vec4i emptyPixels )
 		delete []new_data;
 		new_data = NULL;
 		
-		cout<<"Cropped image \""<<model_name<<"."<<model_format<<"\" to x"<<emptyPixels.x<<" y"<<emptyPixels.y<<" w"<<emptyPixels.z<<" h"<<emptyPixels.w<<"\n";
+		//cout<<"Cropped image \""<<model_name<<"."<<model_format<<"\" to x"<<emptyPixels.x<<" y"<<emptyPixels.y<<" w"<<emptyPixels.z<<" h"<<emptyPixels.w<<"\n";
         
         emptyPixels.reset();
 	}
@@ -377,7 +377,7 @@ LDEuint LDEimage::opengl( LDEuint mode )
                 }
             }
             
-            cout<<"Resized for OpenGL \""<<model_name<<"."<<model_format<<"\" from "<<size.x<<"x"<<size.y<<"px to "<<size_gl.x<<"x"<<size_gl.y<<"px\n";
+            //cout<<"Resized for OpenGL \""<<model_name<<"."<<model_format<<"\" from "<<size.x<<"x"<<size.y<<"px to "<<size_gl.x<<"x"<<size_gl.y<<"px\n";
             
 			gluBuild2DMipmaps(GL_TEXTURE_2D,
 							  bpp,    // bpp

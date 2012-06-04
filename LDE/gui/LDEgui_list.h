@@ -4,15 +4,13 @@
  *
  * Graphical User Interface : elements
  *  // List of buttons
-\********************************************************************/
+ \********************************************************************/
 
 #ifndef LDE_GUI_LIST_H
 #define LDE_GUI_LIST_H
 
 #include <string>
 #include <vector>
-
-using namespace std;
 
 #include "../LDEvariables.h"
 #include "../LDEvec2i.h"
@@ -23,16 +21,26 @@ using namespace std;
 #include "../LDEldet.h"
 #include "../LDEldef.h"
 
+#include "tree.hh"
+
+//#include "LDEtree.h"
+
+#include "LDEgui_editbox.h"
 #include "LDEgui_scrollbar.h"
 #include "LDEgui_button.h"
+#include "LDEgui_checkbox.h"
 
 struct LDEgui_list_item
 {
 	LDEgui_button button;
+    LDEgui_checkbox checkbox, checkbox_hide_children;
+    LDEgui_editbox editbox; // for renaming possibilities
+    
+	LDEint  key;
 	
-	LDEint key;
-	
-	bool selected;
+	bool    selected,
+            renaming,
+            type;
 	
 	LDEgui_list_item();
 	~LDEgui_list_item();
@@ -43,65 +51,99 @@ struct LDEgui_list
     LDEgui_list();
 	~LDEgui_list();
 	
-	string name_click,
-			name_dbclick;
+    std::string name_click,
+                name_dbclick;
 	
 	LDEgui_scrollbar scrollbar;
-	
-	vector<LDEgui_list_item>item;
-	
-	vector<LDEinput>input;
-	vector<LDEmouse_event>mouse; // list of mouse events in one frame
+
+    tree<LDEgui_list_item>items_tree;
+    tree<LDEgui_list_item>::iterator item_root, item_first_selected, item_last_selected, item_indicator;
+    
+    std::vector<LDEinput>input;
+    std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
 	
 	LDEldet *texture_list,
 	
-			*texture_list_item,
-			*texture_list_item_selected;
-
+            *texture_list_item,
+            *texture_list_item_selected,
+    
+            *texture_list_checkbox,
+            *texture_list_checkbox_checked,
+    
+            *texture_list_checkbox_folder_hide_children,
+            *texture_list_checkbox_folder_hide_children_checked,
+    
+            *texture_list_traits,
+    
+            *texture_editbox,
+            *texture_editbox_hover,
+            *texture_editbox_active,
+    
+            *texture_folder;
+    
 	bool	focus,
-			active,
-			coi,
-			click,
-			dbclick,
-			changed,
-			test_coi,
-			shift;
-
+            active,
+            fucked_selection,
+            coi,
+            click,
+            dbclick,
+            changed,
+            changed_order,
+            test_coi,
+            hide_indicator,
+            show_indicator,
+            cursor_over_selected,
+            allow_group,
+            allow_reorder,
+            ctrl,        // control key, to multiple select
+            shift;
+    
 	vec3f	color_selected,
-			color;
+            color;
 	
 	LDEint	x, y,
-			uv_left,			// left
-			uv_right,			// right
-			uv_up,				// up
-			uv_down,			// down
-	
-			content_height,
-	
-			scroll,
-	
-			selected,
-			offset,
-	
-			item_height,
-	
-			start_left,
-			start_right,
-			start_up,
-			start_down;
+            uv_left,			// left
+            uv_right,			// right
+            uv_up,				// up
+            uv_down,			// down
+    
+            content_height,
+            
+            scroll,
+            
+            coi_side,
+    
+            num_selected,
+            offset,
+            
+            item_height,
+            
+            group_num,
+    
+            start_left,
+            start_right,
+            start_up,
+            start_down;
 	
 	void	erase();
 	
 	vec2i	pos,
-			size,
-			app_size;
+            size,
+            app_size;
 	
 	LDEldef *font;
 	
+    bool canMoveToIndicator() const;
+    LDEint getInnerHeight() const;
     void deselect();
 	void remove( LDEuint number );
-	void select( LDEuint number, bool keep_rest );
-	void addItem( LDEint key, string value );
+	void select( tree<LDEgui_list_item>::iterator it, bool keep_rest );
+    void selectBetween( tree<LDEgui_list_item>::iterator it_begin, tree<LDEgui_list_item>::iterator it_end );
+    void moveSelection();
+    void moveSelectionToFolder();
+    void groupSelected( std::string group_name );
+    //void addItem( LDEint key, std::string value );
+	tree<LDEgui_list_item>::iterator addItem( LDEint key, std::string value );
 	void draw( vec2i cursor, LDEfloat frametime );
 };
 

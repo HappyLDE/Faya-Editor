@@ -18,6 +18,13 @@ LDEgui_checkbox::~LDEgui_checkbox()
     
 }
 
+void LDEgui_checkbox::setCheck( bool state )
+{
+    button.draw_icon = checked = state;
+    
+    changed = 1;
+}
+
 void LDEgui_checkbox::draw( vec2i cursor, LDEfloat frametime )
 {
     changed = 0;
@@ -25,11 +32,5 @@ void LDEgui_checkbox::draw( vec2i cursor, LDEfloat frametime )
     button.draw( cursor, frametime );
     
     if ( button.click )
-    {
-        checked = 1-checked;
-        
-        button.draw_icon = checked;
-        
-        changed = 1;
-    }
+        setCheck( 1-checked );
 }

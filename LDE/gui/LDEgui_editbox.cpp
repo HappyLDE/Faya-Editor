@@ -18,11 +18,24 @@ LDEgui_editbox::LDEgui_editbox()
 	text_offset = 0;
     changed = 0;
     changed_temp = 0;
+    blured = 0;
 }
 
 LDEgui_editbox::~LDEgui_editbox()
 {
 
+}
+
+void LDEgui_editbox::setFocus()
+{
+    changed = 0;
+    blured = 0;
+    focus = 1;
+    
+    button.texture_rel = texture_editbox_active;
+    button.texture_coi = texture_editbox_active;
+    
+    cursor_pos = button.font->size.x - text_offset;
 }
 
 void LDEgui_editbox::blur()
@@ -32,6 +45,8 @@ void LDEgui_editbox::blur()
     
     changed_temp = 0;
     
+    blured = 1;
+    
     focus = 0;
     button.texture_rel = texture_editbox;
     button.texture_coi = texture_editbox_hover;
@@ -40,6 +55,7 @@ void LDEgui_editbox::blur()
 void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 {
     changed = 0;
+    blured = 0;
 	//button.pos = pos;
 	button.size = size;
 
@@ -138,6 +154,7 @@ void LDEgui_editbox::draw( vec2i cursor, LDEfloat frametime )
 	button.font->setText( name );
 	button.font->draw();
 	glDisable(GL_SCISSOR_TEST);
-	
-	
+    
+    
+	glColor3f(1, 1, 1);
 }

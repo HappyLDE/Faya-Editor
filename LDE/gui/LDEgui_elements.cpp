@@ -46,9 +46,26 @@ void LDEgui_elements::addList( LDEgui_list *arg )
 	
 	list[pointer]->font = font_elements;
 	list[pointer]->texture_list = texture_list;
+    
 	list[pointer]->texture_list_item = texture_list_item;
 	list[pointer]->texture_list_item_selected = texture_list_item_selected;
-
+    
+    list[pointer]->texture_list_checkbox = texture_list_checkbox;
+    list[pointer]->texture_list_checkbox_checked = texture_list_checkbox_checked,
+    
+    list[pointer]->texture_list_checkbox_folder_hide_children = texture_list_checkbox_folder_hide_children;
+    list[pointer]->texture_list_checkbox_folder_hide_children_checked = texture_list_checkbox_folder_hide_children_checked,
+    
+    list[pointer]->texture_list_traits = texture_list_traits,
+    
+    list[pointer]->texture_folder = texture_folder;
+    
+    // eb
+	list[pointer]->texture_editbox = texture_editbox;
+	list[pointer]->texture_editbox_hover = texture_editbox_hover;
+	list[pointer]->texture_editbox_active = texture_editbox_active;
+    
+    // sb
 	list[pointer]->scrollbar.texture_scrollbar_button_up = texture_scrollbar_button_up;
 	list[pointer]->scrollbar.texture_scrollbar_button_up_hover = texture_scrollbar_button_up_hover;
 	list[pointer]->scrollbar.texture_scrollbar_button_up_pressed = texture_scrollbar_button_up_pressed;
