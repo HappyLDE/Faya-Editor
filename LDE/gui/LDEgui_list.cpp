@@ -184,6 +184,69 @@ tree<LDEgui_list_item>::iterator LDEgui_list::addItem( LDEint key, string value 
     return items_tree.insert( item_root, item_temp );
 }
 
+tree<LDEgui_list_item>::iterator LDEgui_list::addItemTo( tree<LDEgui_list_item>::iterator item_to, LDEint key, std::string value )
+{
+    LDEgui_list_item item_temp;
+    
+	item_temp.button.name = value;
+	item_temp.button.text_side = 1;
+	item_temp.button.size.y = item_height;
+    
+	content_height += item_height;
+	
+    item_temp.key = key;
+    
+    item_temp.button.font = font;
+    item_temp.button.texture_rel = texture_list_item;
+    item_temp.button.texture_coi = texture_list_item;
+    item_temp.button.texture_pre = texture_list_item;
+    item_temp.button.texture_locked = texture_list_item;
+    
+    item_temp.button.text_pos.x = 15;
+    
+    item_temp.checkbox.button.font = font;
+	item_temp.checkbox.button.texture_rel = texture_list_checkbox;
+	item_temp.checkbox.button.texture_coi = texture_list_checkbox;
+    item_temp.checkbox.button.texture_pre = texture_list_checkbox;
+    item_temp.checkbox.button.texture_icon = texture_list_checkbox_checked;
+	item_temp.checkbox.button.name = "";
+	
+    item_temp.checkbox.pos = vec2i( 3, 3 );
+	item_temp.checkbox.button.size = vec2i( 16, 16 );
+    
+    item_temp.checkbox.setCheck( 1 );
+    
+	item_temp.checkbox.button.uv_up = 6;
+    item_temp.checkbox.button.uv_down = 6;
+    item_temp.checkbox.button.uv_left = 6;
+    item_temp.checkbox.button.uv_right = 6;
+    
+    // eb
+    item_temp.editbox.button.font = font;
+	item_temp.editbox.button.texture_rel = texture_editbox;
+	
+	item_temp.editbox.button.texture_coi = texture_editbox_hover;
+    item_temp.editbox.button.texture_pre = texture_editbox_active;
+    item_temp.editbox.button.texture_locked = texture_editbox;
+	
+	item_temp.editbox.texture_editbox = texture_editbox;
+	item_temp.editbox.texture_editbox_hover = texture_editbox_hover;
+	item_temp.editbox.texture_editbox_active = texture_editbox_active;
+	
+	item_temp.editbox.button.uv_up = 8;
+    item_temp.editbox.button.uv_down = 8;
+    item_temp.editbox.button.uv_left = 8;
+    item_temp.editbox.button.uv_right = 8;
+    
+    scrollbar.scroll_height = content_height;
+	scrollbar.button_middle_offset = 0;
+	scrollbar.scroll_amount = 0;
+	offset = 0;
+	scroll = 0;
+    
+    return items_tree.append_child( item_to, item_temp );
+}
+
 void LDEgui_list::erase()
 {
     items_tree.clear();

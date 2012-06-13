@@ -321,7 +321,7 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 spriteBatchNode.sprites.push_back( sprite_drag );
                 
                 LDEint sprite_id = spriteBatchNode.sprites.size()-1;
-                list_sprites->addItem( sprite_id, sprite_drag.name+LDEnts(sprite_id) );
+                list_sprites->addItemTo( spritesheets[i].item_group, sprite_id, sprite_drag.name+LDEnts(sprite_id) );
                 
                 //list_sprites->select( sprite_id, 0);
                 

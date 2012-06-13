@@ -144,6 +144,7 @@ struct LDEgui_list
     void groupSelected( std::string group_name );
     tree<LDEgui_list_item>::iterator addGroup( std::string group_name );
 	tree<LDEgui_list_item>::iterator addItem( LDEint key, std::string value );
+    tree<LDEgui_list_item>::iterator addItemTo( tree<LDEgui_list_item>::iterator item_to, LDEint key, std::string value );
 	void draw( vec2i cursor, LDEfloat frametime );
 };
 
