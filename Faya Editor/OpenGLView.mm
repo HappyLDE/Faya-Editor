@@ -1269,7 +1269,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             spritesheets.push_back( spritframe_temp );
             
-            combobox_spritesheets->addOption( spritesheets.size(), "SpriteSheet"+LDEnts(spritesheets.size()), 1 );
+            string spritesheet_name = "SpriteSheet"+LDEnts(spritesheets.size());
+            
+            combobox_spritesheets->addOption( spritesheets.size(), spritesheet_name, 1 );
+            spritesheets[spritesheets.size()-1].item_group = list_sprites->addGroup( spritesheet_name );
             
             // When spritesheet saved, go to World Edit Mode
             switchEditorMode(2);

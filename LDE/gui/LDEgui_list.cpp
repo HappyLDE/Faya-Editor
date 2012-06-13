@@ -313,6 +313,85 @@ void LDEgui_list::selectBetween( tree<LDEgui_list_item>::iterator it_begin, tree
     changed = 1;
 }
 
+tree<LDEgui_list_item>::iterator LDEgui_list::addGroup( std::string group_name )
+{
+    LDEgui_list_item item_temp;
+    
+    item_temp.type = 1; //  group folder
+    item_temp.button.name = group_name;
+    item_temp.button.text_side = 1;
+    item_temp.button.size.y = item_height;
+    
+    content_height += item_height;
+    
+    item_temp.button.font = font;
+    item_temp.button.texture_rel = texture_list_item;
+    item_temp.button.texture_coi = texture_list_item;
+    item_temp.button.texture_pre = texture_list_item;
+    item_temp.button.texture_locked = texture_list_item;
+    
+    item_temp.button.texture_icon = texture_folder;
+    item_temp.button.icon_pos = vec2i( 28, 2);
+    item_temp.button.text_pos.x = 44;
+    item_temp.button.draw_icon = 1;
+    
+    // Toggle row visibility
+    item_temp.checkbox.button.font = font;
+    item_temp.checkbox.button.texture_rel = texture_list_checkbox;
+    item_temp.checkbox.button.texture_coi = texture_list_checkbox;
+    item_temp.checkbox.button.texture_pre = texture_list_checkbox;
+    item_temp.checkbox.button.texture_icon = texture_list_checkbox_checked;
+    item_temp.checkbox.button.name = "";
+    
+    item_temp.checkbox.setCheck( 1 );
+    
+    item_temp.checkbox.pos = vec2i( 15, 3 );
+    item_temp.checkbox.button.size = vec2i( 16, 16 );
+    
+    item_temp.checkbox.button.uv_up = 6;
+    item_temp.checkbox.button.uv_down = 6;
+    item_temp.checkbox.button.uv_left = 6;
+    item_temp.checkbox.button.uv_right = 6;
+    
+    /// TOGGLE SHOW Group Children
+    item_temp.checkbox_hide_children.button.font = font;
+    item_temp.checkbox_hide_children.button.texture_rel = texture_list_checkbox_folder_hide_children;
+    item_temp.checkbox_hide_children.button.texture_coi = texture_list_checkbox_folder_hide_children;
+    item_temp.checkbox_hide_children.button.texture_pre = texture_list_checkbox_folder_hide_children;
+    item_temp.checkbox_hide_children.button.texture_icon = texture_list_checkbox_folder_hide_children_checked;
+    item_temp.checkbox_hide_children.button.name = "";
+    
+    item_temp.checkbox_hide_children.setCheck( 1 );
+    
+    item_temp.checkbox_hide_children.pos = vec2i( 4, 4 );
+    item_temp.checkbox_hide_children.button.size = vec2i( 8, 8 );
+    
+    item_temp.checkbox_hide_children.button.uv_up = 6;
+    item_temp.checkbox_hide_children.button.uv_down = 6;
+    item_temp.checkbox_hide_children.button.uv_left = 6;
+    item_temp.checkbox_hide_children.button.uv_right = 6;
+    
+    // eb
+    item_temp.editbox.button.font = font;
+    item_temp.editbox.button.texture_rel = texture_editbox;
+    
+    item_temp.editbox.button.texture_coi = texture_editbox_hover;
+    item_temp.editbox.button.texture_pre = texture_editbox_active;
+    item_temp.editbox.button.texture_locked = texture_editbox;
+    
+    item_temp.editbox.texture_editbox = texture_editbox;
+    item_temp.editbox.texture_editbox_hover = texture_editbox_hover;
+    item_temp.editbox.texture_editbox_active = texture_editbox_active;
+    
+    item_temp.editbox.button.uv_up = 8;
+    item_temp.editbox.button.uv_down = 8;
+    item_temp.editbox.button.uv_left = 8;
+    item_temp.editbox.button.uv_right = 8;
+    
+    // Add "GROUP folder" node
+    return items_tree.insert( item_root, item_temp );
+}
+
 void LDEgui_list::groupSelected( std::string group_name )
 {
     if ( !fucked_selection && allow_group )
@@ -363,7 +442,7 @@ void LDEgui_list::groupSelected( std::string group_name )
         item_temp.checkbox_hide_children.button.texture_icon = texture_list_checkbox_folder_hide_children_checked;
         item_temp.checkbox_hide_children.button.name = "";
         
-        item_temp.checkbox_hide_children.setCheck( 1 );
+        //item_temp.checkbox_hide_children.setCheck( 0 );
         
         item_temp.checkbox_hide_children.pos = vec2i( 4, 4 );
         item_temp.checkbox_hide_children.button.size = vec2i( 8, 8 );

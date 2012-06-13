@@ -15,6 +15,7 @@
 #include "LDEvec2i.h"
 #include "LDEprimitives.h"
 #include "LDEmouse_event.h"
+#include "LDEgui_list.h"
 
 struct Spritesheet_frame
 {
@@ -36,13 +37,15 @@ struct Spritesheet_frame
 struct Spritesheet
 {
     vec2i   cursor_pos,
-    window_pos;
+            window_pos;
     
     bool    test_coi,
-    used,
-    mouse_down;
+            used,
+            mouse_down;
     
     LDEint  selected;
+    
+    tree<LDEgui_list_item>::iterator item_group;
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     

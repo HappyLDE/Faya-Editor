@@ -142,7 +142,7 @@ struct LDEgui_list
     void moveSelection();
     void moveSelectionToFolder();
     void groupSelected( std::string group_name );
-    //void addItem( LDEint key, std::string value );
+    tree<LDEgui_list_item>::iterator addGroup( std::string group_name );
 	tree<LDEgui_list_item>::iterator addItem( LDEint key, std::string value );
 	void draw( vec2i cursor, LDEfloat frametime );
 };
