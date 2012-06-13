@@ -56,6 +56,7 @@ LDEgui_scrollbar *scrollbar_texture_atlas_horizontal = new LDEgui_scrollbar();
 //////////////// SPRITES WORLD EDITOR MODE //////////////////////
 
 LDEgui_window *window_spritesheets = new LDEgui_window();
+LDEgui_combobox *combobox_spritesheets = new LDEgui_combobox();
 LDEgui_drawable *drawable_spritesheets = new LDEgui_drawable();
 LDEgui_scrollbar *scrollbar_spritesheets = new LDEgui_scrollbar();
 
@@ -109,16 +110,16 @@ void init_gui()
     pannel_menu->elements.addMenu( main_menu );
     
     main_menu->addItem(menu_file);
-    menu_file->button_parent.setText("Fichier");
+    menu_file->button_parent.setText("File");
     
     menu_file->addButton(menu_button_save);
-    menu_button_save->setText("Sauver Projet");
+    menu_button_save->setText("Save Project");
     
     menu_file->addButton(menu_button_open);
-    menu_button_open->setText("Ouvrir Projet");
+    menu_button_open->setText("Open Project");
     
     menu_file->addButton(menu_button_export);
-    menu_button_export->setText("Exporter Scene");
+    menu_button_export->setText("Export Scene");
     
     //main_menu->addItem(menu_data);
     //menu_data->button_parent.setText("Data");
@@ -141,13 +142,20 @@ void init_gui()
 	window_spritesheets->title = "Spritesheets";
 	window_spritesheets->show_close_button = false;
     
+    //combobox_spritesheets
+    window_spritesheets->elements.addCombobox(combobox_spritesheets);
+    combobox_spritesheets->choice_pos = 1; // Alwais place options under the button
+    combobox_spritesheets->size.x = window_spritesheets->size.x;
+    combobox_spritesheets->button.name = "No Spritesheets";
+    
     window_spritesheets->elements.addScrollbar( scrollbar_spritesheets );
-	scrollbar_spritesheets->pos.x = window_spritesheets->size.x - 16;
-	scrollbar_spritesheets->size.y = window_spritesheets->size.y-43;
+	scrollbar_spritesheets->pos = vec2i( window_spritesheets->size.x - 16, 20 );
+	scrollbar_spritesheets->size.y = window_spritesheets->size.y-63;
     
     drawable_spritesheets->scene = drawable_spritesheets_scene;
 	window_spritesheets->elements.addDrawable( drawable_spritesheets );
-	drawable_spritesheets->size = vec2i( window_spritesheets->size.x - 16, window_spritesheets->size.y - 43 );
+    drawable_spritesheets->pos.y = 20;
+	drawable_spritesheets->size = vec2i( window_spritesheets->size.x - 16, window_spritesheets->size.y - 63 );
     
     // window containing spritesheeets created in the world
     gui.addWindow(window_sprites_list);

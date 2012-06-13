@@ -268,8 +268,10 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
 	glPushMatrix();
     glTranslatef( mypos.x, mypos.y - scrollbar_spritesheets->scroll_amount, 0);
     
-	for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+	if ( spritesheets.size() )
     {
+        LDEuint i = combobox_spritesheets->key() - 1;
+        
         spritesheets[i].window_pos.x = mypos.x;
         spritesheets[i].window_pos.y = mypos.y - scrollbar_spritesheets->scroll_amount;
         spritesheets[i].cursor_pos = app.cursor;
@@ -1266,6 +1268,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             spritframe_temp.image.opengl(2);
             
             spritesheets.push_back( spritframe_temp );
+            
+            combobox_spritesheets->addOption( spritesheets.size(), "SpriteSheet"+LDEnts(spritesheets.size()), 1 );
             
             // When spritesheet saved, go to World Edit Mode
             switchEditorMode(2);
