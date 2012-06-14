@@ -707,6 +707,29 @@ bool LDEgui_list::canMoveToIndicator() const
             //
             switch( item_itr->can_move )
             {
+                // Can only move to destination if destination has parent item_group_parent
+                case 3:
+                {
+                    bool is_within = 0;
+                    
+                    // From the indicator (indicator = row to move next to)
+                    tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
+                    
+                    // We go upper in the tree
+                    while ( items_tree.is_valid( item_parent ) )
+                    {
+                        if ( item_itr->item_group_parent == item_parent )
+                            is_within = 1;
+                        
+                        item_parent = items_tree.parent(item_parent);
+                    }
+                    
+                    if ( !is_within )
+                        return 0;
+                    
+                    break;
+                }
+                    
                 // default or 2 (can move everywhere) except in (child) subtree (see below)
                 default:
                 {
