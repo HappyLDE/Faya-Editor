@@ -36,7 +36,8 @@ struct LDEgui_list_item
     LDEgui_checkbox checkbox, checkbox_hide_children;
     LDEgui_editbox editbox; // for renaming possibilities
     
-	LDEint  key;
+	LDEint  key,
+            can_move;
 	
 	bool    selected,
             renaming,

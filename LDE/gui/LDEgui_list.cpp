@@ -16,6 +16,8 @@ LDEgui_list_item::LDEgui_list_item()
 	selected = 0;
     type = 0; // 0 = row 1 = group parent
     renaming = 0;
+    
+    can_move = 2; // 2 = can move, 1 = can move only on the same depth, 0 = can not move
 }
 
 LDEgui_list_item::~LDEgui_list_item()
@@ -424,7 +426,7 @@ tree<LDEgui_list_item>::iterator LDEgui_list::addGroup( std::string group_name )
     item_temp.checkbox_hide_children.button.texture_icon = texture_list_checkbox_folder_hide_children_checked;
     item_temp.checkbox_hide_children.button.name = "";
     
-    item_temp.checkbox_hide_children.setCheck( 1 );
+    item_temp.checkbox_hide_children.setCheck( 0 );
     
     item_temp.checkbox_hide_children.pos = vec2i( 4, 4 );
     item_temp.checkbox_hide_children.button.size = vec2i( 8, 8 );
@@ -505,7 +507,7 @@ void LDEgui_list::groupSelected( std::string group_name )
         item_temp.checkbox_hide_children.button.texture_icon = texture_list_checkbox_folder_hide_children_checked;
         item_temp.checkbox_hide_children.button.name = "";
         
-        //item_temp.checkbox_hide_children.setCheck( 0 );
+        item_temp.checkbox_hide_children.setCheck( 1 );
         
         item_temp.checkbox_hide_children.pos = vec2i( 4, 4 );
         item_temp.checkbox_hide_children.button.size = vec2i( 8, 8 );
@@ -695,23 +697,48 @@ LDEint LDEgui_list::getInnerHeight() const
 
 bool LDEgui_list::canMoveToIndicator() const
 {
-    //
+    // For ALL the rows (because some can be selected randomly) so we need to iterate all
     tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
     while( item_itr != items_tree.end() )
     {
+        // If this row is selected
         if ( item_itr->selected )
         {
-            if ( items_tree.depth( item_itr ) < items_tree.depth( item_indicator ) )
+            //
+            switch( item_itr->can_move )
             {
-                tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
-                
-                while ( items_tree.is_valid( item_parent ) )
+                // default or 2 (can move everywhere) except in (child) subtree (see below)
+                default:
                 {
-                    if ( item_itr == item_parent )
-                        return 0;
+                    if ( items_tree.depth( item_itr ) < items_tree.depth( item_indicator ) )
+                    {
+                        // From the indicator (indicator = row to move next to)
+                        tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
+                        
+                        // We go upper in the tree
+                        while ( items_tree.is_valid( item_parent ) )
+                        {
+                            if ( item_itr == item_parent )
+                                return 0;
+                            
+                            item_parent = items_tree.parent(item_parent);
+                        }
+                    }
                     
-                    item_parent = items_tree.parent(item_parent);
+                    break;
                 }
+                
+                // Can only move on the same depth (can't go to subtree)
+                case 1:
+                {
+                    if ( (items_tree.depth( item_itr ) != items_tree.depth( item_indicator )) || coi_side == 2 )
+                        return 0;
+                        
+                    break;
+                }
+                
+                // Can't move
+                case 0: return 0;
             }
         }
         
