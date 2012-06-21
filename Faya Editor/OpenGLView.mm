@@ -302,6 +302,9 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             }
         }
         
+        //////////////////////////////////////////////////////////////////////////////////////////
+        //////////////// Ajout d'un sprite dans le monde /////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////
         if ( sprite_drag.size.x && !spritesheets[i].mouse_down )
         {
             // If we release the drag on the world (not on any gui window), create the sprite!
@@ -330,6 +333,10 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 
                 item_sprite->item_group_parent = spritesheets[i].item_group;
                 item_sprite->can_move = 3; // Can only move within the item_group_parent folder (can not be dragged outside)
+                
+                // Move it on top
+                tree<LDEgui_list_item>::sibling_iterator item_sprite_to = list_sprites->items_tree.begin(spritesheets[i].item_group);
+                list_sprites->items_tree.move_before( item_sprite_to, item_sprite );
                 
                 //list_sprites->select( sprite_id, 0);
                 
@@ -708,12 +715,14 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Draw all the world sprites
     for ( LDEuint i = 0; i < spritesheets_zorder.size(); ++i )
     {
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.cursor = app.cursor;
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.camera_pos = camera_pos;
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.camera_zoom = camera_zoom;
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.mouse = app.mouse;
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.test_coi = gui.unused && !transf_tool.hover;
-        spritesheets[spritesheets_zorder[i]].spriteBatchNode.draw();
+        LDEuint sps_id = spritesheets_zorder.size() - 1 - spritesheets_zorder[i];
+        
+        spritesheets[sps_id].spriteBatchNode.cursor = app.cursor;
+        spritesheets[sps_id].spriteBatchNode.camera_pos = camera_pos;
+        spritesheets[sps_id].spriteBatchNode.camera_zoom = camera_zoom;
+        spritesheets[sps_id].spriteBatchNode.mouse = app.mouse;
+        spritesheets[sps_id].spriteBatchNode.test_coi = gui.unused && !transf_tool.hover;
+        spritesheets[sps_id].spriteBatchNode.draw();
     }
     
     glDisable(GL_TEXTURE_2D);
@@ -1428,6 +1437,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
         }
         
+        
+        /////////////// CHANGING ZORDER OF SPRITES AND FOLDERS ///////////////
         if ( list_sprites->changed_order )
         {
             vector<LDEuint>spritesheet_zorder_temp;
@@ -1438,23 +1449,25 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             tree<LDEgui_list_item>::sibling_iterator item_itr = list_sprites->items_tree.begin();
             while ( item_itr != list_sprites->items_tree.end() )
             {
+                LDEuint num_sprites = spritesheets[item_itr->key].spriteBatchNode.sprites.size();
+                
                 std::vector<Sprite>sprites_temp;
-                sprites_temp.reserve( spritesheets[item_itr->key].spriteBatchNode.sprites.size() );
+                sprites_temp.reserve( num_sprites );
                 
                 //cout<<"folder:"<<item_itr->button.name<<"\n";
-
-                item_itr_sprite = list_sprites->items_tree.begin(item_itr);
-                while ( item_itr_sprite != list_sprites->items_tree.end(item_itr) )
+                
+                item_itr_sprite = list_sprites->items_tree.end(item_itr);
+                while ( item_itr_sprite != item_itr )
                 {
                     if ( item_itr_sprite->type == 0 )
                     {
                         //cout<<"sprite:"<<item_itr_sprite->button.name<<"\n";
                         
                         sprites_temp.push_back( spritesheets[item_itr->key].spriteBatchNode.sprites[item_itr_sprite->key] );                     
-                        item_itr_sprite->key = sprites_temp.size()-1;
+                        item_itr_sprite->key = sprites_temp.size() - 1;
                     }
                     
-                    ++item_itr_sprite;
+                    --item_itr_sprite;
                 }
                 
                 spritesheets[item_itr->key].spriteBatchNode.sprites = sprites_temp;
