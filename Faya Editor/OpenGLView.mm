@@ -715,7 +715,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Draw all the world sprites
     for ( LDEuint i = 0; i < spritesheets_zorder.size(); ++i )
     {
-        LDEuint sps_id = spritesheets_zorder.size() - 1 - spritesheets_zorder[i];
+        LDEuint sps_id = /*spritesheets_zorder.size() - 1 - */spritesheets_zorder[i];
         
         spritesheets[sps_id].spriteBatchNode.cursor = app.cursor;
         spritesheets[sps_id].spriteBatchNode.camera_pos = camera_pos;
@@ -1290,7 +1290,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             spritesheets.push_back( spritframe_temp );
             
             LDEuint spritesheet_id = spritesheets.size()-1;
-            spritesheets_zorder.push_back(spritesheet_id);
+            spritesheets_zorder.push_back( spritesheet_id );
             
             string spritesheet_name = "SpriteSheet"+LDEnts( spritesheet_id+1 );
             
@@ -1299,6 +1299,9 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             spritesheets[spritesheet_id].item_group->can_move = 1;
             spritesheets[spritesheet_id].item_group->key = spritesheet_id;
+            
+            tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
+            list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
             
             // When spritesheet saved, go to World Edit Mode
             switchEditorMode(2);
@@ -1437,44 +1440,52 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
         }
         
-        
         /////////////// CHANGING ZORDER OF SPRITES AND FOLDERS ///////////////
         if ( list_sprites->changed_order )
         {
             vector<LDEuint>spritesheet_zorder_temp;
             spritesheet_zorder_temp.reserve( spritesheets_zorder.size() );
             
-            tree<LDEgui_list_item>::iterator item_itr_sprite;
+            tree<LDEgui_list_item>::iterator item_itr_sprite, item_itr_sprite_begin;
             
-            tree<LDEgui_list_item>::sibling_iterator item_itr = list_sprites->items_tree.begin();
-            while ( item_itr != list_sprites->items_tree.end() )
+            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.end();
+            --item_itr_sibling;
+
+            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling_begin = list_sprites->items_tree.begin();
+            --item_itr_sibling_begin;
+            
+            // For every spritesheet folder (backwards)
+            while ( item_itr_sibling != item_itr_sibling_begin )
             {
-                LDEuint num_sprites = spritesheets[item_itr->key].spriteBatchNode.sprites.size();
+                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                
+                LDEuint num_sprites = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites.size();
                 
                 std::vector<Sprite>sprites_temp;
                 sprites_temp.reserve( num_sprites );
                 
-                //cout<<"folder:"<<item_itr->button.name<<"\n";
-                
-                item_itr_sprite = list_sprites->items_tree.end(item_itr);
-                while ( item_itr_sprite != item_itr )
+                item_itr_sprite = list_sprites->items_tree.end(item_itr_sibling);
+                --item_itr_sprite;
+                item_itr_sprite_begin = list_sprites->items_tree.begin(item_itr_sibling);
+                --item_itr_sprite_begin;
+                while ( item_itr_sprite != item_itr_sprite_begin )
                 {
                     if ( item_itr_sprite->type == 0 )
                     {
                         //cout<<"sprite:"<<item_itr_sprite->button.name<<"\n";
                         
-                        sprites_temp.push_back( spritesheets[item_itr->key].spriteBatchNode.sprites[item_itr_sprite->key] );                     
+                        sprites_temp.push_back( spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr_sprite->key] );                     
                         item_itr_sprite->key = sprites_temp.size() - 1;
                     }
                     
                     --item_itr_sprite;
                 }
                 
-                spritesheets[item_itr->key].spriteBatchNode.sprites = sprites_temp;
+                spritesheets[item_itr_sibling->key].spriteBatchNode.sprites = sprites_temp;
                 
-                spritesheet_zorder_temp.push_back(item_itr->key);
+                spritesheet_zorder_temp.push_back(item_itr_sibling->key);
                 
-                ++item_itr;
+                --item_itr_sibling;
             }
             
             spritesheets_zorder = spritesheet_zorder_temp;
