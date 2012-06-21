@@ -539,14 +539,21 @@ void LDEgui_list::groupSelected( std::string group_name )
         
         // Add temporary child to the folder so that we move all selected rows "next to" this child, then we'll delete it
         tree<LDEgui_list_item>::iterator item_itr_temp = items_tree.append_child( item_group, item_temp );
-        
-        tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
 
         tree<LDEgui_list_item>::iterator item_last_moved = item_itr_temp;
+        
+        // For every selected row
+        tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
         while( item_itr != items_tree.end() )
         {
             if ( item_itr->selected )
             {
+                if ( items_tree.is_valid( item_itr->item_group_parent ) )
+                {
+                    item_group->item_group_parent = item_itr->item_group_parent;
+                    item_group->can_move = item_itr->can_move;
+                }
+                
                 item_last_moved = items_tree.move_after( item_last_moved, item_itr );
                 
                 item_itr->selected = 0;
@@ -729,7 +736,7 @@ bool LDEgui_list::canMoveToIndicator() const
                     
                     break;
                 }
-                    
+
                 // default or 2 (can move everywhere) except in (child) subtree (see below)
                 default:
                 {

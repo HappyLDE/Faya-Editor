@@ -55,7 +55,6 @@ struct SpriteBatchNode
     
     LDEfloat selected_rot,
             selected_opacity;
-                
     
     vec2i   cursor,
             selected_pos,

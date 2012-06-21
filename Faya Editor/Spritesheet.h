@@ -16,6 +16,7 @@
 #include "LDEprimitives.h"
 #include "LDEmouse_event.h"
 #include "LDEgui_list.h"
+#include "SpriteBatchNode.h"
 
 struct Spritesheet_frame
 {
@@ -44,6 +45,8 @@ struct Spritesheet
             mouse_down;
     
     LDEint  selected;
+    
+    SpriteBatchNode spriteBatchNode;
     
     tree<LDEgui_list_item>::iterator item_group;
     
