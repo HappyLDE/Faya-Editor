@@ -91,6 +91,7 @@ struct LDEgui_list
             click,
             dbclick,
             changed,
+            changed_selection,
             changed_order,
             test_coi,
             hide_indicator,

@@ -48,6 +48,7 @@ LDEgui_list::LDEgui_list()
     hide_indicator = 0;
     
 	changed = 0;
+    changed_selection = 0;
     changed_order = 0;
     
 	focus = 0;
@@ -305,6 +306,7 @@ void LDEgui_list::select( tree<LDEgui_list_item>::iterator it, bool keep_rest )
     ++num_selected;
     
     changed = 1;
+    changed_selection = 1;
     focus = 1;
     
     fucked_selection = 0;
@@ -376,6 +378,7 @@ void LDEgui_list::selectBetween( tree<LDEgui_list_item>::iterator it_begin, tree
         num_selected = 0;
     
     changed = 1;
+    changed_selection = 1;
 }
 
 tree<LDEgui_list_item>::iterator LDEgui_list::addGroup( std::string group_name )
@@ -784,6 +787,7 @@ void LDEgui_list::draw( vec2i cursor, LDEfloat frametime )
 	dbclick = 0;
 	active = 0;
 	changed = 0;
+    changed_selection = 0;
     changed_order = 0;
     cursor_over_selected = 0;
     hide_indicator = 0;

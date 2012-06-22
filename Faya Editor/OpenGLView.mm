@@ -1440,7 +1440,32 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
         }
         
-        /////////////// CHANGING ZORDER OF SPRITES AND FOLDERS ///////////////
+        /////////////// CHANGING SELECTION OF SPRITES ///////////////
+        if ( list_sprites->changed_selection )
+        {
+            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
+            while ( item_itr_sibling != list_sprites->items_tree.end() )
+            {
+                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                
+                tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
+                while ( item_itr != list_sprites->items_tree.end(item_itr_sibling) )
+                {
+                    if ( item_itr->type == 0 )
+                    {
+                        //cout<<"sprite:"<<item_itr->button.name<<"\n";
+                        
+                        spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;                     
+                    }
+                    
+                    ++item_itr;
+                }
+                
+                ++item_itr_sibling;
+            }
+        }
+        
+        /////////////// CHANGING ZORDER OF SpriteSheets and Sprites ///////////////
         if ( list_sprites->changed_order )
         {
             vector<LDEuint>spritesheet_zorder_temp;
