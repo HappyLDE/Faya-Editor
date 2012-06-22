@@ -1443,11 +1443,13 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         /////////////// CHANGING SELECTION OF SPRITES ///////////////
         if ( list_sprites->changed_selection )
         {
+            // For every spritesheet folder in the list
             tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
             while ( item_itr_sibling != list_sprites->items_tree.end() )
             {
                 //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
                 
+                // For every sprites in the spritesheet folder
                 tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
                 while ( item_itr != list_sprites->items_tree.end(item_itr_sibling) )
                 {
