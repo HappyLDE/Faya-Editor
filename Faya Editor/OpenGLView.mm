@@ -1531,6 +1531,39 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 ++item_itr_sibling;
             }
+            
+            vec2i min( 999999999, 999999999), max( -999999999, -999999999), pos_temp;
+            
+            // For every spritesheet folder in the list
+            item_itr_sibling = list_sprites->items_tree.begin();
+            while ( item_itr_sibling != list_sprites->items_tree.end() )
+            {
+                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                
+                pos_temp = spritesheets[item_itr_sibling->key].spriteBatchNode.getTransfPos();
+                
+                if ( pos_temp.x != 0 && pos_temp.y != 0 )
+                {
+                    /// MIN
+                    if ( min.x > pos_temp.x )
+                        min.x = pos_temp.x;
+                    
+                    if ( min.y > pos_temp.y )
+                        min.y = pos_temp.y;
+                    
+                    
+                    /// MAX
+                    if ( max.x < pos_temp.x )
+                        max.x = pos_temp.x;
+                    
+                    if ( max.y < pos_temp.y )
+                        max.y = pos_temp.y;
+                }
+                
+                ++item_itr_sibling;
+            }
+            
+            transf_tool_pos = vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
         }
         
         /////////////// CHANGING ZORDER OF SpriteSheets and Sprites ///////////////
