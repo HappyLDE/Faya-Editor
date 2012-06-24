@@ -14,6 +14,7 @@ struct LDEtransf_tool
     LDEldet *image;
     
     vec2i   pos,
+            pos_old,
             click_offset,
             cursor; // cursor pos
     

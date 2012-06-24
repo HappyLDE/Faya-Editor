@@ -23,6 +23,7 @@
 struct Sprite
 {
     vec2i   pos,    // Pos in px
+            pos_offset,
             size,   // Size in px
             size_100,
             image_size,
@@ -72,6 +73,8 @@ struct SpriteBatchNode
     void deselect();
     
     vec2i getTransfPos() const;
+    void showPosOffset( vec2i pos_offset );
+    void applyPosOffset();
     void setPosition( vec2i pos );
     void setRotation( LDEfloat rotation );
     void setOpacity( LDEfloat opacity );

@@ -48,6 +48,13 @@ void vec2i::operator += ( LDEint value )
 	y += value;
 }
 
+// Add to all values this one value
+void vec2i::operator += ( vec2i value )
+{
+	x += value.x;
+	y += value.y;
+}
+
 //// Substract //////////////////////////////////////////
 
 // Substract to all values this one value

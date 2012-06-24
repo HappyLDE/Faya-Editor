@@ -350,7 +350,7 @@ void init_gui()
 	gui.addWindow(window_tools_texture_atlas);
 	window_tools_texture_atlas->title_pos.x = 10;
 	window_tools_texture_atlas->pos = vec2i( 10, 35 );
-	window_tools_texture_atlas->size = vec2i( 170, 400 );
+	window_tools_texture_atlas->size = vec2i( 170, 290 );
 	window_tools_texture_atlas->min_size = vec2i( 150, 400 );
 	window_tools_texture_atlas->title = "Tools";
 	window_tools_texture_atlas->can_resize = false;
@@ -363,7 +363,8 @@ void init_gui()
 	
     window_tools_texture_atlas->elements.addButton( button_texture_atlas_spread );
 	button_texture_atlas_spread->setText("Spread");
-	button_texture_atlas_spread->pos = vec2i( window_tools_texture_atlas->size.x/2 - button_texture_atlas_spread->size.x/2, 200 );
+	button_texture_atlas_spread->size = vec2i( 120, 60 );
+    button_texture_atlas_spread->pos = vec2i( window_tools_texture_atlas->size.x/2 - button_texture_atlas_spread->size.x/2, 160 );
     
 	window_tools_texture_atlas->elements.addButton( button_texture_atlas_save );
 	button_texture_atlas_save->setText("Save sheet");

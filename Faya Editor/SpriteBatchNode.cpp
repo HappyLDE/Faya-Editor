@@ -174,7 +174,6 @@ vec2i SpriteBatchNode::getTransfPos() const
             if ( min.y > sprites[i].pos.y )
                 min.y = sprites[i].pos.y;
             
-            
             /// MAX
             if ( max.x < sprites[i].pos.x )
                 max.x = sprites[i].pos.x;
@@ -185,6 +184,30 @@ vec2i SpriteBatchNode::getTransfPos() const
     }
     
     return vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
+}
+
+void SpriteBatchNode::showPosOffset( vec2i pos_offset )
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].pos_offset = pos_offset;
+        }
+    }
+}
+
+void SpriteBatchNode::applyPosOffset()
+{
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            sprites[i].pos += sprites[i].pos_offset;
+            
+            sprites[i].pos_offset.reset();
+        }
+    }
 }
 
 void SpriteBatchNode::draw()
@@ -235,7 +258,7 @@ void SpriteBatchNode::draw()
         
         glColor4f(1, 1, 1, sprites[i].opacity);
         glPushMatrix();
-        glTranslatef( sprites[i].pos.x, sprites[i].pos.y, 0);
+        glTranslatef( (sprites[i].pos.x+sprites[i].pos_offset.x), (sprites[i].pos.y+sprites[i].pos_offset.y), 0);
         glRotatef(sprites[i].rot, 0, 0, 1);
         LDErectp( sprites[i].image_size,
                  vec4i( sprites[i].texture_uv.x, sprites[i].texture_uv.y, sprites[i].texture_uv.z, sprites[i].texture_uv.w),
@@ -243,8 +266,8 @@ void SpriteBatchNode::draw()
         glPopMatrix();
         
         // Check for click on the sprite
-        if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= sprites[i].pos.x - sprites[i].offset.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= sprites[i].pos.x + sprites[i].size.x - sprites[i].offset.x &&
-             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= sprites[i].pos.y - sprites[i].offset.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= sprites[i].pos.y + sprites[i].size.y - sprites[i].offset.y && test_coi )
+        if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= (sprites[i].pos.x+sprites[i].pos_offset.x) - sprites[i].offset.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= (sprites[i].pos.x+sprites[i].pos_offset.x) + sprites[i].size.x - sprites[i].offset.x &&
+             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= (sprites[i].pos.y+sprites[i].pos_offset.y) - sprites[i].offset.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= (sprites[i].pos.y+sprites[i].pos_offset.y) + sprites[i].size.y - sprites[i].offset.y && test_coi )
         {
             // If left clicked on that one
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
@@ -277,13 +300,13 @@ void SpriteBatchNode::draw()
             some_selected = 1;
             
             glPushMatrix();
-            glTranslatef( sprites[i].pos.x, sprites[i].pos.y, 0);
+            glTranslatef( (sprites[i].pos.x+sprites[i].pos_offset.x), (sprites[i].pos.y+sprites[i].pos_offset.y), 0);
             glRotatef( sprites[i].rot, 0, 0, 1);
             LDErectw( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y );
             glPopMatrix();
             
-            tool_pos.x = (LDEfloat)(sprites[i].pos.x + camera_pos.x)*camera_zoom;
-            tool_pos.y = (LDEfloat)(sprites[i].pos.y + camera_pos.y)*camera_zoom;
+            tool_pos.x = (LDEfloat)((sprites[i].pos.x+sprites[i].pos_offset.x) + camera_pos.x)*camera_zoom;
+            tool_pos.y = (LDEfloat)((sprites[i].pos.y+sprites[i].pos_offset.y) + camera_pos.y)*camera_zoom;
             
             selected_pos = sprites[i].pos;
             selected_rot = sprites[i].rot;

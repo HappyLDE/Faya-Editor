@@ -24,6 +24,7 @@ struct vec2i
 
 	// Add to all values this one value
 	void operator += ( LDEint value );
+    void operator += ( vec2i value );
 
 	// Substract to all values this one value
 	void operator -= ( LDEint value );

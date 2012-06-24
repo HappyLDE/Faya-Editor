@@ -893,15 +893,30 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         transf_tool.test_coi = gui.unused;
         transf_tool.draw( vec2i( (transf_tool_pos.x + camera_pos.x) * camera_zoom, (transf_tool_pos.y + camera_pos.y) * camera_zoom ) );
 
-        /*if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
+        if ( transf_tool.changed )
         {
-            vec2i new_pos( round( (LDEfloat)transf_tool.pos.x / camera_zoom ) - camera_pos.x, (LDEfloat)transf_tool.pos.y / camera_zoom - camera_pos.y );
-            spriteBatchNode.setPosition( new_pos );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                spritesheets[i].spriteBatchNode.applyPosOffset();
+            }
+        }
+        
+        if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
+        {   
+            vec2i new_pos( round( (LDEfloat)transf_tool.pos.x / camera_zoom ) - camera_pos.x, round( (LDEfloat)transf_tool.pos.y / camera_zoom ) - camera_pos.y );
+            vec2i pos_offset( (LDEfloat)(transf_tool.pos.x - transf_tool.pos_old.x) / camera_zoom, (LDEfloat)(transf_tool.pos.y - transf_tool.pos_old.y) / camera_zoom );
+            
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                spritesheets[i].spriteBatchNode.showPosOffset( pos_offset );
+            }
+            
+            transf_tool_pos = new_pos;
             
             editbox_sprite_pos_x->name = LDEnts(transf_tool.pos.x);
             editbox_sprite_pos_y->name = LDEnts(transf_tool.pos.y);
         }
-        else if ( transf_tool.hover_rotate )
+        /*else if ( transf_tool.hover_rotate )
         {
             if ( !transf_tool.init_change )
             {

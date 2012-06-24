@@ -21,7 +21,6 @@ LDEtransf_tool::~LDEtransf_tool()
 void LDEtransf_tool::reset()
 {
     test_coi = 0;
-    changed = 0;
     
     hover_arrow_right = 0,
     hover_arrow_bottom = 0,
@@ -58,7 +57,10 @@ void LDEtransf_tool::draw( vec2i my_pos )
     else if ( hover_circle )
         pos = cursor - click_offset;
     else
+    {
         pos = my_pos;
+        pos_old = my_pos;
+    }
     
     if ( hover_rotate )
         rot = LDEangle2i( pos, cursor ) - click_offset_angle;
@@ -70,9 +72,15 @@ void LDEtransf_tool::draw( vec2i my_pos )
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
     {
-        if ( mouse[i].left && mouse[i].down )
+        if ( mouse[i].down )
         {
-            mouse_down = 1;
+            if ( mouse[i].left )
+                mouse_down = 1;
+        }
+        else
+        {
+            if ( mouse[i].left )
+                changed = 1;
         }
     }
     
