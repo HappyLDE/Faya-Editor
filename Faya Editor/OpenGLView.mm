@@ -16,6 +16,7 @@ LDEint FAYA_VERSION = 1;
 
 LDEfloat rot_temp = 0;
 
+vec2i transf_tool_pos;
 LDEtransf_tool transf_tool;
 
 vec2i camera_pos;
@@ -734,15 +735,38 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 spritesheets[sps_id-1].spriteBatchNode.unselectAll();*/
     }
     
+    //// IF SELECTION CHANGED FROM WORLD SPRITES (new selected or unselected)
     if ( selection_changed )
     {
         list_sprites->deselect();
+        
+        vec2i min( 999999999, 999999999), max( -999999999, -999999999), pos_temp;
         
         // For every spritesheet folder in the list
         tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
         while ( item_itr_sibling != list_sprites->items_tree.end() )
         {
             //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+            
+            pos_temp = spritesheets[item_itr_sibling->key].spriteBatchNode.getTransfPos();
+            
+            if ( pos_temp.x != 0 && pos_temp.y != 0 )
+            {
+                /// MIN
+                if ( min.x > pos_temp.x )
+                    min.x = pos_temp.x;
+                
+                if ( min.y > pos_temp.y )
+                    min.y = pos_temp.y;
+                
+                
+                /// MAX
+                if ( max.x < pos_temp.x )
+                    max.x = pos_temp.x;
+                
+                if ( max.y < pos_temp.y )
+                    max.y = pos_temp.y;
+            }
             
             // For every sprites in the spritesheet folder
             tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
@@ -764,6 +788,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             ++item_itr_sibling;
         }
+        
+        transf_tool_pos = vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
     }
     
     glDisable(GL_TEXTURE_2D);
@@ -861,7 +887,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         transf_tool.cursor = app.cursor;
         transf_tool.mouse = app.mouse;
         transf_tool.test_coi = gui.unused;
-        transf_tool.draw();
+        transf_tool.draw( vec2i( transf_tool_pos.x + camera_pos.x, transf_tool_pos.y + camera_pos.y) );
 
         /*if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
         {

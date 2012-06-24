@@ -136,7 +136,7 @@ void SpriteBatchNode::setOpacity( LDEfloat opacity )
     }
 }
 
-LDEuint SpriteBatchNode::getNumSelected()
+LDEuint SpriteBatchNode::getNumSelected() const
 {
     LDEuint num_selected = 0;
     
@@ -155,6 +155,36 @@ void SpriteBatchNode::deselect()
     {
         sprites[i].selected = 0;
     }
+    
+    changed = 1;
+}
+
+vec2i SpriteBatchNode::getTransfPos() const
+{
+    vec2i min( 999999999, 999999999), max( -999999999, -999999999);
+
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+        {
+            /// MIN
+            if ( min.x > sprites[i].pos.x )
+                min.x = sprites[i].pos.x;
+        
+            if ( min.y > sprites[i].pos.y )
+                min.y = sprites[i].pos.y;
+            
+            
+            /// MAX
+            if ( max.x < sprites[i].pos.x )
+                max.x = sprites[i].pos.x;
+            
+            if ( max.y < sprites[i].pos.y )
+                max.y = sprites[i].pos.y;
+        }
+    }
+    
+    return vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
 }
 
 void SpriteBatchNode::draw()

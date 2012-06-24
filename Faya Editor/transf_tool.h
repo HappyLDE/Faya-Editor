@@ -16,7 +16,7 @@ struct LDEtransf_tool
     vec2i   pos,
             click_offset,
             cursor; // cursor pos
-
+    
     bool    test_coi,
             hover_arrow_right,
             hover_arrow_bottom,
@@ -39,7 +39,7 @@ struct LDEtransf_tool
     bool changed;
     
     void reset();
-    void draw();
+    void draw( vec2i my_pos );
     
     LDEtransf_tool();
     ~LDEtransf_tool();
