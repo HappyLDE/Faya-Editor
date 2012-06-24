@@ -46,7 +46,7 @@ void LDEtransf_tool::reset()
     init_change = 0;
 }
 
-void LDEtransf_tool::draw( vec2i my_pos )
+void LDEtransf_tool::draw()
 {
     hover = 0;
     changed = 0;
@@ -57,8 +57,6 @@ void LDEtransf_tool::draw( vec2i my_pos )
         pos.y = cursor.y - click_offset.y;
     else if ( hover_circle )
         pos = cursor - click_offset;
-    else
-        pos = my_pos;
     
     if ( hover_rotate )
         rot = LDEangle2i( pos, cursor ) - click_offset_angle;

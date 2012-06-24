@@ -136,7 +136,20 @@ void SpriteBatchNode::setOpacity( LDEfloat opacity )
     }
 }
 
-void SpriteBatchNode::unselectAll()
+LDEuint SpriteBatchNode::getNumSelected()
+{
+    LDEuint num_selected = 0;
+    
+    for ( LDEuint i = 0; i < sprites.size(); ++i )
+    {
+        if ( sprites[i].selected )
+            ++num_selected;
+    }
+    
+    return num_selected;
+}
+
+void SpriteBatchNode::deselect()
 {
     for ( LDEuint i = 0; i < sprites.size(); ++i )
     {
@@ -148,18 +161,36 @@ void SpriteBatchNode::draw()
 {
     changed = 0;
 
-    // If clicked and we must not keep old selected sprites
-    if ( test_coi && !keep_select && mouse.size() )
+    if ( test_coi )
     {
-        // For every click that was done on that frame
-        for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
+        for ( LDEuint i = 0; i < input.size(); ++i )
         {
-            // If left click (mousedown)
-            if ( mouse[inp].left && mouse[inp].down )
+            if ( input[i].key_down )
             {
-                unselectAll();
+                if ( input[i].lcmd )
+                    keep_select = 1;
+            }
+            else
+            {
+                if ( input[i].lcmd )
+                    keep_select = 0;
             }
         }
+        
+        // If clicked and we must not keep old selected sprites
+        if ( !keep_select && mouse.size() )
+        {
+            // For every click that was done on that frame
+            for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
+            {
+                // If left click (mousedown)
+                if ( mouse[inp].left && mouse[inp].down )
+                {
+                    deselect();
+                }
+            }
+        }
+        
     }
     
     glEnable(GL_TEXTURE_2D);
@@ -193,8 +224,11 @@ void SpriteBatchNode::draw()
                     sprites[i].selected = 1;
                     changed = 1;
                     
-                    for ( LDEuint u = 0; u < i; ++u )
-                        sprites[u].selected = 0;	// les autres sprites (en dessous de celui-ci) ne sont plus sélectionnés
+                    if ( !keep_select )
+                    {
+                        for ( LDEuint u = 0; u < i; ++u )
+                            sprites[u].selected = 0;	// les autres sprites (en dessous de celui-ci) ne sont plus sélectionnés
+                    }
                 }
             }
         }

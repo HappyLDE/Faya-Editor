@@ -722,16 +722,34 @@ bool LDEgui_list::canMoveToIndicator() const
                 {
                     bool is_within = 0;
                     
-                    // From the indicator (indicator = row to move next to)
-                    tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
-                    
-                    // We go upper in the tree
-                    while ( items_tree.is_valid( item_parent ) )
+                    if ( items_tree.is_valid(item_indicator) )
                     {
-                        if ( item_itr->item_group_parent == item_parent )
-                            is_within = 1;
+                        // From the indicator (indicator = row to move next to)
+                        tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
                         
-                        item_parent = items_tree.parent(item_parent);
+                        // We go upper in the tree
+                        while ( items_tree.is_valid( item_parent ) )
+                        {
+                            if ( item_itr->item_group_parent == item_parent )
+                                is_within = 1;
+                            
+                            item_parent = items_tree.parent(item_parent);
+                        }
+                    }
+                    
+                    if ( items_tree.depth( item_itr ) < items_tree.depth( item_indicator ) )
+                    {
+                        // From the indicator (indicator = row to move next to)
+                        tree<LDEgui_list_item>::iterator item_parent = items_tree.parent( item_indicator );
+                        
+                        // We go upper in the tree
+                        while ( items_tree.is_valid( item_parent ) )
+                        {
+                            if ( item_itr == item_parent )
+                                return 0;
+                            
+                            item_parent = items_tree.parent(item_parent);
+                        }
                     }
                     
                     if ( !is_within )
@@ -1103,9 +1121,12 @@ void LDEgui_list::draw( vec2i cursor, LDEfloat frametime )
 
 	glDisable( GL_SCISSOR_TEST );
     
-    if ( (items_tree.is_valid(item_indicator) && item_indicator->selected) || !canMoveToIndicator() )
+    if ( items_tree.is_valid(item_indicator) && item_indicator->selected )
         show_indicator = 0;
 
+    if ( show_indicator )
+        show_indicator = canMoveToIndicator();
+        
     if ( allow_reorder && show_indicator )
     {
         glDisable(GL_TEXTURE_2D);

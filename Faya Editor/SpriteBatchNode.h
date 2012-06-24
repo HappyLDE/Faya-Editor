@@ -14,6 +14,7 @@
 #include "LDEvec4i.h"
 #include "LDEprimitives.h"
 #include "LDEmouse_event.h"
+#include "LDEinput.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -47,6 +48,7 @@ struct SpriteBatchNode
 {
     std::vector<Sprite>sprites;
     
+    std::vector<LDEinput>input;
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     
     bool    test_coi,
@@ -67,7 +69,7 @@ struct SpriteBatchNode
     
     LDEuint last_texture_id;
     
-    void unselectAll();
+    void deselect();
     
     void setPosition( vec2i pos );
     void setRotation( LDEfloat rotation );
@@ -75,6 +77,7 @@ struct SpriteBatchNode
     void setOffset( vec2i offset );
     LDEint setSizeX( LDEint size_x, bool keep_ratio );
     LDEint setSizeY( LDEint size_y, bool keep_ratio );
+    LDEuint getNumSelected();
     void draw();
     
     SpriteBatchNode();

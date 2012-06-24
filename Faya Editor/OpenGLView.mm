@@ -298,7 +298,7 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 sprite_drag.size = spritesheets[i].frames[spritesheets[i].selected].size;
                 sprite_drag.size_100 = spritesheets[i].frames[spritesheets[i].selected].size_100;
                 
-                spritesheets[i].spriteBatchNode.unselectAll();
+                spritesheets[i].spriteBatchNode.deselect();
             }
         }
         
@@ -338,7 +338,7 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 tree<LDEgui_list_item>::sibling_iterator item_sprite_to = list_sprites->items_tree.begin(spritesheets[i].item_group);
                 list_sprites->items_tree.move_before( item_sprite_to, item_sprite );
                 
-                //list_sprites->select( sprite_id, 0);
+                list_sprites->select( item_sprite, 0);
                 
                 transf_tool.reset();
             }
@@ -712,6 +712,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     glTranslatef(camera_pos.x,camera_pos.y,0);
     
     glEnable(GL_TEXTURE_2D);
+    bool selection_changed = 0;
     // Draw all the world sprites
     for ( LDEuint i = 0; i < spritesheets_zorder.size(); ++i )
     {
@@ -721,8 +722,48 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         spritesheets[sps_id].spriteBatchNode.camera_pos = camera_pos;
         spritesheets[sps_id].spriteBatchNode.camera_zoom = camera_zoom;
         spritesheets[sps_id].spriteBatchNode.mouse = app.mouse;
+        spritesheets[sps_id].spriteBatchNode.input = app.input;
         spritesheets[sps_id].spriteBatchNode.test_coi = gui.unused && !transf_tool.hover;
         spritesheets[sps_id].spriteBatchNode.draw();
+        
+        if ( spritesheets[sps_id].spriteBatchNode.changed )
+            selection_changed = 1;
+        
+        /*if ( sps_id )
+            if ( spritesheets[sps_id].spriteBatchNode.getNumSelected() )
+                spritesheets[sps_id-1].spriteBatchNode.unselectAll();*/
+    }
+    
+    if ( selection_changed )
+    {
+        list_sprites->deselect();
+        
+        // For every spritesheet folder in the list
+        tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
+        while ( item_itr_sibling != list_sprites->items_tree.end() )
+        {
+            //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+            
+            // For every sprites in the spritesheet folder
+            tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
+            while ( item_itr != list_sprites->items_tree.end(item_itr_sibling) )
+            {
+                if ( item_itr->type == 0 )
+                {
+                    //cout<<"sprite:"<<item_itr->button.name<<"\n";
+
+                    if ( spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected )
+                    {
+                        list_sprites->select(item_itr, 1);
+                        list_sprites->changed_selection = 0;
+                    }
+                }
+                
+                ++item_itr;
+            }
+            
+            ++item_itr_sibling;
+        }
     }
     
     glDisable(GL_TEXTURE_2D);
@@ -813,17 +854,16 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         editbox_sprite_rot->name = LDEnts( spriteBatchNode.selected_rot );
         
         editbox_sprite_opacity->name = LDEnts( spriteBatchNode.selected_opacity );
-    }
+    }*/
     
-    if ( spriteBatchNode.tool_pos.x )
+    //if ( spriteBatchNode.tool_pos.x )
     {
         transf_tool.cursor = app.cursor;
         transf_tool.mouse = app.mouse;
         transf_tool.test_coi = gui.unused;
-        transf_tool.draw( spriteBatchNode.tool_pos );
-        //transf_tool.draw( vec2i(300, 300) );
+        transf_tool.draw();
 
-        if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
+        /*if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
         {
             vec2i new_pos( round( (LDEfloat)transf_tool.pos.x / camera_zoom ) - camera_pos.x, (LDEfloat)transf_tool.pos.y / camera_zoom - camera_pos.y );
             spriteBatchNode.setPosition( new_pos );
@@ -887,8 +927,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             if ( checkbox_sprite_size_keep_ratio->checked )
                 editbox_sprite_size_x->name = LDEnts(new_size.x);
-        }
-    }*/
+        }*/
+    }
 
     glLineWidth(1);
     
