@@ -12,7 +12,8 @@
 
 using namespace std;
 
-LDEint FAYA_VERSION = 1;
+LDEint  FAYA_VERSION = 1,
+        num_selected_sprites = 0;
 
 LDEfloat rot_temp = 0;
 
@@ -739,6 +740,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     if ( selection_changed )
     {
         list_sprites->deselect();
+        num_selected_sprites = 0;
         
         vec2i min( 999999999, 999999999), max( -999999999, -999999999), pos_temp;
         
@@ -780,6 +782,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     {
                         list_sprites->select(item_itr, 1);
                         list_sprites->changed_selection = 0;
+                        
+                        ++num_selected_sprites;
                     }
                 }
                 
@@ -882,7 +886,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         editbox_sprite_opacity->name = LDEnts( spriteBatchNode.selected_opacity );
     }*/
     
-    //if ( spriteBatchNode.tool_pos.x )
+    if ( num_selected_sprites )
     {
         transf_tool.cursor = app.cursor;
         transf_tool.mouse = app.mouse;
@@ -1509,6 +1513,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         /////////////// CHANGING SELECTION OF SPRITES ///////////////
         if ( list_sprites->changed_selection )
         {
+            num_selected_sprites = 0;
+            
             // For every spritesheet folder in the list
             tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
             while ( item_itr_sibling != list_sprites->items_tree.end() )
@@ -1523,7 +1529,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     {
                         //cout<<"sprite:"<<item_itr->button.name<<"\n";
                         
-                        spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;                     
+                        spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;
+                        
+                        if ( item_itr->selected )
+                            ++num_selected_sprites;
                     }
                     
                     ++item_itr;
