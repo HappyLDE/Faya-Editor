@@ -887,7 +887,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         transf_tool.cursor = app.cursor;
         transf_tool.mouse = app.mouse;
         transf_tool.test_coi = gui.unused;
-        transf_tool.draw( vec2i( transf_tool_pos.x + camera_pos.x, transf_tool_pos.y + camera_pos.y) );
+        transf_tool.draw( vec2i( (transf_tool_pos.x + camera_pos.x) * camera_zoom, (transf_tool_pos.y + camera_pos.y) * camera_zoom ) );
 
         /*if ( transf_tool.hover_arrow_right || transf_tool.hover_arrow_bottom || transf_tool.hover_circle )
         {
