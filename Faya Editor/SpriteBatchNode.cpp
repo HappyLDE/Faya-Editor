@@ -19,6 +19,7 @@ Sprite::Sprite()
     dist = 0;
     init_dist = 0;
     rot_offset = 0;
+    rot_self_offset = 0;
 }
 
 Sprite::~Sprite()

@@ -41,6 +41,7 @@ struct Sprite
     
     LDEfloat rot,       // Rotation in degrees
             rot_offset,
+            rot_self_offset,
             opacity,
             dist;
     

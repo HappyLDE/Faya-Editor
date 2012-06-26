@@ -814,6 +814,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         editbox_sprite_pos_x->name = LDEnts(transf_tool_pos.x);
         editbox_sprite_pos_y->name = LDEnts(-transf_tool_pos.y);
         
+        editbox_sprite_size_x->name = LDEnts(transf_tool_size.x);
+        editbox_sprite_size_y->name = LDEnts(transf_tool_size.y);
+        
+        editbox_sprite_ap_x->name = LDEnts(transf_tool_size.x/2);
+        editbox_sprite_ap_y->name = LDEnts(transf_tool_size.y/2);
+        
         editbox_sprite_rot->name = LDEnts( transf_tool_rot );
     }
     
@@ -945,10 +951,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                             {
                                 spritesheets[i].spriteBatchNode.sprites[s].dist = LDEdist2f( vec2f(new_pos), vec2f(spritesheets[i].spriteBatchNode.sprites[s].pos) );
                                 spritesheets[i].spriteBatchNode.sprites[s].rot_offset = LDEangle2i( new_pos, spritesheets[i].spriteBatchNode.sprites[s].pos );
+                                spritesheets[i].spriteBatchNode.sprites[s].rot_self_offset = spritesheets[i].spriteBatchNode.sprites[s].rot;
                                 
                                 // bs code
                                 spritesheets[i].spriteBatchNode.sprites[s].pos = vec2i( new_pos.x + (sin(-LDEdegtorad(transf_tool.rot-spritesheets[i].spriteBatchNode.sprites[s].rot_offset)) * spritesheets[i].spriteBatchNode.sprites[s].dist),
-                                                                                       new_pos.y + (cos(-LDEdegtorad(transf_tool.rot-spritesheets[i].spriteBatchNode.sprites[s].rot_offset)) * spritesheets[i].spriteBatchNode.sprites[s].dist) );
+                                                                                        new_pos.y + (cos(-LDEdegtorad(transf_tool.rot-spritesheets[i].spriteBatchNode.sprites[s].rot_offset)) * spritesheets[i].spriteBatchNode.sprites[s].dist) );
                                 
                                 spritesheets[i].spriteBatchNode.sprites[s].rot_offset = LDEangle2i( new_pos, spritesheets[i].spriteBatchNode.sprites[s].pos );
                                 // fin bs code
@@ -956,7 +963,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                                 spritesheets[i].spriteBatchNode.sprites[s].init_dist = 1;
                             }
                             
-                            spritesheets[i].spriteBatchNode.sprites[s].rot = transf_tool.rot;
+                            spritesheets[i].spriteBatchNode.sprites[s].rot = transf_tool.rot + spritesheets[i].spriteBatchNode.sprites[s].rot_self_offset;
                             
                             spritesheets[i].spriteBatchNode.sprites[s].pos = vec2i( new_pos.x + (sin(-LDEdegtorad(transf_tool.rot-spritesheets[i].spriteBatchNode.sprites[s].rot_offset)) * spritesheets[i].spriteBatchNode.sprites[s].dist),
                                                                                     new_pos.y + (cos(-LDEdegtorad(transf_tool.rot-spritesheets[i].spriteBatchNode.sprites[s].rot_offset)) * spritesheets[i].spriteBatchNode.sprites[s].dist) );
@@ -1589,6 +1596,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         if ( list_sprites->changed_selection )
         {
             num_selected_sprites = 0;
+            transf_tool_rot = 0;
             
             // For every spritesheet folder in the list
             tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
@@ -1607,7 +1615,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                         spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;
                         
                         if ( item_itr->selected )
+                        {
+                            transf_tool_rot = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].rot;
+                            transf_tool_size = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].size;
+                            
                             ++num_selected_sprites;
+                        }
                     }
                     
                     ++item_itr;
@@ -1647,10 +1660,26 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 ++item_itr_sibling;
             }
             
+            if ( num_selected_sprites > 1 )
+            {
+                transf_tool_rot = 0;
+                transf_tool_size = 0;
+            }
+            
+            transf_tool.rot_offset = -transf_tool_rot;
+            
             transf_tool_pos = vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
             
             editbox_sprite_pos_x->name = LDEnts(transf_tool_pos.x);
             editbox_sprite_pos_y->name = LDEnts(-transf_tool_pos.y);
+            
+            editbox_sprite_size_x->name = LDEnts(transf_tool_size.x);
+            editbox_sprite_size_y->name = LDEnts(transf_tool_size.y);
+            
+            editbox_sprite_ap_x->name = LDEnts(transf_tool_size.x/2);
+            editbox_sprite_ap_y->name = LDEnts(transf_tool_size.y/2);
+            
+            editbox_sprite_rot->name = LDEnts( transf_tool_rot );
         }
         
         /////////////// CHANGING ZORDER OF SpriteSheets and Sprites ///////////////
@@ -1731,7 +1760,13 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_pos_y->name = "0";
             
-            //spriteBatchNode.setPosition( new_position );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                spritesheets[i].spriteBatchNode.setPosition( new_position );
+                
+                transf_tool_pos = new_position;
+                transf_tool.pos = new_position;
+            }
         }
         
         // Anchor point editboxes
@@ -1759,8 +1794,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_ap_y->name = "0";
             
-            //spriteBatchNode.test_coi = 0;
-            //spriteBatchNode.setOffset( new_ap );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                spritesheets[i].spriteBatchNode.test_coi = 0;
+                spritesheets[i].spriteBatchNode.setOffset( new_ap );
+            }
         }
 
         // Size X editbox
@@ -1778,7 +1816,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_size_x->name = "100";
             
-            //new_size.y = spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                new_size.y = spritesheets[i].spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
+            }
             
             editbox_sprite_size_y->name = LDEnts(new_size.y);
         }
@@ -1798,7 +1839,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_size_y->name = "100";
             
-            //new_size.x = spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                new_size.y = spritesheets[i].spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
+            }
             
             editbox_sprite_size_x->name = LDEnts(new_size.x);
         }
@@ -1818,7 +1862,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_rot->name = "0";
             
-            //spriteBatchNode.setRotation( new_rot );
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+            {
+                spritesheets[i].spriteBatchNode.setRotation( new_rot );
+            }
         }
         
         //
@@ -1836,23 +1883,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             else
                 editbox_sprite_opacity->name = "1";
             
-            //spriteBatchNode.setOpacity( new_opacity );
-        }
-        
-        ////
-        /*if ( spriteBatchNode.changed )
-        {
-            list_sprites->deselect();
-            
-            for ( LDEuint i = 0; i < spriteBatchNode.sprites.size(); ++i )
+            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
             {
-                //if ( spriteBatchNode.sprites[i].selected )
-                //    list_sprites->select( i, 1 );
+                spritesheets[i].spriteBatchNode.setOpacity( new_opacity );
             }
-            
-            list_sprites->changed = 0;
-            list_sprites->focus = 0;
-        }*/
+        }
     }
     
     // Les boutons en haut (leurs actions quand on les clique !)
