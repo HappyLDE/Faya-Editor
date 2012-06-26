@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "LDE.h"
+#include "LDEfunctions.h"
 #include "TextureAtlasCreation_item.h"
 #include "Spritesheet.h"
 #include "Vector.h"

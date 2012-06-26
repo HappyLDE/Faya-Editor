@@ -11,6 +11,7 @@
 LDEtransf_tool::LDEtransf_tool()
 {
     reset();
+    rot_offset = 0;
 }
 
 LDEtransf_tool::~LDEtransf_tool()
@@ -49,26 +50,6 @@ void LDEtransf_tool::draw( vec2i my_pos )
 {
     hover = 0;
     changed = 0;
-    
-    if ( hover_arrow_right )
-        pos.x = cursor.x - click_offset.x;
-    else if ( hover_arrow_bottom )
-        pos.y = cursor.y - click_offset.y;
-    else if ( hover_circle )
-        pos = cursor - click_offset;
-    else
-    {
-        pos = my_pos;
-        pos_old = my_pos;
-    }
-    
-    if ( hover_rotate )
-        rot = LDEangle2i( pos, cursor ) - click_offset_angle;
-    
-    if ( hover_square_right )
-        size = cursor.x - click_offset.x - pos.x;
-    else if ( hover_square_bottom )
-        size = cursor.y - click_offset.y - pos.y;
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
     {
@@ -272,6 +253,26 @@ void LDEtransf_tool::draw( vec2i my_pos )
         glDisable(GL_LINE_STIPPLE);
         glEnable(GL_TEXTURE_2D);
     }
+    
+    if ( hover_arrow_right )
+        pos.x = cursor.x - click_offset.x;
+    else if ( hover_arrow_bottom )
+        pos.y = cursor.y - click_offset.y;
+    else if ( hover_circle )
+        pos = cursor - click_offset;
+    else
+    {
+        pos = my_pos;
+        pos_old = my_pos;
+    }
+    
+    if ( hover_rotate )
+        rot = LDEangle2i( pos, cursor ) - click_offset_angle - rot_offset;
+    
+    if ( hover_square_right )
+        size = cursor.x - click_offset.x - pos.x;
+    else if ( hover_square_bottom )
+        size = cursor.y - click_offset.y - pos.y;
     
     for ( LDEuint i = 0; i < mouse.size(); ++i )
     {

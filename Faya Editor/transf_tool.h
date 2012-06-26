@@ -33,6 +33,7 @@ struct LDEtransf_tool
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     
     LDEfloat rot,
+            rot_offset,
             size,
             old_size,
             click_offset_angle;

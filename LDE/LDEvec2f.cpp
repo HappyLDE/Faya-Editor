@@ -26,6 +26,18 @@ vec2f::~vec2f()
 	reset();
 }
 
+vec2f::vec2f( vec2i const &pos )
+{
+    x = pos.x;
+    y = pos.y;
+}
+
+vec2f::vec2f( vec2f const &pos )
+{
+    x = pos.x;
+    y = pos.y;
+}
+
 // Put all values to zero
 void vec2f::reset()
 {

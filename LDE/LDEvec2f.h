@@ -9,6 +9,7 @@
 #define LDE_VEC2F_H
 
 #include "LDEvariables.h"
+#include "LDEvec2i.h"
 
 struct vec2f
 {
@@ -54,6 +55,8 @@ struct vec2f
 	void operator = ( vec2f value );
 
 	vec2f();
+    vec2f( vec2i const &pos );
+    vec2f( vec2f const &pos );
 	vec2f( LDEfloat x_, LDEfloat y_ );
 	~vec2f();
 };

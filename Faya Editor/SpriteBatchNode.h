@@ -30,7 +30,8 @@ struct Sprite
             offset,
             flip;   // Texture orientation
     
-    bool    selected;
+    bool    selected,
+            init_dist;
     
     std::string name;
     
@@ -39,7 +40,9 @@ struct Sprite
     LDEuint image_id;
     
     LDEfloat rot,       // Rotation in degrees
-             opacity;
+            rot_offset,
+            opacity,
+            dist;
     
     Sprite();
     ~Sprite();

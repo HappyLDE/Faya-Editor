@@ -11,6 +11,18 @@
 
 using namespace std;
 
+#define PI 3.14159265
+
+LDEfloat LDEradtodeg( LDEfloat angle )
+{
+    return (180 * angle) / PI;
+}
+
+LDEfloat LDEdegtorad( LDEfloat angle )
+{
+    return (PI * angle) / 180;
+}
+
 // Finds the next power of two number (used for OpenGL images for example)
 LDEuint LDEnextPot( LDEuint value )
 {
@@ -132,12 +144,12 @@ const char *LDEstc( string name )
 }
 
 // Returns the distance between two 2D points
-LDEfloat LDedist2f(vec2f &start, vec2f &end)
+LDEfloat LDEdist2f(vec2f start, vec2f end)
 {
 	return sqrtf( ((start.x - end.x)*(start.x - end.x)) + ((start.y - end.y)*(start.y - end.y)) );
 }
 
 LDEdouble LDEangle2i( vec2i a, vec2i b )
 {
-    return atan2( b.y - a.y, b.x - a.x) * 180 / 3.14159265;
+    return atan2( b.y - a.y, b.x - a.x) * 180 / PI;
 }

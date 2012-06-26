@@ -16,6 +16,9 @@ Sprite::Sprite()
     opacity = 1;
     image_id = 0;
     selected = 0;
+    dist = 0;
+    init_dist = 0;
+    rot_offset = 0;
 }
 
 Sprite::~Sprite()

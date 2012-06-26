@@ -21,6 +21,9 @@
 #include "LDEvec2i.h"
 #include <iostream>
 
+LDEfloat LDEradtodeg( LDEfloat angle );
+LDEfloat LDEdegtorad( LDEfloat angle );
+
 // Finds the next power of two number (used for OpenGL images for example)
 LDEuint LDEnextPot( LDEuint value );
 
@@ -58,7 +61,7 @@ LDEfloat LDEstn( std::string name );
 const char *LDEstc( std::string name );
 
 // Returns the distance between two 2D points
-LDEfloat LDEdist2f(vec2f &start, vec2f &end);
+LDEfloat LDEdist2f(vec2f start, vec2f end);
 
 LDEdouble LDEangle2i( vec2i a, vec2i b );
 
