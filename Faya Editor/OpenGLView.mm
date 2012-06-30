@@ -24,6 +24,7 @@ vec2i camera_pos;
 LDEfloat camera_zoom = 1;
 LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
+LDEuint path_selected_id = 0;
 vector<VectorPaths>paths;
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
                                  /// AND it's won sprite batch node
@@ -1047,7 +1048,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Vector Mode
     if ( editor_mode == 0 )
     {
-        /*if ( gui.unused )
+        if ( gui.unused )
         {
             for ( LDEuint i = 0; i < app.mouse.size(); ++i )
             {
@@ -1058,62 +1059,66 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                         //cout << "left mouse button down\n";
                         //mouse_overall_down = 1;
                         
-                        if ( paths.size() && list_vector_paths->selected > -1 )
+                        if ( paths.size() && list_vector_paths->num_selected )
                         {
                             vec2i vertex_pos;
                             
                             vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
                             vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
                             
-                            paths[list_vector_paths->selected].addVertex( vertex_pos );
+                            paths[path_selected_id].addVertex( vertex_pos );
                         }
                     }
                 }
             }
-        }*/
-        
-        if ( button_path_new->click )
-        {
-            for ( LDEuint l = 0; l < 10; ++l )
-            {
-                VectorPaths path_temp;
-                paths.push_back(path_temp);
-                
-                LDEuint path_id = paths.size()-1;
-                
-                list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
-                //list_vector_paths->select(path_id, 0);
-                
-                for ( LDEuint i = 0; i < paths.size(); ++i )
-                {
-                    paths[i].active = 0;
-                }
-                
-                paths[path_id].active = 1;
-                
-                button_vector_paths_delete->unlock();
-            }
         }
         
-        if ( list_vector_paths->changed )
+        
+        ////////// CREATION D'UN NOUVEAU PATH ////////////
+        if ( button_path_new->click )
         {
+            VectorPaths path_temp;
+            paths.push_back(path_temp);
+            
+            path_selected_id = paths.size()-1;
+            
+            tree<LDEgui_list_item>::iterator item_path = list_vector_paths->addItem( path_selected_id, "Path "+LDEnts(path_selected_id) );
+            list_vector_paths->select( item_path, 0);
+            
             for ( LDEuint i = 0; i < paths.size(); ++i )
             {
                 paths[i].active = 0;
             }
             
-            //paths[list_vector_paths->selected].active = 1;
+            paths[path_selected_id].active = 1;
+            
+            button_vector_paths_delete->unlock();
         }
         
-        /*if ( button_vector_paths_delete->click && list_vector_paths->selected > -1 )
+        ///////// Si la selection a changé (depuis la fenêtre list of paths)
+        if ( list_vector_paths->changed_selection )
         {
-            paths.erase( paths.begin() + list_vector_paths->selected );
-            list_vector_paths->remove( list_vector_paths->selected );
+            tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
+            while ( item_itr != list_vector_paths->items_tree.end() )
+            {
+                if ( item_itr->selected )
+                    path_selected_id = item_itr->key;
+                
+                paths[item_itr->key].active = item_itr->selected;
+                
+                ++item_itr;
+            }
+        }
+        
+        if ( button_vector_paths_delete->click && list_vector_paths->num_selected )
+        {
+            paths.erase( paths.begin() + path_selected_id );
+            //list_vector_paths->remove( list_vector_paths->selected );
             
             if ( !paths.size() )
             {
                 button_vector_paths_delete->lock();
-                list_vector_paths->selected = -1;
+                path_selected_id = 0;
             }
         }
         
@@ -1136,7 +1141,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
             }
-        }*/
+        }
         
         //
         //
