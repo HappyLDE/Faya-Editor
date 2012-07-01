@@ -126,12 +126,13 @@ void init_gui()
     
     pannel_menu->elements.addCombobox(combobox_editor_mode);
     combobox_editor_mode->choice_pos = 1; // Alwais place options under the button
-    combobox_editor_mode->size.x = 150;
+    combobox_editor_mode->size.x = 250;
     combobox_editor_mode->pos = vec2i( pannel_menu->size.x - combobox_editor_mode->size.x - 20, 2 );
-	combobox_editor_mode->addOption( 2, "World Edit", 1 );
-    combobox_editor_mode->addOption( 0, "Vector Edit", 0 );
-	combobox_editor_mode->addOption( 1, "Spritesheet", 0 );
-    
+	combobox_editor_mode->addOption( 3, "Shapes management", 0 );
+    combobox_editor_mode->addOption( 2, "Sprites management", 1 );
+    combobox_editor_mode->addOption( 0, "Vector editor", 0 );
+	combobox_editor_mode->addOption( 1, "New spritesheet", 0 );
+
     //////////////// SPRITES WORLD EDITOR MODE //////////////////////
     
     // Window containign spritesheets
@@ -289,7 +290,7 @@ void init_gui()
 	window_texture_atlas_sprites_list->pos = vec2i( 830, 35 );
 	window_texture_atlas_sprites_list->size = vec2i( 300, 550 );
 	window_texture_atlas_sprites_list->min_size = vec2i( 100, 100 );
-	window_texture_atlas_sprites_list->title = "Texture Atlas : Sprites";
+	window_texture_atlas_sprites_list->title = "Frames";
 	window_texture_atlas_sprites_list->show_close_button = false;
     
 	window_texture_atlas_sprites_list->elements.addList(list_texture_atlas_sprites);
@@ -313,7 +314,7 @@ void init_gui()
 	window_texture_atlas->pos = vec2i( 200, 35 );
 	window_texture_atlas->size = vec2i( 600, 400 );
 	window_texture_atlas->min_size = vec2i( 400, 150 );
-	window_texture_atlas->title = "Texture Atlas : Creation";
+	window_texture_atlas->title = "Spritesheet";
 	window_texture_atlas->show_close_button = false;
     
 	drawable_texture_atlas->scene = drawable_texture_atlas_scene;

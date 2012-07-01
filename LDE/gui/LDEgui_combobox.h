@@ -56,6 +56,8 @@ struct LDEgui_combobox
 	LDEint	key();
 	string	value();
 	
+    void    select( LDEuint key );
+    
 	void	addOption( LDEint value, string value_, bool selected_ );
 	
 	void	draw( vec2i cursor, LDEfloat frametime );

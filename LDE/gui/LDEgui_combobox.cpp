@@ -50,6 +50,21 @@ string LDEgui_combobox::value()
 	return 0;
 }
 
+void LDEgui_combobox::select( LDEuint key )
+{
+    for ( LDEuint i = 0; i < option.size(); ++i )
+    {
+        if ( option[i].key == key )
+        {
+            selected = i;
+            
+            button.name = option[i].button.name;
+            
+            break;
+        }
+    }
+}
+
 void LDEgui_combobox::draw( vec2i cursor, LDEfloat frametime )
 {
 	changed = 0;

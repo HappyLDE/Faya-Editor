@@ -192,6 +192,8 @@ void switchEditorMode(LDEuint mode)
             
             editor_mode = 0;
             
+            combobox_editor_mode->select(0);
+            
             break;
         }
             
@@ -209,6 +211,8 @@ void switchEditorMode(LDEuint mode)
             
             editor_mode = 1;
             
+            combobox_editor_mode->select(1);
+            
             break;
         }
             
@@ -225,6 +229,9 @@ void switchEditorMode(LDEuint mode)
             window_spritesheets->open();
             window_sprites_list->open();
             editor_mode = 2;
+            
+            combobox_editor_mode->select(2);
+            
             break;
         }
     }
