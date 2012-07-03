@@ -9,6 +9,7 @@ LDEgui_button *menu_button_export = new LDEgui_button();
 LDEgui_menu_item *menu_data = new LDEgui_menu_item();
 
 LDEgui_combobox *combobox_editor_mode = new LDEgui_combobox();
+LDEgui_combobox *combobox_editor_zoom = new LDEgui_combobox();
 
 //////////////// VECTOR MODE //////////////////////
 
@@ -87,6 +88,12 @@ LDEgui_editbox* editbox_sprite_size_x = new LDEgui_editbox();
 LDEgui_editbox* editbox_sprite_size_y = new LDEgui_editbox();
 LDEgui_checkbox* checkbox_sprite_size_keep_ratio = new LDEgui_checkbox();
 
+//////////////// SHAPES MANAGEMENT //////////////////////
+
+LDEgui_window *window_shapes_list = new LDEgui_window();
+LDEgui_list *list_shapes = new LDEgui_list();
+LDEgui_button *button_shapes_delete = new LDEgui_button();
+
 void init_gui()
 {
 	texture_atlas_zoom = 1.0;
@@ -133,13 +140,48 @@ void init_gui()
     combobox_editor_mode->addOption( 0, "Vector editor", 0 );
 	combobox_editor_mode->addOption( 1, "New spritesheet", 0 );
 
+    pannel_menu->elements.addCombobox(combobox_editor_zoom);
+    combobox_editor_zoom->choice_pos = 1; // Alwais place options under the button
+    combobox_editor_zoom->pos = vec2i( pannel_menu->size.x - combobox_editor_zoom->size.x - combobox_editor_mode->size.x - 30, 2 );
+	combobox_editor_zoom->addOption( 300, "300%", 0 );
+    combobox_editor_zoom->addOption( 250, "250%", 0 );
+    combobox_editor_zoom->addOption( 200, "200%", 0 );
+    combobox_editor_zoom->addOption( 150, "150%", 0 );
+    combobox_editor_zoom->addOption( 100, "100%", 1 );
+    combobox_editor_zoom->addOption( 75, "75%", 0 );
+    combobox_editor_zoom->addOption( 50, "50%", 0 );
+    combobox_editor_zoom->addOption( 25, "25%", 0 );
+    
+    //////////////// SHAPES MANAGEMENT //////////////////////
+    
+    // Window containing triangulated shapes list
+	gui.addWindow(window_shapes_list);
+	window_shapes_list->title_pos.x = 10;
+	window_shapes_list->pos = vec2i( 10, 30 );
+	window_shapes_list->size = vec2i( 230, app.size.y - 60 );
+	window_shapes_list->title = "Triangulated Shapes";
+	window_shapes_list->show_close_button = false;
+    window_shapes_list->close();
+    
+    
+    // Button delete shape
+    window_shapes_list->elements.addButton(button_shapes_delete);
+    button_shapes_delete->setText("Delete");
+    button_shapes_delete->pos = vec2i( 5, window_shapes_list->size.y - 55 );
+    
+    
+    // List of shapes
+    window_shapes_list->elements.addList(list_shapes);
+	list_shapes->size.x = window_shapes_list->size.x;
+	list_shapes->size.y = window_shapes_list->size.y-60;
+    
     //////////////// SPRITES WORLD EDITOR MODE //////////////////////
     
     // Window containign spritesheets
 	gui.addWindow(window_spritesheets);
 	window_spritesheets->title_pos.x = 10;
 	window_spritesheets->pos = vec2i( 10, 30 );
-	window_spritesheets->size = vec2i( 230, app.size.y- 60 );
+	window_spritesheets->size = vec2i( 230, app.size.y - 60 );
 	window_spritesheets->title = "Spritesheets";
 	window_spritesheets->show_close_button = false;
     

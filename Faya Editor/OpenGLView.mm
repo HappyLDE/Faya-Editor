@@ -234,6 +234,24 @@ void switchEditorMode(LDEuint mode)
             
             break;
         }
+            
+            // go to shapes management
+        case 3:
+        {
+            window_tools_texture_atlas->close();
+            window_texture_atlas_sprites_list->close();
+            window_texture_atlas->close();
+            
+            window_tools_vector->close();
+            window_vector_paths_list->close();
+            
+            window_spritesheets->close();
+            window_sprites_list->close();
+            
+            combobox_editor_mode->select(3);
+            
+            break;
+        }
     }
 }
 
@@ -294,10 +312,13 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
         spritesheets[i].mouse = app.mouse;
         spritesheets[i].draw();
         
+        // If we are using one of the spritesheet's frame on this window
         if ( spritesheets[i].used )
         {
+            // Stop moving the window
             window_spritesheets->move = 0;
             
+            // If we are actually draging the sprite, show one temporary sprite under the cursor
             if ( spritesheets[i].selected > -1 && spritesheets[i].mouse_down )
             {
                 sprite_drag.image_id = spritesheets[i].image.id;
@@ -697,8 +718,18 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 if ( camera_zoom < 0.01f )
                     camera_zoom = 0.01f;
+                
+                combobox_editor_zoom->button.name = LDEnts(round(camera_zoom*100))+"%";
             }
         }
+    }
+    
+    if ( combobox_editor_zoom->changed )
+    {
+        camera_zoom = (LDEfloat)combobox_editor_zoom->key() / 100;
+        
+        camera_pos.x = 150;
+        camera_pos.y = 150;
     }
     
     /// CAMERA 2D ///
@@ -1153,7 +1184,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         //
         //
     }
-    else
+    else if ( editor_mode == 1 )
     {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////                        TEXTURE ATLAS CREATION                        //////////////////////////////
@@ -1311,6 +1342,14 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 texture_atlas_pos.y = -scrollbar_texture_atlas->scroll_amount + 10;
             if ( scrollbar_texture_atlas_horizontal->changed )
                 texture_atlas_pos.x = -scrollbar_texture_atlas_horizontal->scroll_amount + 10;
+        }
+        // Shapes management mode
+        else if ( editor_mode == 3 )
+        {
+            if ( !window_shapes_list->closed )
+            {
+                
+            }
         }
         
         
