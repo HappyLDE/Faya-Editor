@@ -1211,7 +1211,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 // Go to shapes management
                 switchEditorMode(3);
-            }
+            } 
         }
         
         if ( !window_vector_paths_list->closed )
