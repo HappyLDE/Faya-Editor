@@ -16,6 +16,7 @@
 		F548CEF7155EAF0E009BCFF1 /* checkbox_hover.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */; };
 		F54CEB331570F4F80009B03D /* list_checkbox_hide_children.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F54CEB311570F4F80009B03D /* list_checkbox_hide_children.ldet */; };
 		F54CEB341570F4F80009B03D /* list_checkbox_hide_children_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F54CEB321570F4F80009B03D /* list_checkbox_hide_children_checked.ldet */; };
+		F54E642815A33B930060193A /* Triangulate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54E642715A33B930060193A /* Triangulate.cpp */; };
 		F57343D8156E56B900D477BB /* folder.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343D7156E56B900D477BB /* folder.ldet */; };
 		F57343DB156ED0F200D477BB /* list_checkbox_checked.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343D9156ED0F200D477BB /* list_checkbox_checked.ldet */; };
 		F57343DC156ED0F200D477BB /* list_checkbox.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F57343DA156ED0F200D477BB /* list_checkbox.ldet */; };
@@ -27,7 +28,7 @@
 		F5779A3D155AE889002C8B7B /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5779A2E155AE889002C8B7B /* OpenGLView.mm */; };
 		F5779A3E155AE889002C8B7B /* TextureAtlasCreation_item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A30155AE889002C8B7B /* TextureAtlasCreation_item.cpp */; };
 		F5779A3F155AE889002C8B7B /* TextureAtlas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A32155AE889002C8B7B /* TextureAtlas.cpp */; };
-		F5779A40155AE889002C8B7B /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A34155AE889002C8B7B /* Vector.cpp */; };
+		F5779A40155AE889002C8B7B /* VectorPaths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A34155AE889002C8B7B /* VectorPaths.cpp */; };
 		F5779A41155AE889002C8B7B /* Spritesheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A36155AE889002C8B7B /* Spritesheet.cpp */; };
 		F5779A42155AE889002C8B7B /* SpriteBatchNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5779A38155AE889002C8B7B /* SpriteBatchNode.cpp */; };
 		F5779A44155AE8A5002C8B7B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F5779A43155AE8A5002C8B7B /* MainMenu.xib */; };
@@ -114,6 +115,7 @@
 		F5779B0E155AE8D3002C8B7B /* window_close_pressed.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */; };
 		F5779B0F155AE8D3002C8B7B /* window_inactive.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */; };
 		F5779B11155AE8EE002C8B7B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779B10155AE8EE002C8B7B /* OpenGL.framework */; };
+		F5B9BAF315A328AE0077026C /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B9BAF215A328AE0077026C /* Shapes.cpp */; };
 		F5C73C2F1572BB1200535A4B /* liste_traits.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5C73C2E1572BB1200535A4B /* liste_traits.ldet */; };
 		F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5E726B3155BBE7E009B8759 /* FayaEditor.icns */; };
 /* End PBXBuildFile section */
@@ -130,6 +132,8 @@
 		F548CEF6155EAF0E009BCFF1 /* checkbox_hover.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = checkbox_hover.ldet; sourceTree = "<group>"; };
 		F54CEB311570F4F80009B03D /* list_checkbox_hide_children.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_hide_children.ldet; sourceTree = "<group>"; };
 		F54CEB321570F4F80009B03D /* list_checkbox_hide_children_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_hide_children_checked.ldet; sourceTree = "<group>"; };
+		F54E642615A33B930060193A /* Triangulate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Triangulate.h; sourceTree = "<group>"; };
+		F54E642715A33B930060193A /* Triangulate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Triangulate.cpp; sourceTree = "<group>"; };
 		F57343D4156D946100D477BB /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
 		F57343D7156E56B900D477BB /* folder.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = folder.ldet; sourceTree = "<group>"; };
 		F57343D9156ED0F200D477BB /* list_checkbox_checked.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = list_checkbox_checked.ldet; sourceTree = "<group>"; };
@@ -152,8 +156,8 @@
 		F5779A30155AE889002C8B7B /* TextureAtlasCreation_item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlasCreation_item.cpp; sourceTree = "<group>"; };
 		F5779A31155AE889002C8B7B /* TextureAtlas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureAtlas.h; sourceTree = "<group>"; };
 		F5779A32155AE889002C8B7B /* TextureAtlas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureAtlas.cpp; sourceTree = "<group>"; };
-		F5779A33155AE889002C8B7B /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
-		F5779A34155AE889002C8B7B /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
+		F5779A33155AE889002C8B7B /* VectorPaths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VectorPaths.h; sourceTree = "<group>"; };
+		F5779A34155AE889002C8B7B /* VectorPaths.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VectorPaths.cpp; sourceTree = "<group>"; };
 		F5779A35155AE889002C8B7B /* Spritesheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spritesheet.h; sourceTree = "<group>"; };
 		F5779A36155AE889002C8B7B /* Spritesheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Spritesheet.cpp; sourceTree = "<group>"; };
 		F5779A37155AE889002C8B7B /* SpriteBatchNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteBatchNode.h; sourceTree = "<group>"; };
@@ -279,6 +283,8 @@
 		F5779ADE155AE8D3002C8B7B /* window_close_pressed.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_close_pressed.ldet; sourceTree = "<group>"; };
 		F5779ADF155AE8D3002C8B7B /* window_inactive.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = window_inactive.ldet; sourceTree = "<group>"; };
 		F5779B10155AE8EE002C8B7B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F5B9BAF115A328AE0077026C /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shapes.h; sourceTree = "<group>"; };
+		F5B9BAF215A328AE0077026C /* Shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shapes.cpp; sourceTree = "<group>"; };
 		F5C73C2E1572BB1200535A4B /* liste_traits.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = liste_traits.ldet; sourceTree = "<group>"; };
 		F5E726B3155BBE7E009B8759 /* FayaEditor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FayaEditor.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -346,8 +352,12 @@
 				F5779A30155AE889002C8B7B /* TextureAtlasCreation_item.cpp */,
 				F5779A31155AE889002C8B7B /* TextureAtlas.h */,
 				F5779A32155AE889002C8B7B /* TextureAtlas.cpp */,
-				F5779A33155AE889002C8B7B /* Vector.h */,
-				F5779A34155AE889002C8B7B /* Vector.cpp */,
+				F54E642615A33B930060193A /* Triangulate.h */,
+				F54E642715A33B930060193A /* Triangulate.cpp */,
+				F5B9BAF115A328AE0077026C /* Shapes.h */,
+				F5B9BAF215A328AE0077026C /* Shapes.cpp */,
+				F5779A33155AE889002C8B7B /* VectorPaths.h */,
+				F5779A34155AE889002C8B7B /* VectorPaths.cpp */,
 				F5779A35155AE889002C8B7B /* Spritesheet.h */,
 				F5779A36155AE889002C8B7B /* Spritesheet.cpp */,
 				F5779A37155AE889002C8B7B /* SpriteBatchNode.h */,
@@ -664,7 +674,7 @@
 				F5779A3D155AE889002C8B7B /* OpenGLView.mm in Sources */,
 				F5779A3E155AE889002C8B7B /* TextureAtlasCreation_item.cpp in Sources */,
 				F5779A3F155AE889002C8B7B /* TextureAtlas.cpp in Sources */,
-				F5779A40155AE889002C8B7B /* Vector.cpp in Sources */,
+				F5779A40155AE889002C8B7B /* VectorPaths.cpp in Sources */,
 				F5779A41155AE889002C8B7B /* Spritesheet.cpp in Sources */,
 				F5779A42155AE889002C8B7B /* SpriteBatchNode.cpp in Sources */,
 				F5779A8C155AE8B5002C8B7B /* LDEgui_button.cpp in Sources */,
@@ -703,6 +713,8 @@
 				F5779AAD155AE8B5002C8B7B /* LDEvec4i.cpp in Sources */,
 				F548CEEB155E9EFC009BCFF1 /* LDEgui_checkbox.cpp in Sources */,
 				F536418715629546000803A9 /* transf_tool.cpp in Sources */,
+				F5B9BAF315A328AE0077026C /* Shapes.cpp in Sources */,
+				F54E642815A33B930060193A /* Triangulate.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

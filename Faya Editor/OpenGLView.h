@@ -11,7 +11,9 @@
 #include "LDEfunctions.h"
 #include "TextureAtlasCreation_item.h"
 #include "Spritesheet.h"
-#include "Vector.h"
+#include "VectorPaths.h"
+#include "Triangulate.h"
+#include "Shapes.h"
 #include "SpriteBatchNode.h"
 #include "transf_tool.h"
 #include <math.h>

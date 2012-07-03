@@ -26,6 +26,7 @@ LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
 LDEuint path_selected_id = 0;
 vector<VectorPaths>paths;
+vector<Shapes>shapes;
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
                                  /// AND it's won sprite batch node
 vector<LDEuint>spritesheets_zorder;
@@ -187,6 +188,8 @@ void switchEditorMode(LDEuint mode)
             window_spritesheets->close();
             window_sprites_list->close();
             
+            window_shapes_list->close();
+            
             window_tools_vector->open();
             window_vector_paths_list->open();
             
@@ -204,6 +207,8 @@ void switchEditorMode(LDEuint mode)
             window_vector_paths_list->close();
             window_spritesheets->close();
             window_sprites_list->close();
+            
+            window_shapes_list->close();
             
             window_tools_texture_atlas->open();
             window_texture_atlas_sprites_list->open();
@@ -226,6 +231,8 @@ void switchEditorMode(LDEuint mode)
             window_tools_vector->close();
             window_vector_paths_list->close();
             
+            window_shapes_list->close();
+            
             window_spritesheets->open();
             window_sprites_list->open();
             editor_mode = 2;
@@ -247,6 +254,8 @@ void switchEditorMode(LDEuint mode)
             
             window_spritesheets->close();
             window_sprites_list->close();
+            
+            window_shapes_list->open();
             
             combobox_editor_mode->select(3);
             
@@ -724,6 +733,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
+    // If we changed the zoom of the scene from the combobox
     if ( combobox_editor_zoom->changed )
     {
         camera_zoom = (LDEfloat)combobox_editor_zoom->key() / 100;
@@ -863,6 +873,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     }
     
     glDisable(GL_TEXTURE_2D);
+    
+    for ( LDEuint i = 0; i < shapes.size(); ++i )
+    {
+        shapes[i].draw();
+    }
+    
     glColor4d(1, 1, 1, 0.4);
     
     glBegin(GL_LINES);
@@ -1162,12 +1178,40 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         
         if ( button_path_end->click )
         {
-            for ( LDEuint i = 0; i < paths.size(); ++i )
-            {
-                paths[i].active = 0;
-            }
+            paths[path_selected_id].active = 0;
             
             list_vector_paths->deselect();
+        }
+        
+        // Make a triangulated shape from this path!
+        if ( button_path_triangulate->click )
+        {
+            if ( paths[path_selected_id].vertex.size() > 2 )
+            {
+                paths[path_selected_id].active = 0;
+                list_vector_paths->deselect();
+                
+                Shapes shape_temp;
+                shape_temp.path = paths[path_selected_id];
+                
+                // allocate an STL vector to hold the answer.
+                
+                Vector2dVector result;
+                
+                //  Invoke the triangulator to triangulate this polygon.
+                Triangulate::Process( paths[path_selected_id].vertex,result);
+                
+                shape_temp.vertex = result;
+                
+                shapes.push_back( shape_temp );
+                
+                LDEuint shape_id = shapes.size()-1;
+                
+                list_shapes->addItem( shape_id, "Shape"+LDEnts(shape_id) );
+                
+                // Go to shapes management
+                switchEditorMode(3);
+            }
         }
         
         if ( !window_vector_paths_list->closed )

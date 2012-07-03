@@ -17,13 +17,14 @@ LDEgui_combobox *combobox_editor_zoom = new LDEgui_combobox();
 LDEgui_window *window_tools_vector = new LDEgui_window();
 LDEgui_button *button_path_new = new LDEgui_button();
 LDEgui_button *button_path_end = new LDEgui_button();
+LDEgui_button *button_path_triangulate = new LDEgui_button();
 
 // Window texture atlas list of sprites
 LDEgui_window *window_vector_paths_list = new LDEgui_window();
 LDEgui_list *list_vector_paths = new LDEgui_list();
 LDEgui_button *button_vector_paths_delete = new LDEgui_button();
 
-//////////////// ATLAS MODE //////////////////////
+//////////////// TEXTURE ATLAS MODE (new spritesheet) //////////////////////
 
 // Window Tools : Texture Atlas
 LDEgui_window *window_tools_texture_atlas = new LDEgui_window();
@@ -300,6 +301,11 @@ void init_gui()
     window_tools_vector->elements.addButton(button_path_end);
     button_path_end->pos = vec2i( 5, 30 );
     button_path_end->setText("End Path");
+    
+    window_tools_vector->elements.addButton(button_path_triangulate);
+    button_path_triangulate->setText("Triang.");
+    button_path_triangulate->size.y = 30;
+    button_path_triangulate->pos = vec2i( window_tools_vector->size.x/2-button_path_triangulate->size.x/2, 90 );
     
     // Window Texture Atlas Creation : List of sprites
 	gui.addWindow(window_vector_paths_list);
