@@ -24,7 +24,7 @@ vec2i camera_pos;
 LDEfloat camera_zoom = 1;
 LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
-LDEuint path_selected_id = 0;
+std::vector<VectorPaths>::iterator path_itr_selected;
 vector<VectorPaths>paths;
 vector<Shapes>shapes;
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
@@ -83,7 +83,7 @@ void saveFile(string filename)
     
     for ( LDEuint i = 0; i < paths_size; ++i )
     {
-        file.write( (char*)&paths[i].selected, sizeof(LDEint) );
+        file.write( (char*)&paths[i].selected_vertex, sizeof(LDEint) );
         file.write( (char*)&paths[i].active, sizeof(bool) );
         
         LDEuint vertex_size = paths[i].vertex.size();
@@ -145,7 +145,7 @@ void openFile(string filename)
             
             list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
             
-            file.read( (char*)&paths[path_id].selected, sizeof(LDEint) );
+            file.read( (char*)&paths[path_id].selected_vertex, sizeof(LDEint) );
             file.read( (char*)&paths[path_id].active, sizeof(bool) );
             
             //if ( paths[path_id].active )
@@ -1120,7 +1120,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                             vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
                             vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
                             
-                            paths[path_selected_id].addVertex( vertex_pos );
+                            path_itr_selected->addVertex( vertex_pos );
                         }
                     }
                 }
@@ -1131,20 +1131,21 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         ////////// CREATION D'UN NOUVEAU PATH ////////////
         if ( button_path_new->click )
         {
+            // Unselect the previously selected path
+            if ( path_itr_selected != paths.end() )
+                path_itr_selected->active = 0;
+            
             VectorPaths path_temp;
             paths.push_back(path_temp);
             
-            path_selected_id = paths.size()-1;
+            LDEuint path_id = paths.size()-1;
             
-            tree<LDEgui_list_item>::iterator item_path = list_vector_paths->addItem( path_selected_id, "Path "+LDEnts(path_selected_id) );
+            path_itr_selected = paths.begin() + path_id;
+            
+            tree<LDEgui_list_item>::iterator item_path = list_vector_paths->addItem( path_id, "Path "+LDEnts(path_id) );
             list_vector_paths->select( item_path, 0);
             
-            for ( LDEuint i = 0; i < paths.size(); ++i )
-            {
-                paths[i].active = 0;
-            }
-            
-            paths[path_selected_id].active = 1;
+            path_itr_selected->active = 1;
             
             button_vector_paths_delete->unlock();
         }
@@ -1156,9 +1157,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             while ( item_itr != list_vector_paths->items_tree.end() )
             {
                 if ( item_itr->selected )
-                    path_selected_id = item_itr->key;
-                
-                paths[item_itr->key].active = item_itr->selected;
+                {
+                    
+                    //path_selected_id = item_itr->key;
+                    break;
+                }
                 
                 ++item_itr;
             }
@@ -1166,19 +1169,29 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         
         if ( button_vector_paths_delete->click && list_vector_paths->num_selected )
         {
-            paths.erase( paths.begin() + path_selected_id );
-            //list_vector_paths->remove( list_vector_paths->selected );
+            paths.erase( path_itr_selected );
+            
+            tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
+            while ( item_itr != list_vector_paths->items_tree.end() )
+            {
+                if ( item_itr->selected )
+                {
+                    list_vector_paths->items_tree.erase( item_itr );
+                    break;
+                }
+                
+                ++item_itr;
+            }
             
             if ( !paths.size() )
             {
                 button_vector_paths_delete->lock();
-                path_selected_id = 0;
             }
         }
         
         if ( button_path_end->click )
         {
-            paths[path_selected_id].active = 0;
+            path_itr_selected->active = 0;
             
             list_vector_paths->deselect();
         }
@@ -1186,28 +1199,50 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         // Make a triangulated shape from this path!
         if ( button_path_triangulate->click )
         {
-            if ( paths[path_selected_id].vertex.size() > 2 )
+            if ( path_itr_selected->vertex.size() > 2 )
             {
-                paths[path_selected_id].active = 0;
+                // Unselect all shapes
+                for ( LDEuint i = 0; i < shapes.size(); ++i )
+                {
+                    shapes[i].selected = 0;
+                }
+                
+                tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
+                while ( item_itr != list_vector_paths->items_tree.end() )
+                {
+                    if ( item_itr->selected )
+                    {
+                        list_vector_paths->items_tree.erase( item_itr );
+                        break;
+                    }
+
+                    ++item_itr;
+                }
+                
+                path_itr_selected->active = 0;
                 list_vector_paths->deselect();
                 
                 Shapes shape_temp;
-                shape_temp.path_vertex = paths[path_selected_id].vertex;
+                shape_temp.path_vertex = path_itr_selected->vertex;
                 
                 // allocate an STL vector to hold the answer.
                 
                 Vector2dVector result;
                 
                 //  Invoke the triangulator to triangulate this polygon.
-                Triangulate::Process( paths[path_selected_id].vertex,result);
+                Triangulate::Process( path_itr_selected->vertex,result);
                 
                 shape_temp.vertex = result;
+                shape_temp.selected = 1;
                 
                 shapes.push_back( shape_temp );
                 
                 LDEuint shape_id = shapes.size()-1;
                 
-                list_shapes->addItem( shape_id, "Shape"+LDEnts(shape_id) );
+                tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id, "Shape"+LDEnts(shape_id) );
+                list_shapes->select( item_list, 0 );
+                
+                paths.erase( path_itr_selected );
                 
                 // Go to shapes management
                 switchEditorMode(3);

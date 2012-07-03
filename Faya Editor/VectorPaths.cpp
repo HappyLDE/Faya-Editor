@@ -2,13 +2,13 @@
 
 VectorPaths::VectorPaths()
 {
-    selected = -1;
+    selected_vertex = -1;
     active = 0;
 }
 
 VectorPaths::~VectorPaths()
 {
-    selected = -1;
+    selected_vertex = -1;
     vertex.erase( vertex.begin(), vertex.end() );
     active = 0;
 }
@@ -17,7 +17,7 @@ void VectorPaths::addVertex(vec2i pos)
 {
     vertex.push_back(pos);
     
-    selected = vertex.size()-1;
+    selected_vertex = vertex.size()-1;
 }
 
 void VectorPaths::draw()
@@ -28,7 +28,7 @@ void VectorPaths::draw()
         glBegin(GL_LINE_STRIP);
         for ( LDEuint i = 0; i < vertex.size(); ++i )
         {
-            if ( selected == i )
+            if ( selected_vertex == i )
                 glColor3f(1,0,0);
             else
                 glColor3f(0,1,0);
@@ -46,12 +46,12 @@ void VectorPaths::draw()
         }
         glEnd();
         
-        if ( selected > -1 )
+        if ( selected_vertex > -1 )
         {
             glColor3f(1,0,0);
             glPointSize(8);
             glBegin(GL_POINTS);
-            glVertex2i( vertex[selected].x, vertex[selected].y );
+            glVertex2i( vertex[selected_vertex].x, vertex[selected_vertex].y );
             glEnd();
         }
     }

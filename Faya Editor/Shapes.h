@@ -20,6 +20,8 @@ struct Shapes
     
     void draw();
     
+    bool selected;
+    
     std::vector<vec2i>vertex;
     std::vector<vec2i>path_vertex;
 };

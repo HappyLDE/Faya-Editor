@@ -23,7 +23,7 @@ struct VectorPaths
     bool active;
     
     void addVertex( vec2i pos );
-    LDEint selected;
+    LDEint selected_vertex;
     
     void draw();
     
