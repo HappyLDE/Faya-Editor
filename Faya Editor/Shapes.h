@@ -9,7 +9,7 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
-#include "VectorPaths.h"
+#include <OpenGL/gl.h>
 #include "LDEvec2i.h"
 #include <vector>
 
@@ -21,8 +21,7 @@ struct Shapes
     void draw();
     
     std::vector<vec2i>vertex;
-    
-    VectorPaths path;
+    std::vector<vec2i>path_vertex;
 };
 
 #endif

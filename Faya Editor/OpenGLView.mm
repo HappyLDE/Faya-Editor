@@ -1192,7 +1192,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 list_vector_paths->deselect();
                 
                 Shapes shape_temp;
-                shape_temp.path = paths[path_selected_id];
+                shape_temp.path_vertex = paths[path_selected_id].vertex;
                 
                 // allocate an STL vector to hold the answer.
                 
@@ -1211,7 +1211,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 
                 // Go to shapes management
                 switchEditorMode(3);
-            } 
+            }
         }
         
         if ( !window_vector_paths_list->closed )
