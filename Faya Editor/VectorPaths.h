@@ -20,6 +20,8 @@ struct VectorPaths
 {
     std::vector<vec2i>vertex;
     
+    std::string name;
+    
     bool active;
     
     void addVertex( vec2i pos );

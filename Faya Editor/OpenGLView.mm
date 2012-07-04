@@ -1141,8 +1141,19 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             LDEuint path_id = paths.size()-1;
             
             path_itr_selected = paths.begin() + path_id;
+
+            path_itr_selected->name = "Path "+LDEnts(path_id);
             
-            tree<LDEgui_list_item>::iterator item_path = list_vector_paths->addItem( path_id, "Path "+LDEnts(path_id) );
+            list_vector_paths->items_tree.clear();
+            
+            tree<LDEgui_list_item>::iterator item_path;
+            
+            for ( LDEuint i = 0; i < paths.size(); ++i )
+            {
+                item_path = list_vector_paths->addItem( 0, paths[i].name );
+                item_path->it = paths.begin() + i;
+            }
+            
             list_vector_paths->select( item_path, 0);
             
             path_itr_selected->active = 1;
@@ -1153,13 +1164,19 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         ///////// Si la selection a changé (depuis la fenêtre list of paths)
         if ( list_vector_paths->changed_selection )
         {
+            // Unselect the previously selected path
+            if ( path_itr_selected != paths.end() )
+                path_itr_selected->active = 0;
+            
             tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
             while ( item_itr != list_vector_paths->items_tree.end() )
             {
                 if ( item_itr->selected )
                 {
+                    path_itr_selected = item_itr->it;
                     
-                    //path_selected_id = item_itr->key;
+                    path_itr_selected->active = 1;
+                    
                     break;
                 }
                 
@@ -1167,26 +1184,23 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             }
         }
         
+        //// BUTTON : DELETE A PATH
         if ( button_vector_paths_delete->click && list_vector_paths->num_selected )
         {
             paths.erase( path_itr_selected );
             
-            tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
-            while ( item_itr != list_vector_paths->items_tree.end() )
+            list_vector_paths->items_tree.clear();
+            
+            tree<LDEgui_list_item>::iterator item_path;
+            
+            for ( LDEuint i = 0; i < paths.size(); ++i )
             {
-                if ( item_itr->selected )
-                {
-                    list_vector_paths->items_tree.erase( item_itr );
-                    break;
-                }
-                
-                ++item_itr;
+                item_path = list_vector_paths->addItem( 0, paths[i].name );
+                item_path->it = paths.begin() + i;
             }
             
             if ( !paths.size() )
-            {
                 button_vector_paths_delete->lock();
-            }
         }
         
         if ( button_path_end->click )
@@ -1206,21 +1220,6 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 {
                     shapes[i].selected = 0;
                 }
-                
-                tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
-                while ( item_itr != list_vector_paths->items_tree.end() )
-                {
-                    if ( item_itr->selected )
-                    {
-                        list_vector_paths->items_tree.erase( item_itr );
-                        break;
-                    }
-
-                    ++item_itr;
-                }
-                
-                path_itr_selected->active = 0;
-                list_vector_paths->deselect();
                 
                 Shapes shape_temp;
                 shape_temp.path_vertex = path_itr_selected->vertex;
@@ -1243,6 +1242,18 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 list_shapes->select( item_list, 0 );
                 
                 paths.erase( path_itr_selected );
+                
+                list_vector_paths->items_tree.clear();
+                
+                tree<LDEgui_list_item>::iterator item_path;
+                
+                for ( LDEuint i = 0; i < paths.size(); ++i )
+                {
+                    item_path = list_vector_paths->addItem( 0, paths[i].name );
+                    item_path->it = paths.begin() + i;
+                }
+                
+                list_vector_paths->deselect();
                 
                 // Go to shapes management
                 switchEditorMode(3);
