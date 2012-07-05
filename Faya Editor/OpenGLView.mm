@@ -947,12 +947,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     // Make it selected (world)
                     shape_temp.selected = 1;
                     
-                    // Assign it's name
-                    shape_temp.name = "Shape"+LDEnts(shape_id_selected);
-                    
                     // Add the shape to the shapes array
                     shapes.push_back( shape_temp );
                     shape_id_selected = shapes.size()-1;
+                    
+                    // Assign it's name
+                    shapes[shape_id_selected].name = "Shape"+LDEnts(shape_id_selected);
                     
                     // Add entry to shapes gui list ////////////////////
                     tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id_selected, shapes[shape_id_selected].name );
@@ -1279,7 +1279,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         gui.font_elements->setPos( ((camera_pos.x - gui.font_elements->size.x)*camera_zoom)-(10/camera_zoom), (camera_pos.y + (i * PTM_RATIO) - (10/camera_zoom))*camera_zoom );
         gui.font_elements->draw();
     }
-    
+
     glPushMatrix();
     glScalef(camera_zoom, camera_zoom, 0);
     glTranslatef(camera_pos.x,camera_pos.y,0);
@@ -1291,9 +1291,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     {
         LDEuint sps_id = /*spritesheets_zorder.size() - 1 - */spritesheets_zorder[i];
         
-        spritesheets[sps_id].spriteBatchNode.cursor = app.cursor;
-        spritesheets[sps_id].spriteBatchNode.camera_pos = camera_pos;
-        spritesheets[sps_id].spriteBatchNode.camera_zoom = camera_zoom;
+        spritesheets[sps_id].spriteBatchNode.cursor = vec2i( (LDEfloat)(app.cursor.x/camera_zoom) - camera_pos.x, (LDEfloat)(app.cursor.y/camera_zoom) - camera_pos.y );
         spritesheets[sps_id].spriteBatchNode.mouse = app.mouse;
         spritesheets[sps_id].spriteBatchNode.input = app.input;
         spritesheets[sps_id].spriteBatchNode.draw();
@@ -1393,7 +1391,38 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     for ( LDEuint i = 0; i < shapes.size(); ++i )
     {
+        shapes[i].cursor = vec2i( (LDEfloat)(app.cursor.x/camera_zoom) - camera_pos.x, (LDEfloat)(app.cursor.y/camera_zoom) - camera_pos.y );
+        shapes[i].mouse = app.mouse;
         shapes[i].draw();
+
+        // If selection of shapes changed
+        if ( shapes[i].assign_selected )
+        {
+            if ( shapes[i].selected )
+            {
+                for ( LDEuint u = 0; u < i; ++u )
+                    shapes[u].selected = 0;	// les autres sprites (en dessous de celui-ci) ne sont plus sélectionnés
+                
+                // Assign the selected shape from the gui list items
+                // Loop until we find the first selected one, assign selection and quit loop
+                tree<LDEgui_list_item>::iterator item_itr = list_shapes->items_tree.begin();
+                while ( item_itr != list_shapes->items_tree.end() )
+                {
+                    // If selected shape (gui)
+                    if ( item_itr->key == i )
+                    {
+                        shape_id_selected = i;
+                        
+                        list_shapes->select( item_itr, 0 );
+                        
+                        // Break out the loop
+                        break;
+                    }
+                    
+                    ++item_itr;
+                }
+            }
+        }
     }
     
     glColor4d(1, 1, 1, 0.4);

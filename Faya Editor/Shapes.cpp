@@ -11,6 +11,7 @@
 Shapes::Shapes()
 {
     selected = 0;
+    assign_selected = 0;
 }
 
 Shapes::~Shapes()
@@ -20,14 +21,43 @@ Shapes::~Shapes()
 
 void Shapes::draw()
 {
+    LDErect( cursor.x, cursor.y, 50, 50 );
+    
     // The shape (filled)
     glColor3f(0.1,0.1,0.2);
+    
+    bool inside = 0;
+    assign_selected = 0;
+    
     glBegin(GL_TRIANGLES);
-    for ( LDEuint i = 0; i < vertex.size(); ++i )
+    for ( LDEuint i = 0; i < vertex.size(); i += 3 )
     {
+        // If left clicked on that one
+        for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
+        {
+            if ( mouse[inp].left && mouse[inp].down )
+            {
+                assign_selected = 1;
+                
+                if ( Triangulate::InsideTriangle( vertex[i].x, vertex[i].y,
+                                                  vertex[i+1].x, vertex[i+1].y,
+                                                  vertex[i+2].x, vertex[i+2].y,
+                                                  cursor.x, cursor.y) )
+                {
+                    
+                    inside = 1;
+                }
+            }
+        }
+        
         glVertex2i( vertex[i].x, vertex[i].y );
+        glVertex2i( vertex[i+1].x, vertex[i+1].y );
+        glVertex2i( vertex[i+2].x, vertex[i+2].y );
     }
     glEnd();
+
+    if ( assign_selected )
+        selected = inside;
     
     if ( selected )
     {
@@ -37,9 +67,11 @@ void Shapes::draw()
         // Wireframe
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glBegin(GL_TRIANGLES);
-        for ( LDEuint i = 0; i < vertex.size(); ++i )
+        for ( LDEuint i = 0; i < vertex.size(); i += 3 )
         {
             glVertex2i( vertex[i].x, vertex[i].y );
+            glVertex2i( vertex[i+1].x, vertex[i+1].y );
+            glVertex2i( vertex[i+2].x, vertex[i+2].y );
         }
         glEnd();
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );

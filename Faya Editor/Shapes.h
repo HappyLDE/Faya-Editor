@@ -13,11 +13,21 @@
 #include "LDEvec2i.h"
 #include <vector>
 #include <string>
+#include "LDEmouse_event.h"
+#include "Triangulate.h"
+#include "LDEprimitives.h"
+#include <iostream>
 
 struct Shapes
 {
     Shapes();
     ~Shapes();
+    
+    vec2i cursor;
+    
+    std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
+    
+    bool assign_selected;
     
     void draw();
     

@@ -32,7 +32,6 @@ SpriteBatchNode::SpriteBatchNode()
 {
     last_texture_id = 0;
     test_coi = 0;
-    camera_zoom = 1;
     changed = 0;
     keep_select = 0;
     selected_opacity = 1;
@@ -270,8 +269,8 @@ void SpriteBatchNode::draw()
         glPopMatrix();
         
         // Check for click on the sprite
-        if ( (LDEfloat)cursor.x/camera_zoom - camera_pos.x >= (sprites[i].pos.x+sprites[i].pos_offset.x) - sprites[i].offset.x && (LDEfloat)cursor.x/camera_zoom - camera_pos.x <= (sprites[i].pos.x+sprites[i].pos_offset.x) + sprites[i].size.x - sprites[i].offset.x &&
-             (LDEfloat)cursor.y/camera_zoom - camera_pos.y >= (sprites[i].pos.y+sprites[i].pos_offset.y) - sprites[i].offset.y && (LDEfloat)cursor.y/camera_zoom - camera_pos.y <= (sprites[i].pos.y+sprites[i].pos_offset.y) + sprites[i].size.y - sprites[i].offset.y && test_coi )
+        if ( cursor.x >= (sprites[i].pos.x+sprites[i].pos_offset.x) - sprites[i].offset.x && cursor.x <= (sprites[i].pos.x+sprites[i].pos_offset.x) + sprites[i].size.x - sprites[i].offset.x &&
+             cursor.y >= (sprites[i].pos.y+sprites[i].pos_offset.y) - sprites[i].offset.y && cursor.y <= (sprites[i].pos.y+sprites[i].pos_offset.y) + sprites[i].size.y - sprites[i].offset.y && test_coi )
         {
             // If left clicked on that one
             for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
@@ -308,10 +307,7 @@ void SpriteBatchNode::draw()
             glRotatef( sprites[i].rot, 0, 0, 1);
             LDErectw( -sprites[i].offset.x, -sprites[i].offset.y, sprites[i].size.x, sprites[i].size.y );
             glPopMatrix();
-            
-            tool_pos.x = (LDEfloat)((sprites[i].pos.x+sprites[i].pos_offset.x) + camera_pos.x)*camera_zoom;
-            tool_pos.y = (LDEfloat)((sprites[i].pos.y+sprites[i].pos_offset.y) + camera_pos.y)*camera_zoom;
-            
+
             selected_pos = sprites[i].pos;
             selected_rot = sprites[i].rot;
             selected_size = sprites[i].size;
@@ -322,7 +318,4 @@ void SpriteBatchNode::draw()
     glColor3f(1, 1, 1);
     glDisable(GL_LINE_STIPPLE);
     glEnable(GL_TEXTURE_2D);
-    
-    if ( !some_selected )
-        tool_pos.reset();
 }

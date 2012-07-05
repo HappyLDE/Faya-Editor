@@ -104,8 +104,6 @@ void LDEgui_list::remove( LDEuint number )
 
 void LDEgui_list::deselect()
 {
-    num_selected = 0;
-    
     tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
     while( item_itr != items_tree.end() )
     {
@@ -118,6 +116,8 @@ void LDEgui_list::deselect()
         
         ++item_itr;
     }
+    
+    num_selected = 0;
     
     item_last_selected = item_root;
     
@@ -298,12 +298,12 @@ void LDEgui_list::select( tree<LDEgui_list_item>::iterator it, bool keep_rest )
     }
     
     item_last_selected = it;
-
+    
     it->button.texture_rel = texture_list_item_selected;
     it->button.texture_coi = texture_list_item_selected;
     it->selected = 1;
     it->button.text_color = color_selected;
-    
+
     ++num_selected;
     
     changed = 1;

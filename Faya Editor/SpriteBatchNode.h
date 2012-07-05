@@ -66,11 +66,7 @@ struct SpriteBatchNode
     vec2i   cursor,
             selected_pos,
             selected_size,
-            selected_ap,
-            tool_pos,
-            camera_pos;
-    
-    LDEfloat camera_zoom;
+            selected_ap;
     
     LDEuint last_texture_id;
     
