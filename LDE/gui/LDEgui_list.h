@@ -30,15 +30,12 @@
 #include "LDEgui_button.h"
 #include "LDEgui_checkbox.h"
 
-#include "VectorPaths.h"
-
 struct LDEgui_list_item
 {
 	LDEgui_button button;
     LDEgui_checkbox checkbox, checkbox_hide_children;
     LDEgui_editbox editbox; // for renaming possibilities
     
-    std::vector<VectorPaths>::iterator it;
     tree<LDEgui_list_item>::iterator item_group_parent;
     
 	LDEint  key,

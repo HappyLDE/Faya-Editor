@@ -24,7 +24,7 @@ vec2i camera_pos;
 LDEfloat camera_zoom = 1;
 LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
-std::vector<VectorPaths>::iterator path_itr_selected;
+LDEuint path_id_selected = 0;
 vector<VectorPaths>paths;
 vector<Shapes>shapes;
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
@@ -1102,17 +1102,23 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Vector Mode
     if ( editor_mode == 0 )
     {
+        ////////////////////////////////////////////////////////////
+        ///////////// ADD ONE VERTEX TO A VECTOR PATH //////////////
+        ////////////////////////////////////////////////////////////
+        
+        // If cursor is not on the gui
         if ( gui.unused )
         {
+            // If there are any mouse events
             for ( LDEuint i = 0; i < app.mouse.size(); ++i )
             {
+                // If left click
                 if ( app.mouse[i].left )
                 {
+                    // Mouse down click
                     if ( app.mouse[i].down )
                     {
-                        //cout << "left mouse button down\n";
-                        //mouse_overall_down = 1;
-                        
+                        // If we have paths and one is selected, add vertex to it
                         if ( paths.size() && list_vector_paths->num_selected )
                         {
                             vec2i vertex_pos;
@@ -1120,63 +1126,74 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                             vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
                             vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
                             
-                            path_itr_selected->addVertex( vertex_pos );
+                            paths[path_id_selected].addVertex( vertex_pos );
                         }
                     }
                 }
             }
         }
         
+        ////////////////////////////////////////////////////////////
+        ////////////// CREATION OF A NEW VECTOR PATH ///////////////
+        ////////////////////////////////////////////////////////////
         
-        ////////// CREATION D'UN NOUVEAU PATH ////////////
+        // BUTTON NEW PATH
         if ( button_path_new->click )
         {
             // Unselect the previously selected path
-            if ( path_itr_selected != paths.end() )
-                path_itr_selected->active = 0;
+            if ( paths.size() && list_vector_paths->num_selected )
+                paths[path_id_selected].active = 0;
             
+            // Create a temporary path that we'll add to the array paths
             VectorPaths path_temp;
             paths.push_back(path_temp);
             
-            LDEuint path_id = paths.size()-1;
-            
-            path_itr_selected = paths.begin() + path_id;
+            path_id_selected = paths.size()-1;
 
-            path_itr_selected->name = "Path "+LDEnts(path_id);
+            paths[path_id_selected].name = "Path "+LDEnts(path_id_selected);
+            paths[path_id_selected].active = 1;
             
+            // Clear the gui list of paths
             list_vector_paths->items_tree.clear();
             
+            // Repopulate the gui list of paths
             tree<LDEgui_list_item>::iterator item_path;
-            
             for ( LDEuint i = 0; i < paths.size(); ++i )
             {
-                item_path = list_vector_paths->addItem( 0, paths[i].name );
-                item_path->it = paths.begin() + i;
+                item_path = list_vector_paths->addItem( i, paths[i].name );
             }
             
-            list_vector_paths->select( item_path, 0);
+            // Select the last gui list item
+            list_vector_paths->select( item_path, 0 );
             
-            path_itr_selected->active = 1;
-            
+            // Unlock the delete path button because we have paths in the array now
             button_vector_paths_delete->unlock();
         }
         
-        ///////// Si la selection a changé (depuis la fenêtre list of paths)
+        ////////////////////////////////////////////////////////////
+        ////////// CHANGING SELECTED PATH FROM GUI LIST ////////////
+        ////////////////////////////////////////////////////////////
+        
+        // If selection changed from gui list items
         if ( list_vector_paths->changed_selection )
         {
             // Unselect the previously selected path
-            if ( path_itr_selected != paths.end() )
-                path_itr_selected->active = 0;
+            if ( paths.size() && list_vector_paths->num_selected )
+                paths[path_id_selected].active = 0;
             
+            // Assign the selected path from tle gui list items
+            // Loop until we find the first selected one, assign selection and quit loop
             tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
             while ( item_itr != list_vector_paths->items_tree.end() )
             {
+                // If selected path (gui)
                 if ( item_itr->selected )
                 {
-                    path_itr_selected = item_itr->it;
+                    // Select the path (in the world)
+                    path_id_selected = item_itr->key;                    
+                    paths[path_id_selected].active = 1;
                     
-                    path_itr_selected->active = 1;
-                    
+                    // Break out the loop
                     break;
                 }
                 
@@ -1184,36 +1201,66 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             }
         }
         
-        //// BUTTON : DELETE A PATH
-        if ( button_vector_paths_delete->click && list_vector_paths->num_selected )
+        ////////////////////////////////////////////////////////////
+        ////////////////// DELETE A VECTOR PATH ////////////////////
+        ////////////////////////////////////////////////////////////
+        
+        // If we click the delete button
+        if ( button_vector_paths_delete->click )
         {
-            paths.erase( path_itr_selected );
-            
-            list_vector_paths->items_tree.clear();
-            
-            tree<LDEgui_list_item>::iterator item_path;
-            
-            for ( LDEuint i = 0; i < paths.size(); ++i )
+            // If there is a path selected
+            if ( paths.size() && list_vector_paths->num_selected )
             {
-                item_path = list_vector_paths->addItem( 0, paths[i].name );
-                item_path->it = paths.begin() + i;
+                // First of all, delete the selected path
+                paths.erase( paths.begin() + path_id_selected );
+                
+                // Clear the gui list of paths
+                list_vector_paths->items_tree.clear();
+                
+                // Repopulate the gui list of paths            
+                tree<LDEgui_list_item>::iterator item_path;
+                for ( LDEuint i = 0; i < paths.size(); ++i )
+                {
+                    item_path = list_vector_paths->addItem( i, paths[i].name );
+                    path_id_selected = i;
+                }
+                
+                // Unselect all gui list items
+                list_vector_paths->deselect();
+                
+                // Lock the delete button if there aren't any paths in the array
+                if ( !paths.size() )
+                    button_vector_paths_delete->lock();
             }
-            
-            if ( !paths.size() )
-                button_vector_paths_delete->lock();
         }
         
+        ////////////////////////////////////////////////////////////
+        ////////////////////// END A PATH //////////////////////////
+        ////////////////////////////////////////////////////////////
+        
+        // If we click the end path button
         if ( button_path_end->click )
         {
-            path_itr_selected->active = 0;
-            
-            list_vector_paths->deselect();
+            // If there is a path selected
+            if ( paths.size() && list_vector_paths->num_selected )
+            {
+                // Unselect the path (world)
+                paths[path_id_selected].active = 0;
+                
+                // Unselect the path (gui)
+                list_vector_paths->deselect();
+            }
         }
         
-        // Make a triangulated shape from this path!
+        ////////////////////////////////////////////////////////////
+        //////////////// TRIANGULATION OF A PATH ///////////////////
+        ////////////////////////////////////////////////////////////
+        
+        // If we click the triangulate button
         if ( button_path_triangulate->click )
         {
-            if ( path_itr_selected->vertex.size() > 2 )
+            // If there is a path selected and has min 3 vertices to form a triangle
+            if ( paths.size() && list_vector_paths->num_selected && paths[path_id_selected].vertex.size() > 2 )
             {
                 // Unselect all shapes
                 for ( LDEuint i = 0; i < shapes.size(); ++i )
@@ -1221,38 +1268,49 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     shapes[i].selected = 0;
                 }
                 
+                // Create a temporary shape that we'll add to the shapes array
                 Shapes shape_temp;
-                shape_temp.path_vertex = path_itr_selected->vertex;
+                
+                // Pass in the path vertices
+                shape_temp.path_vertex = paths[path_id_selected].vertex;
                 
                 // allocate an STL vector to hold the answer.
-                
                 Vector2dVector result;
                 
-                //  Invoke the triangulator to triangulate this polygon.
-                Triangulate::Process( path_itr_selected->vertex,result);
+                // Invoke the triangulator to triangulate this polygon.
+                Triangulate::Process( paths[path_id_selected].vertex, result );
                 
+                // Pass in the triangulated shape's vertices
                 shape_temp.vertex = result;
+                
+                // Make it selected (world)
                 shape_temp.selected = 1;
                 
+                // Add the shape to the shapes array
                 shapes.push_back( shape_temp );
                 
                 LDEuint shape_id = shapes.size()-1;
                 
+                // Add entry to shapes gui list
                 tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id, "Shape"+LDEnts(shape_id) );
+                
+                // And select the last gui list item shape added
                 list_shapes->select( item_list, 0 );
                 
-                paths.erase( path_itr_selected );
+                // Remove the path (as it is saved in the shape class now)
+                paths.erase( paths.begin() + path_id_selected );
                 
+                // Clear the gui list of paths
                 list_vector_paths->items_tree.clear();
                 
+                // Repopulate the gui list of paths
                 tree<LDEgui_list_item>::iterator item_path;
-                
                 for ( LDEuint i = 0; i < paths.size(); ++i )
                 {
-                    item_path = list_vector_paths->addItem( 0, paths[i].name );
-                    item_path->it = paths.begin() + i;
+                    list_vector_paths->addItem( i, paths[i].name );
                 }
                 
+                // Unselect all paths
                 list_vector_paths->deselect();
                 
                 // Go to shapes management
