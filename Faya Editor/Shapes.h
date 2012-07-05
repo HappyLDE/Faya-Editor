@@ -27,7 +27,8 @@ struct Shapes
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     
-    bool assign_selected;
+    bool assign_selected,
+         test_coi;
     
     void draw();
     

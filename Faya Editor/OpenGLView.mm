@@ -186,6 +186,16 @@ void switchEditorMode( LDEuint mode )
         spritesheets[s].spriteBatchNode.test_coi = 0;
     }
     
+    // For every shape
+    for ( LDEuint i = 0; i < shapes.size(); ++i )
+    {
+        // Unselect
+        shapes[i].selected = 0;
+        
+        // Don't allow selection
+        shapes[i].test_coi = 0;
+    }
+    
     switch ( mode )
     {
             // go to Vector Mode
@@ -1192,6 +1202,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         // Shapes management mode
         case 3:
         {
+            for ( LDEuint i = 0; i < shapes.size(); ++i )
+            {
+                shapes[i].test_coi = gui.unused && !transf_tool.hover;
+            }
+            
             ////////////////////////////////////////////////////////////
             ///////// CHANGING SELECTED SHAPE FROM GUI LIST ////////////
             ////////////////////////////////////////////////////////////

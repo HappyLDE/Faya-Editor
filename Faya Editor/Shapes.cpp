@@ -12,6 +12,7 @@ Shapes::Shapes()
 {
     selected = 0;
     assign_selected = 0;
+    test_coi = 0;
 }
 
 Shapes::~Shapes()
@@ -21,8 +22,6 @@ Shapes::~Shapes()
 
 void Shapes::draw()
 {
-    LDErect( cursor.x, cursor.y, 50, 50 );
-    
     // The shape (filled)
     glColor3f(0.1,0.1,0.2);
     
@@ -33,6 +32,7 @@ void Shapes::draw()
     for ( LDEuint i = 0; i < vertex.size(); i += 3 )
     {
         // If left clicked on that one
+        if ( test_coi )
         for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
         {
             if ( mouse[inp].left && mouse[inp].down )
