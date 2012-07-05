@@ -12,6 +12,7 @@
 #include <OpenGL/gl.h>
 #include "LDEvec2i.h"
 #include <vector>
+#include <string>
 
 struct Shapes
 {
@@ -19,6 +20,8 @@ struct Shapes
     ~Shapes();
     
     void draw();
+    
+    std::string name;
     
     bool selected;
     

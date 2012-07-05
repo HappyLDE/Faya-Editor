@@ -169,7 +169,7 @@ void init_gui()
     window_shapes_list->elements.addButton(button_shapes_delete);
     button_shapes_delete->setText("Delete");
     button_shapes_delete->pos = vec2i( 5, window_shapes_list->size.y - 55 );
-    
+    button_shapes_delete->lock();
     
     // List of shapes
     window_shapes_list->elements.addList(list_shapes);

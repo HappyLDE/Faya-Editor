@@ -1219,10 +1219,9 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     list_vector_paths->items_tree.clear();
                     
                     // Repopulate the gui list of paths            
-                    tree<LDEgui_list_item>::iterator item_path;
                     for ( LDEuint i = 0; i < paths.size(); ++i )
                     {
-                        item_path = list_vector_paths->addItem( i, paths[i].name );
+                        list_vector_paths->addItem( i, paths[i].name );
                         path_id_selected = i;
                     }
                     
@@ -1287,13 +1286,18 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     // Make it selected (world)
                     shape_temp.selected = 1;
                     
+                    // Assign it's name
+                    shape_temp.name = "Shape"+LDEnts(shape_id_selected);
+                    
                     // Add the shape to the shapes array
                     shapes.push_back( shape_temp );
-                    
                     shape_id_selected = shapes.size()-1;
                     
                     // Add entry to shapes gui list ////////////////////
-                    tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id_selected, "Shape"+LDEnts(shape_id_selected) );
+                    tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id_selected, shapes[shape_id_selected].name );
+                    
+                    // Unlock the delete shape button
+                    button_shapes_delete->unlock();
                     
                     // And select the last gui list item shape added
                     list_shapes->select( item_list, 0 );
@@ -1542,6 +1546,38 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                     }
                     
                     ++item_itr;
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
+            ///////////////////// DELETE A SHAPE ///////////////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If we click the delete button
+            if ( button_shapes_delete->click )
+            {
+                // If there is a shape selected
+                if ( shapes.size() && list_shapes->num_selected )
+                {
+                    // First of all, delete the selected shape
+                    shapes.erase( shapes.begin() + shape_id_selected );
+                    
+                    // Clear the gui list of shapes
+                    list_shapes->items_tree.clear();
+                    
+                    // Repopulate the gui list of shapes            
+                    for ( LDEuint i = 0; i < shapes.size(); ++i )
+                    {
+                        list_shapes->addItem( i, shapes[i].name );
+                        shape_id_selected = i;
+                    }
+                    
+                    // Unselect all gui list items
+                    list_shapes->deselect();
+                    
+                    // Lock the delete button if there aren't any paths in the array
+                    if ( !shapes.size() )
+                        button_shapes_delete->lock();
                 }
             }
             
