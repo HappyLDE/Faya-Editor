@@ -26,7 +26,10 @@ LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
 LDEuint path_id_selected = 0;
 vector<VectorPaths>paths;
+
+LDEuint shape_id_selected = 0;
 vector<Shapes>shapes;
+
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
                                  /// AND it's won sprite batch node
 vector<LDEuint>spritesheets_zorder;
@@ -167,16 +170,8 @@ void openFile(string filename)
     }
 }
 
-void switchEditorMode(LDEuint mode)
+void switchEditorMode( LDEuint mode )
 {
-    // If we change mode and were in spritesheet creationmode
-    if ( editor_mode == 1 && mode != 1 )
-    {
-        texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
-        list_texture_atlas_sprites->erase();
-		button_texture_atlas_sprites_delete->lock();
-    }
-    
     switch ( mode )
     {
             // go to Vector Mode
@@ -235,6 +230,7 @@ void switchEditorMode(LDEuint mode)
             
             window_spritesheets->open();
             window_sprites_list->open();
+            
             editor_mode = 2;
             
             combobox_editor_mode->select(2);
@@ -257,6 +253,7 @@ void switchEditorMode(LDEuint mode)
             
             window_shapes_list->open();
             
+            editor_mode = 3;
             combobox_editor_mode->select(3);
             
             break;
@@ -1099,206 +1096,63 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 
     glLineWidth(1);
     
+    //cout<<"editor_mode:"<<editor_mode<<"\n";
+    
     // Vector Mode
-    if ( editor_mode == 0 )
+    switch ( editor_mode )
     {
-        ////////////////////////////////////////////////////////////
-        ///////////// ADD ONE VERTEX TO A VECTOR PATH //////////////
-        ////////////////////////////////////////////////////////////
-        
-        // If cursor is not on the gui
-        if ( gui.unused )
+        case 0:
         {
-            // If there are any mouse events
-            for ( LDEuint i = 0; i < app.mouse.size(); ++i )
+            ////////////////////////////////////////////////////////////
+            ///////////// ADD ONE VERTEX TO A VECTOR PATH //////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If cursor is not on the gui
+            if ( gui.unused )
             {
-                // If left click
-                if ( app.mouse[i].left )
+                // If there are any mouse events
+                for ( LDEuint i = 0; i < app.mouse.size(); ++i )
                 {
-                    // Mouse down click
-                    if ( app.mouse[i].down )
+                    // If left click
+                    if ( app.mouse[i].left )
                     {
-                        // If we have paths and one is selected, add vertex to it
-                        if ( paths.size() && list_vector_paths->num_selected )
+                        // Mouse down click
+                        if ( app.mouse[i].down )
                         {
-                            vec2i vertex_pos;
-                            
-                            vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
-                            vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
-                            
-                            paths[path_id_selected].addVertex( vertex_pos );
+                            // If we have paths and one is selected, add vertex to it
+                            if ( paths.size() && list_vector_paths->num_selected )
+                            {
+                                vec2i vertex_pos;
+                                
+                                vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
+                                vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
+                                
+                                paths[path_id_selected].addVertex( vertex_pos );
+                            }
                         }
                     }
                 }
             }
-        }
-        
-        ////////////////////////////////////////////////////////////
-        ////////////// CREATION OF A NEW VECTOR PATH ///////////////
-        ////////////////////////////////////////////////////////////
-        
-        // BUTTON NEW PATH
-        if ( button_path_new->click )
-        {
-            // Unselect the previously selected path
-            if ( paths.size() && list_vector_paths->num_selected )
-                paths[path_id_selected].active = 0;
             
-            // Create a temporary path that we'll add to the array paths
-            VectorPaths path_temp;
-            paths.push_back(path_temp);
+            ////////////////////////////////////////////////////////////
+            ////////////// CREATION OF A NEW VECTOR PATH ///////////////
+            ////////////////////////////////////////////////////////////
             
-            path_id_selected = paths.size()-1;
+            // BUTTON NEW PATH
+            if ( button_path_new->click )
+            {
+                // Unselect the previously selected path
+                if ( paths.size() && list_vector_paths->num_selected )
+                    paths[path_id_selected].active = 0;
+                
+                // Create a temporary path that we'll add to the array paths
+                VectorPaths path_temp;
+                paths.push_back(path_temp);
+                
+                path_id_selected = paths.size()-1;
 
-            paths[path_id_selected].name = "Path "+LDEnts(path_id_selected);
-            paths[path_id_selected].active = 1;
-            
-            // Clear the gui list of paths
-            list_vector_paths->items_tree.clear();
-            
-            // Repopulate the gui list of paths
-            tree<LDEgui_list_item>::iterator item_path;
-            for ( LDEuint i = 0; i < paths.size(); ++i )
-            {
-                item_path = list_vector_paths->addItem( i, paths[i].name );
-            }
-            
-            // Select the last gui list item
-            list_vector_paths->select( item_path, 0 );
-            
-            // Unlock the delete path button because we have paths in the array now
-            button_vector_paths_delete->unlock();
-        }
-        
-        ////////////////////////////////////////////////////////////
-        ////////// CHANGING SELECTED PATH FROM GUI LIST ////////////
-        ////////////////////////////////////////////////////////////
-        
-        // If selection changed from gui list items
-        if ( list_vector_paths->changed_selection )
-        {
-            // Unselect the previously selected path
-            if ( paths.size() && list_vector_paths->num_selected )
-                paths[path_id_selected].active = 0;
-            
-            // Assign the selected path from tle gui list items
-            // Loop until we find the first selected one, assign selection and quit loop
-            tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
-            while ( item_itr != list_vector_paths->items_tree.end() )
-            {
-                // If selected path (gui)
-                if ( item_itr->selected )
-                {
-                    // Select the path (in the world)
-                    path_id_selected = item_itr->key;                    
-                    paths[path_id_selected].active = 1;
-                    
-                    // Break out the loop
-                    break;
-                }
-                
-                ++item_itr;
-            }
-        }
-        
-        ////////////////////////////////////////////////////////////
-        ////////////////// DELETE A VECTOR PATH ////////////////////
-        ////////////////////////////////////////////////////////////
-        
-        // If we click the delete button
-        if ( button_vector_paths_delete->click )
-        {
-            // If there is a path selected
-            if ( paths.size() && list_vector_paths->num_selected )
-            {
-                // First of all, delete the selected path
-                paths.erase( paths.begin() + path_id_selected );
-                
-                // Clear the gui list of paths
-                list_vector_paths->items_tree.clear();
-                
-                // Repopulate the gui list of paths            
-                tree<LDEgui_list_item>::iterator item_path;
-                for ( LDEuint i = 0; i < paths.size(); ++i )
-                {
-                    item_path = list_vector_paths->addItem( i, paths[i].name );
-                    path_id_selected = i;
-                }
-                
-                // Unselect all gui list items
-                list_vector_paths->deselect();
-                
-                // Lock the delete button if there aren't any paths in the array
-                if ( !paths.size() )
-                    button_vector_paths_delete->lock();
-            }
-        }
-        
-        ////////////////////////////////////////////////////////////
-        ////////////////////// END A PATH //////////////////////////
-        ////////////////////////////////////////////////////////////
-        
-        // If we click the end path button
-        if ( button_path_end->click )
-        {
-            // If there is a path selected
-            if ( paths.size() && list_vector_paths->num_selected )
-            {
-                // Unselect the path (world)
-                paths[path_id_selected].active = 0;
-                
-                // Unselect the path (gui)
-                list_vector_paths->deselect();
-            }
-        }
-        
-        ////////////////////////////////////////////////////////////
-        //////////////// TRIANGULATION OF A PATH ///////////////////
-        ////////////////////////////////////////////////////////////
-        
-        // If we click the triangulate button
-        if ( button_path_triangulate->click )
-        {
-            // If there is a path selected and has min 3 vertices to form a triangle
-            if ( paths.size() && list_vector_paths->num_selected && paths[path_id_selected].vertex.size() > 2 )
-            {
-                // Unselect all shapes
-                for ( LDEuint i = 0; i < shapes.size(); ++i )
-                {
-                    shapes[i].selected = 0;
-                }
-                
-                // Create a temporary shape that we'll add to the shapes array
-                Shapes shape_temp;
-                
-                // Pass in the path vertices
-                shape_temp.path_vertex = paths[path_id_selected].vertex;
-                
-                // allocate an STL vector to hold the answer.
-                Vector2dVector result;
-                
-                // Invoke the triangulator to triangulate this polygon.
-                Triangulate::Process( paths[path_id_selected].vertex, result );
-                
-                // Pass in the triangulated shape's vertices
-                shape_temp.vertex = result;
-                
-                // Make it selected (world)
-                shape_temp.selected = 1;
-                
-                // Add the shape to the shapes array
-                shapes.push_back( shape_temp );
-                
-                LDEuint shape_id = shapes.size()-1;
-                
-                // Add entry to shapes gui list
-                tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id, "Shape"+LDEnts(shape_id) );
-                
-                // And select the last gui list item shape added
-                list_shapes->select( item_list, 0 );
-                
-                // Remove the path (as it is saved in the shape class now)
-                paths.erase( paths.begin() + path_id_selected );
+                paths[path_id_selected].name = "Path "+LDEnts(path_id_selected);
+                paths[path_id_selected].active = 1;
                 
                 // Clear the gui list of paths
                 list_vector_paths->items_tree.clear();
@@ -1307,212 +1161,398 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 tree<LDEgui_list_item>::iterator item_path;
                 for ( LDEuint i = 0; i < paths.size(); ++i )
                 {
-                    list_vector_paths->addItem( i, paths[i].name );
+                    item_path = list_vector_paths->addItem( i, paths[i].name );
                 }
                 
-                // Unselect all paths
-                list_vector_paths->deselect();
+                // Select the last gui list item
+                list_vector_paths->select( item_path, 0 );
                 
-                // Go to shapes management
-                switchEditorMode(3);
-            }
-        }
-        
-        if ( !window_vector_paths_list->closed )
-        {
-            if ( window_vector_paths_list->button_resize.pressed )
-            {
-                list_vector_paths->size.x = window_vector_paths_list->size.x;
-                list_vector_paths->size.y = window_vector_paths_list->size.y-60;
-                
-                button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
-            }
-        }
-        
-        //
-        //
-    }
-    else if ( editor_mode == 1 )
-    {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////                        TEXTURE ATLAS CREATION                        //////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        if ( !window_texture_atlas_sprites_list->closed )
-        {
-            if ( window_texture_atlas_sprites_list->button_resize.pressed )
-            {
-                list_texture_atlas_sprites->size.x = window_texture_atlas_sprites_list->size.x;
-                list_texture_atlas_sprites->size.y = window_texture_atlas_sprites_list->size.y-60;
-                
-                button_texture_atlas_sprites_delete->pos.y = window_texture_atlas_sprites_list->size.y-54;
+                // Unlock the delete path button because we have paths in the array now
+                button_vector_paths_delete->unlock();
             }
             
-            /*if ( list_texture_atlas_sprites->changed )	
+            ////////////////////////////////////////////////////////////
+            ////////// CHANGING SELECTED PATH FROM GUI LIST ////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If selection changed from gui list items
+            if ( list_vector_paths->changed_selection )
             {
-                LDEuint num_selected = 0;
-                for ( LDEuint i = 0; i < list_texture_atlas_sprites->item.size(); ++i )
+                // Unselect the previously selected path
+                if ( paths.size() && list_vector_paths->num_selected )
+                    paths[path_id_selected].active = 0;
+                
+                // Assign the selected path from tle gui list items
+                // Loop until we find the first selected one, assign selection and quit loop
+                tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
+                while ( item_itr != list_vector_paths->items_tree.end() )
                 {
-                    texture_atlas_creation_item[list_texture_atlas_sprites->item[i].key].selected = list_texture_atlas_sprites->item[i].selected;
-                    
-                    if ( list_texture_atlas_sprites->item[i].selected )
-                        ++num_selected;
-                }
-                
-                if ( num_selected == 1 )
-                    button_texture_atlas_sprites_delete->unlock();
-                else
-                    button_texture_atlas_sprites_delete->lock();
-                
-            }
-            
-            if ( button_texture_atlas_sprites_delete->click )
-            {
-                for ( LDEuint i = 0; i < list_texture_atlas_sprites->item.size(); ++i )
-                {
-                    if ( list_texture_atlas_sprites->item[i].selected )
+                    // If selected path (gui)
+                    if ( item_itr->selected )
                     {
-                        glDeleteTextures(1, &texture_atlas_creation_item[list_texture_atlas_sprites->item[i].key].image.id);
-                        texture_atlas_creation_item.erase( texture_atlas_creation_item.begin()+list_texture_atlas_sprites->item[i].key );
-                        list_texture_atlas_sprites->remove( i );
-                    }	
-                }
-            }*/
-        }
-        
-        if ( !window_texture_atlas->closed )
-        {
-            if ( window_texture_atlas->button_resize.pressed )
-            {
-                combobox_texture_atlas_zoom->pos.x = window_texture_atlas->size.x - combobox_texture_atlas_zoom->size.x - 20;
-                
-                scrollbar_texture_atlas->pos.x = window_texture_atlas->size.x - 16;
-                scrollbar_texture_atlas->size.y = window_texture_atlas->size.y-43;
-                
-                scrollbar_texture_atlas_horizontal->pos.y = window_texture_atlas->size.y-43;
-                scrollbar_texture_atlas_horizontal->size.x = window_texture_atlas->size.x - 16;
-                
-                drawable_texture_atlas->size = vec2i( window_texture_atlas->size.x - 16, window_texture_atlas->size.y - 43 );
-            }
-            
-            if ( combobox_texture_atlas_zoom->changed )
-            {
-                texture_atlas_zoom = (LDEfloat)combobox_texture_atlas_zoom->key() / 100;
-                
-                scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
-                scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
-                scrollbar_texture_atlas->setPercent(0);
-                scrollbar_texture_atlas_horizontal->setPercent(0);
-            }	
-            
-            if ( drawable_texture_atlas->test_coi )
-            {
-                LDEfloat scroll_x = 0,
-                scroll_y = 0;
-                
-                // Trackpad interacting
-                for ( LDEuint i = 0; i < app.mouse.size(); ++i )
-                {
-                    // Scroll
-                    if ( app.mouse[i].scroll_x != 0 )
-                        scroll_x += app.mouse[i].scroll_x;
-                    
-                    if ( app.mouse[i].scroll_y != 0 )
-                        scroll_y += app.mouse[i].scroll_y;
-                    
-                    
-                    // Swipe
-                    if ( app.mouse[i].swipe_x != 0 )
-                    {
-                        if ( app.mouse[i].swipe_x == -1 )
-                            scrollbar_texture_atlas_horizontal->setPercent( 0 );
-                        else
-                            scrollbar_texture_atlas_horizontal->setPercent( 1 );
-                    }
-                    else if ( app.mouse[i].swipe_y != 0 )
-                    {
-                        if ( app.mouse[i].swipe_y == -1 )
-                            scrollbar_texture_atlas->setPercent( 0 );
-                        else
-                            scrollbar_texture_atlas->setPercent( 1 );
+                        // Select the path (in the world)
+                        path_id_selected = item_itr->key;                    
+                        paths[path_id_selected].active = 1;
+                        
+                        // Break out the loop
+                        break;
                     }
                     
-                    // Zoom
-                    if ( app.mouse[i].scroll_z != 0 )
-                    {
-                        LDEfloat zoom_value = app.mouse[i].scroll_z * (texture_atlas_zoom/400);
-                        texture_atlas_zoom += zoom_value;
-                        
-                        if ( texture_atlas_zoom < 0.2 )
-                            texture_atlas_zoom = 0.2;
-                        else if ( texture_atlas_zoom > 10 )
-                            texture_atlas_zoom = 10;
-                        
-                        scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
-                        scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
-                        scrollbar_texture_atlas->setPercent(0);
-                        scrollbar_texture_atlas_horizontal->setPercent(0);
-                        
-                        combobox_texture_atlas_zoom->button.name = LDEnts(round(texture_atlas_zoom*100))+"%";
-                        
-                        texture_atlas_pos = vec2i( 10, 10 );
-                        
-                        //texture_atlas_pos.x = (-scrollbar_texture_atlas_horizontal->scroll_amount + 10) - window_texture_atlas->cursor_inside.x;
-                    }
-                }
-                
-                if ( scroll_x != 0 )
-                {
-                    LDEfloat percent_x = scrollbar_texture_atlas_horizontal->percent + (scroll_x / 100);
-                    
-                    if ( percent_x > 1 )
-                        percent_x = 1;
-                    else if ( percent_x < 0 )
-                        percent_x = 0;
-                    
-                    scrollbar_texture_atlas_horizontal->setPercent( percent_x );
-                }
-                
-                if ( scroll_y != 0 )
-                {
-                    LDEfloat percent_y = scrollbar_texture_atlas->percent + (scroll_y / 100);
-                    
-                    if ( percent_y > 1 )
-                        percent_y = 1;
-                    else if ( percent_y < 0 )
-                        percent_y = 0;
-                    
-                    scrollbar_texture_atlas->setPercent( percent_y );
+                    ++item_itr;
                 }
             }
             
-            if ( scrollbar_texture_atlas->changed )
-                texture_atlas_pos.y = -scrollbar_texture_atlas->scroll_amount + 10;
-            if ( scrollbar_texture_atlas_horizontal->changed )
-                texture_atlas_pos.x = -scrollbar_texture_atlas_horizontal->scroll_amount + 10;
+            ////////////////////////////////////////////////////////////
+            ////////////////// DELETE A VECTOR PATH ////////////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If we click the delete button
+            if ( button_vector_paths_delete->click )
+            {
+                // If there is a path selected
+                if ( paths.size() && list_vector_paths->num_selected )
+                {
+                    // First of all, delete the selected path
+                    paths.erase( paths.begin() + path_id_selected );
+                    
+                    // Clear the gui list of paths
+                    list_vector_paths->items_tree.clear();
+                    
+                    // Repopulate the gui list of paths            
+                    tree<LDEgui_list_item>::iterator item_path;
+                    for ( LDEuint i = 0; i < paths.size(); ++i )
+                    {
+                        item_path = list_vector_paths->addItem( i, paths[i].name );
+                        path_id_selected = i;
+                    }
+                    
+                    // Unselect all gui list items
+                    list_vector_paths->deselect();
+                    
+                    // Lock the delete button if there aren't any paths in the array
+                    if ( !paths.size() )
+                        button_vector_paths_delete->lock();
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
+            ////////////////////// END A PATH //////////////////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If we click the end path button
+            if ( button_path_end->click )
+            {
+                // If there is a path selected
+                if ( paths.size() && list_vector_paths->num_selected )
+                {
+                    // Unselect the path (world)
+                    paths[path_id_selected].active = 0;
+                    
+                    // Unselect the path (gui)
+                    list_vector_paths->deselect();
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
+            //////////////// TRIANGULATION OF A PATH ///////////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If we click the triangulate button
+            if ( button_path_triangulate->click )
+            {
+                // If there is a path selected and has min 3 vertices to form a triangle
+                if ( paths.size() && list_vector_paths->num_selected && paths[path_id_selected].vertex.size() > 2 )
+                {
+                    // Unselect all shapes
+                    for ( LDEuint i = 0; i < shapes.size(); ++i )
+                    {
+                        shapes[i].selected = 0;
+                    }
+                    
+                    // Create a temporary shape that we'll add to the shapes array
+                    Shapes shape_temp;
+                    
+                    // Pass in the path vertices
+                    shape_temp.path_vertex = paths[path_id_selected].vertex;
+                    
+                    // allocate an STL vector to hold the answer.
+                    Vector2dVector result;
+                    
+                    // Invoke the triangulator to triangulate this polygon.
+                    Triangulate::Process( paths[path_id_selected].vertex, result );
+                    
+                    // Pass in the triangulated shape's vertices
+                    shape_temp.vertex = result;
+                    
+                    // Make it selected (world)
+                    shape_temp.selected = 1;
+                    
+                    // Add the shape to the shapes array
+                    shapes.push_back( shape_temp );
+                    
+                    shape_id_selected = shapes.size()-1;
+                    
+                    // Add entry to shapes gui list ////////////////////
+                    tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id_selected, "Shape"+LDEnts(shape_id_selected) );
+                    
+                    // And select the last gui list item shape added
+                    list_shapes->select( item_list, 0 );
+                    
+                    // Remove the path (as it is saved in the shape class now)
+                    paths.erase( paths.begin() + path_id_selected );
+                    
+                    // Clear the gui list of paths
+                    list_vector_paths->items_tree.clear();
+                    
+                    // Repopulate the gui list of paths
+                    tree<LDEgui_list_item>::iterator item_path;
+                    for ( LDEuint i = 0; i < paths.size(); ++i )
+                    {
+                        list_vector_paths->addItem( i, paths[i].name );
+                    }
+                    
+                    // Unselect all paths
+                    list_vector_paths->deselect();
+                    
+                    // Go to shapes management
+                    switchEditorMode(3);
+                }
+            }
+            
+            // If window containing the list of vector paths isn't closed
+            if ( !window_vector_paths_list->closed )
+            {
+                // If it is beying resized
+                if ( window_vector_paths_list->button_resize.pressed )
+                {
+                    list_vector_paths->size.x = window_vector_paths_list->size.x;
+                    list_vector_paths->size.y = window_vector_paths_list->size.y-60;
+                    
+                    button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
+                }
+            }
+            
+            break;
         }
+
+        // New spritesheet mode
+        case 1:
+        {
+            //////////////////////////////////////////////////////////////
+            /////////////////// TEXTURE ATLAS CREATION ///////////////////
+            //////////////////////////////////////////////////////////////
+            
+            if ( !window_texture_atlas_sprites_list->closed )
+            {
+                if ( window_texture_atlas_sprites_list->button_resize.pressed )
+                {
+                    list_texture_atlas_sprites->size.x = window_texture_atlas_sprites_list->size.x;
+                    list_texture_atlas_sprites->size.y = window_texture_atlas_sprites_list->size.y-60;
+                    
+                    button_texture_atlas_sprites_delete->pos.y = window_texture_atlas_sprites_list->size.y-54;
+                }
+                
+                /*if ( list_texture_atlas_sprites->changed )	
+                {
+                    LDEuint num_selected = 0;
+                    for ( LDEuint i = 0; i < list_texture_atlas_sprites->item.size(); ++i )
+                    {
+                        texture_atlas_creation_item[list_texture_atlas_sprites->item[i].key].selected = list_texture_atlas_sprites->item[i].selected;
+                        
+                        if ( list_texture_atlas_sprites->item[i].selected )
+                            ++num_selected;
+                    }
+                    
+                    if ( num_selected == 1 )
+                        button_texture_atlas_sprites_delete->unlock();
+                    else
+                        button_texture_atlas_sprites_delete->lock();
+                    
+                }
+                
+                if ( button_texture_atlas_sprites_delete->click )
+                {
+                    for ( LDEuint i = 0; i < list_texture_atlas_sprites->item.size(); ++i )
+                    {
+                        if ( list_texture_atlas_sprites->item[i].selected )
+                        {
+                            glDeleteTextures(1, &texture_atlas_creation_item[list_texture_atlas_sprites->item[i].key].image.id);
+                            texture_atlas_creation_item.erase( texture_atlas_creation_item.begin()+list_texture_atlas_sprites->item[i].key );
+                            list_texture_atlas_sprites->remove( i );
+                        }	
+                    }
+                }*/
+            }
+            
+            if ( !window_texture_atlas->closed )
+            {
+                if ( window_texture_atlas->button_resize.pressed )
+                {
+                    combobox_texture_atlas_zoom->pos.x = window_texture_atlas->size.x - combobox_texture_atlas_zoom->size.x - 20;
+                    
+                    scrollbar_texture_atlas->pos.x = window_texture_atlas->size.x - 16;
+                    scrollbar_texture_atlas->size.y = window_texture_atlas->size.y-43;
+                    
+                    scrollbar_texture_atlas_horizontal->pos.y = window_texture_atlas->size.y-43;
+                    scrollbar_texture_atlas_horizontal->size.x = window_texture_atlas->size.x - 16;
+                    
+                    drawable_texture_atlas->size = vec2i( window_texture_atlas->size.x - 16, window_texture_atlas->size.y - 43 );
+                }
+                
+                if ( combobox_texture_atlas_zoom->changed )
+                {
+                    texture_atlas_zoom = (LDEfloat)combobox_texture_atlas_zoom->key() / 100;
+                    
+                    scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
+                    scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
+                    scrollbar_texture_atlas->setPercent(0);
+                    scrollbar_texture_atlas_horizontal->setPercent(0);
+                }	
+                
+                if ( drawable_texture_atlas->test_coi )
+                {
+                    LDEfloat scroll_x = 0,
+                    scroll_y = 0;
+                    
+                    // Trackpad interacting
+                    for ( LDEuint i = 0; i < app.mouse.size(); ++i )
+                    {
+                        // Scroll
+                        if ( app.mouse[i].scroll_x != 0 )
+                            scroll_x += app.mouse[i].scroll_x;
+                        
+                        if ( app.mouse[i].scroll_y != 0 )
+                            scroll_y += app.mouse[i].scroll_y;
+                        
+                        
+                        // Swipe
+                        if ( app.mouse[i].swipe_x != 0 )
+                        {
+                            if ( app.mouse[i].swipe_x == -1 )
+                                scrollbar_texture_atlas_horizontal->setPercent( 0 );
+                            else
+                                scrollbar_texture_atlas_horizontal->setPercent( 1 );
+                        }
+                        else if ( app.mouse[i].swipe_y != 0 )
+                        {
+                            if ( app.mouse[i].swipe_y == -1 )
+                                scrollbar_texture_atlas->setPercent( 0 );
+                            else
+                                scrollbar_texture_atlas->setPercent( 1 );
+                        }
+                        
+                        // Zoom
+                        if ( app.mouse[i].scroll_z != 0 )
+                        {
+                            LDEfloat zoom_value = app.mouse[i].scroll_z * (texture_atlas_zoom/400);
+                            texture_atlas_zoom += zoom_value;
+                            
+                            if ( texture_atlas_zoom < 0.2 )
+                                texture_atlas_zoom = 0.2;
+                            else if ( texture_atlas_zoom > 10 )
+                                texture_atlas_zoom = 10;
+                            
+                            scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
+                            scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
+                            scrollbar_texture_atlas->setPercent(0);
+                            scrollbar_texture_atlas_horizontal->setPercent(0);
+                            
+                            combobox_texture_atlas_zoom->button.name = LDEnts(round(texture_atlas_zoom*100))+"%";
+                            
+                            texture_atlas_pos = vec2i( 10, 10 );
+                            
+                            //texture_atlas_pos.x = (-scrollbar_texture_atlas_horizontal->scroll_amount + 10) - window_texture_atlas->cursor_inside.x;
+                        }
+                    }
+                    
+                    if ( scroll_x != 0 )
+                    {
+                        LDEfloat percent_x = scrollbar_texture_atlas_horizontal->percent + (scroll_x / 100);
+                        
+                        if ( percent_x > 1 )
+                            percent_x = 1;
+                        else if ( percent_x < 0 )
+                            percent_x = 0;
+                        
+                        scrollbar_texture_atlas_horizontal->setPercent( percent_x );
+                    }
+                    
+                    if ( scroll_y != 0 )
+                    {
+                        LDEfloat percent_y = scrollbar_texture_atlas->percent + (scroll_y / 100);
+                        
+                        if ( percent_y > 1 )
+                            percent_y = 1;
+                        else if ( percent_y < 0 )
+                            percent_y = 0;
+                        
+                        scrollbar_texture_atlas->setPercent( percent_y );
+                    }
+                }
+                
+                if ( scrollbar_texture_atlas->changed )
+                    texture_atlas_pos.y = -scrollbar_texture_atlas->scroll_amount + 10;
+                if ( scrollbar_texture_atlas_horizontal->changed )
+                    texture_atlas_pos.x = -scrollbar_texture_atlas_horizontal->scroll_amount + 10;
+            }
+            
+            for ( LDEuint i = 0; i < app.mouse.size(); ++i )
+            {
+                if ( app.mouse[i].left )
+                {
+                    if ( !app.mouse[i].down )
+                    {
+                        //cout << "left mouse button down\n";
+                        //mouse_overall_down = 0;
+                    }
+                }
+            }
+            
+            break;
+        }
+    
         // Shapes management mode
-        else if ( editor_mode == 3 )
+        case 3:
         {
+            ////////////////////////////////////////////////////////////
+            ///////// CHANGING SELECTED SHAPE FROM GUI LIST ////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If selection changed from gui list items
+            if ( list_shapes->changed_selection )
+            {
+                // Unselect the previously selected path
+                if ( shapes.size() && list_shapes->num_selected )
+                    shapes[shape_id_selected].selected = 0;
+                
+                // Assign the selected shape from the gui list items
+                // Loop until we find the first selected one, assign selection and quit loop
+                tree<LDEgui_list_item>::iterator item_itr = list_shapes->items_tree.begin();
+                while ( item_itr != list_shapes->items_tree.end() )
+                {
+                    // If selected shape (gui)
+                    if ( item_itr->selected )
+                    {
+                        // Select the shape (in the world)
+                        shape_id_selected = item_itr->key;                    
+                        shapes[shape_id_selected].selected = 1;
+                        
+                        // Break out the loop
+                        break;
+                    }
+                    
+                    ++item_itr;
+                }
+            }
+            
             if ( !window_shapes_list->closed )
             {
                 
             }
+            
+            break;
         }
-        
-        
-        for ( LDEuint i = 0; i < app.mouse.size(); ++i )
-        {
-            if ( app.mouse[i].left )
-            {
-                if ( !app.mouse[i].down )
-                {
-                    //cout << "left mouse button down\n";
-                    //mouse_overall_down = 0;
-                }
-            }
-        }
-	}
+    }
     
     ////////// File browser
     if ( !window_tools_texture_atlas->closed )
@@ -1653,6 +1693,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
             list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
+            
+            texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
+            list_texture_atlas_sprites->erase();
+            button_texture_atlas_sprites_delete->lock();
             
             // When spritesheet saved, go to World Edit Mode
             switchEditorMode(2);
@@ -2159,8 +2203,6 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
 
-    //glRotatef( ++rot_temp, 0, 0, 1 );
-    
     /// Draw the GUI by passing cursor position and mouse inputs
     gui.input = app.input;
     gui.mouse = app.mouse;
