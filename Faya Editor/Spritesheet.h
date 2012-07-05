@@ -55,7 +55,7 @@ struct Spritesheet
     LDEimage image; // this will contain tha image spritesheet
     
     std::vector<Spritesheet_frame>frames;
-    
+
     void draw();
     
     Spritesheet();
