@@ -32,6 +32,7 @@ LDEgui_list::LDEgui_list()
     
     allow_group = 1;
     allow_reorder = 1;
+    allow_multiple_selection = 1;
     
     show_indicator = 0;
 
@@ -276,7 +277,7 @@ void LDEgui_list::erase()
 
 void LDEgui_list::select( tree<LDEgui_list_item>::iterator it, bool keep_rest )
 {
-    if ( !keep_rest )
+    if ( !keep_rest || !allow_multiple_selection )
     {
         tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
         while( item_itr != items_tree.end() )
@@ -314,71 +315,74 @@ void LDEgui_list::select( tree<LDEgui_list_item>::iterator it, bool keep_rest )
 
 void LDEgui_list::selectBetween( tree<LDEgui_list_item>::iterator it_begin, tree<LDEgui_list_item>::iterator it_end )
 {
-    // First, deselect ALL
-    tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
-    while( item_itr != items_tree.end() )
+    if ( allow_multiple_selection )
     {
-        item_itr->button.texture_rel = texture_list_item;
-        item_itr->button.texture_coi = texture_list_item;
-        
-        item_itr->button.text_color = color;
-        
-        item_itr->selected = 0;
-        
-        ++item_itr;
-    }
-    
-    num_selected = 0;
-    
-    // Then select the in betweens
-    item_itr = it_begin;
-
-    bool traverse_order = items_tree.index( it_begin ) < items_tree.index( it_end );
-    
-    tree<LDEgui_list_item>::iterator item_end2 = it_end;
-    
-    if ( traverse_order )
-    {
-        it_end = items_tree.end( it_end );
-    
-        --item_end2;
-    }
-    else
-        --it_end;
-    
-    if ( items_tree.depth(it_begin) != items_tree.depth(item_end2) )
-        fucked_selection = 1;
-    
-    //cout<<"items_tree.depth(it_begin) "<<items_tree.depth(it_begin)<<"\n";
-    //cout<<"items_tree.depth(item_end2) "<<items_tree.depth(item_end2)<<" // "<<rand()<<"\n";
-    
-    while( item_itr != it_end )
-    {
-        if ( items_tree.is_valid(item_itr) )
+        // First, deselect ALL
+        tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
+        while( item_itr != items_tree.end() )
         {
-            item_itr->button.texture_rel = texture_list_item_selected;
-            item_itr->button.texture_coi = texture_list_item_selected;
+            item_itr->button.texture_rel = texture_list_item;
+            item_itr->button.texture_coi = texture_list_item;
             
-            item_itr->button.text_color = color_selected;
+            item_itr->button.text_color = color;
             
-            item_itr->selected = 1;
+            item_itr->selected = 0;
             
-            ++num_selected;
+            ++item_itr;
+        }
+        
+        num_selected = 0;
+        
+        // Then select the in betweens
+        item_itr = it_begin;
+
+        bool traverse_order = items_tree.index( it_begin ) < items_tree.index( it_end );
+        
+        tree<LDEgui_list_item>::iterator item_end2 = it_end;
+        
+        if ( traverse_order )
+        {
+            it_end = items_tree.end( it_end );
+        
+            --item_end2;
         }
         else
-        {
-            item_itr = traverse_order ? items_tree.begin() : items_tree.end();
+            --it_end;
+        
+        if ( items_tree.depth(it_begin) != items_tree.depth(item_end2) )
             fucked_selection = 1;
+        
+        //cout<<"items_tree.depth(it_begin) "<<items_tree.depth(it_begin)<<"\n";
+        //cout<<"items_tree.depth(item_end2) "<<items_tree.depth(item_end2)<<" // "<<rand()<<"\n";
+        
+        while( item_itr != it_end )
+        {
+            if ( items_tree.is_valid(item_itr) )
+            {
+                item_itr->button.texture_rel = texture_list_item_selected;
+                item_itr->button.texture_coi = texture_list_item_selected;
+                
+                item_itr->button.text_color = color_selected;
+                
+                item_itr->selected = 1;
+                
+                ++num_selected;
+            }
+            else
+            {
+                item_itr = traverse_order ? items_tree.begin() : items_tree.end();
+                fucked_selection = 1;
+            }
+            
+            traverse_order ? ++item_itr : --item_itr;
         }
         
-        traverse_order ? ++item_itr : --item_itr;
+        if ( fucked_selection )
+            num_selected = 0;
+        
+        changed = 1;
+        changed_selection = 1;
     }
-    
-    if ( fucked_selection )
-        num_selected = 0;
-    
-    changed = 1;
-    changed_selection = 1;
 }
 
 tree<LDEgui_list_item>::iterator LDEgui_list::addGroup( std::string group_name )
@@ -585,7 +589,7 @@ void LDEgui_list::groupSelected( std::string group_name )
 
 void LDEgui_list::moveSelectionToFolder()
 {
-    if ( coi_side == 2 )
+    if ( coi_side == 2 && allow_reorder )
     {
         LDEgui_list_item item_temp;
         // Add temporary child to the folder so that we move all selected rows "next to" this child, then we'll delete it
@@ -617,46 +621,49 @@ void LDEgui_list::moveSelectionToFolder()
 
 void LDEgui_list::moveSelection()
 {
-    tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
-    tree<LDEgui_list_item>::iterator item_last_moved = item_indicator;
-    while( item_itr != items_tree.end() )
+    if ( allow_reorder )
     {
-        //cout<<item_itr->button.name<<"\n";
-        
-        if ( item_itr->selected )
+        tree<LDEgui_list_item>::iterator item_itr = items_tree.begin();
+        tree<LDEgui_list_item>::iterator item_last_moved = item_indicator;
+        while( item_itr != items_tree.end() )
         {
-            item_itr->selected = 0;
+            //cout<<item_itr->button.name<<"\n";
             
-            tree<LDEgui_list_item>::iterator item_itr_temp = items_tree.begin( item_itr );
-            
-            if ( item_last_moved == item_indicator )
+            if ( item_itr->selected )
             {
-                if ( coi_side == 3 )
-                    item_last_moved = items_tree.move_after( item_last_moved, item_itr);
+                item_itr->selected = 0;
+                
+                tree<LDEgui_list_item>::iterator item_itr_temp = items_tree.begin( item_itr );
+                
+                if ( item_last_moved == item_indicator )
+                {
+                    if ( coi_side == 3 )
+                        item_last_moved = items_tree.move_after( item_last_moved, item_itr);
+                    else
+                        item_last_moved = items_tree.move_before( item_last_moved, item_itr);
+                }
                 else
-                    item_last_moved = items_tree.move_before( item_last_moved, item_itr);
+                    item_last_moved = items_tree.move_after( item_last_moved, item_itr);
+                --item_itr_temp;
+                item_itr = item_itr_temp;
             }
-            else
-                item_last_moved = items_tree.move_after( item_last_moved, item_itr);
-            --item_itr_temp;
-            item_itr = item_itr_temp;
+            
+            ++item_itr;
         }
         
-        ++item_itr;
-    }
-    
-    // Reselect back again those moved
-    item_itr = items_tree.begin();
-    while( item_itr != items_tree.end() )
-    {
-        if ( item_itr->button.texture_coi == texture_list_item_selected )
-            item_itr->selected = 1;
+        // Reselect back again those moved
+        item_itr = items_tree.begin();
+        while( item_itr != items_tree.end() )
+        {
+            if ( item_itr->button.texture_coi == texture_list_item_selected )
+                item_itr->selected = 1;
+            
+            ++item_itr;
+        }
         
-        ++item_itr;
+        changed = 1;
+        changed_order = 1;
     }
-    
-    changed = 1;
-    changed_order = 1;
 }
 
 LDEint LDEgui_list::getInnerHeight() const

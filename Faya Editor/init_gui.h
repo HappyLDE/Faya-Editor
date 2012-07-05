@@ -164,7 +164,6 @@ void init_gui()
 	window_shapes_list->show_close_button = false;
     window_shapes_list->close();
     
-    
     // Button delete shape
     window_shapes_list->elements.addButton(button_shapes_delete);
     button_shapes_delete->setText("Delete");
@@ -175,6 +174,9 @@ void init_gui()
     window_shapes_list->elements.addList(list_shapes);
 	list_shapes->size.x = window_shapes_list->size.x;
 	list_shapes->size.y = window_shapes_list->size.y-60;
+    list_shapes->allow_group = 0;
+    list_shapes->allow_reorder = 0;
+    list_shapes->allow_multiple_selection = 0;
     
     //////////////// SPRITES WORLD EDITOR MODE //////////////////////
     
@@ -321,6 +323,8 @@ void init_gui()
 	list_vector_paths->size.x = window_vector_paths_list->size.x;
 	list_vector_paths->size.y = window_vector_paths_list->size.y-60;
 	list_vector_paths->allow_group = 0;
+    list_vector_paths->allow_reorder = 0;
+    list_vector_paths->allow_multiple_selection = 0;
     
 	window_vector_paths_list->elements.addButton(button_vector_paths_delete);
 	button_vector_paths_delete->pos.x = 8;

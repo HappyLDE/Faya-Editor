@@ -99,6 +99,7 @@ struct LDEgui_list
             cursor_over_selected,
             allow_group,
             allow_reorder,
+            allow_multiple_selection,
             ctrl,        // control key, to multiple select
             shift;
     
