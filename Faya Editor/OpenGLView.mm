@@ -740,6 +740,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
+    // Get mouse events for moving camera or zoom in and out (with two fingers)
     for ( LDEuint i = 0; i < app.mouse.size(); ++i )
     {
         if ( gui.unused )
@@ -771,6 +772,10 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         camera_pos.y = 150;
     }
     
+    // Change editor mode
+    if ( combobox_editor_mode->changed )
+        switchEditorMode( combobox_editor_mode->key() );
+    
     /// CAMERA 2D ///
     camera2D.set();
     camera2D.window = app.size;
@@ -779,7 +784,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     switch ( editor_mode )
     {
-            // Vector Editor Mode
+        // Vector Editor Mode
         case 0:
         {
             ////////////////////////////////////////////////////////////
@@ -1022,6 +1027,223 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         case 1:
         {
             //////////////////////////////////////////////////////////////
+            /////////////// IMPORT IMAGES FOR SPRITESHEET ////////////////
+            //////////////////////////////////////////////////////////////
+            
+            // Button import images click
+            if ( button_texture_atlas_import_images->click )
+            {
+                // Create the File Open Dialog class.
+                NSOpenPanel* openDlg = [NSOpenPanel openPanel];
+                
+                [openDlg setCanChooseFiles:YES];
+                [openDlg setCanChooseDirectories:YES];
+                [openDlg setAllowsMultipleSelection:YES];
+                
+                NSArray *fileTypes = [NSArray arrayWithObjects:
+                                      @"jpg",
+                                      @"jpeg",
+                                      @"png",
+                                      @"gif",
+                                      NSFileTypeForHFSTypeCode('TEXT'),
+                                      nil];
+                
+                [openDlg setAllowedFileTypes:fileTypes];
+                
+                // Display the dialog.  If the OK button was pressed,
+                // process the files.
+                if ( [openDlg runModal] == NSOKButton )
+                {
+                    // Get an array containing the full filenames of all
+                    // files and directories selected.
+                    NSArray* files = [openDlg URLs];
+                    
+                    // Loop through all the files and process them.
+                    for( LDEuint i = 0; i < [files count]; ++i )
+                    {
+                        NSString* fileName = [[files objectAtIndex:i] path];
+                        
+                        TextureAtlasCreation_item texture_atlas_creation_item_temp;
+                        
+                        texture_atlas_creation_item_temp.image.load( [fileName UTF8String] );
+                        
+                        if ( texture_atlas_creation_item_temp.image.size.x && texture_atlas_creation_item_temp.image.size.y )
+                        {
+                            texture_atlas_creation_item_temp.image.crop( texture_atlas_creation_item_temp.image.getEmptyPixels() );
+                            
+                            if ( texture_atlas_creation_item_temp.image.size.y > texture_atlas_size.y )
+                                texture_atlas_size.y = LDEnextPot( texture_atlas_creation_item_temp.image.size.y );
+                            
+                            if ( texture_atlas_creation_item_temp.image.size.x > texture_atlas_size.x )
+                                texture_atlas_size.x = LDEnextPot( texture_atlas_creation_item_temp.image.size.x );
+                            
+                            scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
+                            scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
+                            
+                            list_texture_atlas_sprites->addItem( texture_atlas_creation_item.size(), texture_atlas_creation_item_temp.image.model_name );
+                            
+                            texture_atlas_creation_item_temp.image.opengl(2);
+                            
+                            texture_atlas_creation_item.push_back( texture_atlas_creation_item_temp );
+                        }
+                    }
+                }
+            }
+            
+            ///////////// Save the small images to spritesheet /////////////////
+            if ( button_texture_atlas_save->click && texture_atlas_creation_item.size() && combobox_texture_atlas_width->button.text_color.y )
+            {
+                Spritesheet spritframe_temp;
+                
+                spritframe_temp.image.create(texture_atlas_size.x, texture_atlas_size.y, 4);
+                
+                vec2i pos_window(5, 5);
+                
+                for ( LDEuint i = 0; i < texture_atlas_creation_item.size(); ++i )
+                {
+                    spritframe_temp.image.copyMerge( texture_atlas_creation_item[i].image, texture_atlas_creation_item[i].pos );
+                    
+                    Spritesheet_frame frame_temp;
+                    
+                    frame_temp.pos_window = pos_window;
+                    frame_temp.pos = texture_atlas_creation_item[i].pos;
+                    frame_temp.size = texture_atlas_creation_item[i].image.size;
+                    
+                    // Let's calculate the thumbnail's size
+                    LDEfloat ratio = 0;
+                    
+                    // Si la largeur est plus grande que la hauteur
+                    if ( frame_temp.size.x > frame_temp.size.y )
+                    {
+                        // Déterminer le ratio
+                        ratio = (LDEfloat)100 / frame_temp.size.x;
+                        
+                        frame_temp.size_100.x = 100;
+                        
+                        frame_temp.size_100.y = (LDEint)frame_temp.size.y * ratio;
+                    }
+                    // Sinon, si la hauteur est plus grande que la largeur
+                    else
+                    {
+                        // Déterminer le ratio
+                        ratio = (LDEfloat)100 / frame_temp.size.y;
+                        
+                        frame_temp.size_100.y = 100;
+                        
+                        frame_temp.size_100.x = (LDEint)frame_temp.size.x * ratio;
+                    }
+                    
+                    frame_temp.margin = vec2i( 50 - frame_temp.size_100.x / 2, 50 - frame_temp.size_100.y / 2 );
+                    
+                    frame_temp.name = texture_atlas_creation_item[i].image.model_name;
+                    
+                    spritframe_temp.frames.push_back( frame_temp );
+                    
+                    pos_window.x += 105; // width 100px
+                    
+                    if ( pos_window.x > window_spritesheets->size.x - 116 )
+                    {
+                        pos_window.x = 5;
+                        pos_window.y += 105; // height 100px
+                    }
+                }
+                
+                scrollbar_spritesheets->scroll_height = pos_window.y + 100;
+                
+                spritframe_temp.image.opengl(2);
+                
+                spritesheets.push_back( spritframe_temp );
+                
+                LDEuint spritesheet_id = spritesheets.size()-1;
+                spritesheets_zorder.push_back( spritesheet_id );
+                
+                string spritesheet_name = "SpriteSheet"+LDEnts( spritesheet_id+1 );
+                
+                combobox_spritesheets->addOption( spritesheet_id, spritesheet_name, 1 );
+                spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheet_name );
+                
+                spritesheets[spritesheet_id].item_group->can_move = 1;
+                spritesheets[spritesheet_id].item_group->key = spritesheet_id;
+                
+                tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
+                list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
+                
+                texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
+                list_texture_atlas_sprites->erase();
+                button_texture_atlas_sprites_delete->lock();
+                
+                // When spritesheet saved, go to World Edit Mode
+                switchEditorMode(2);
+            }
+            
+            // Launch 2D bin packing (rectangle packing in a bigger rectangle)
+            if ( button_texture_atlas_spread->click && texture_atlas_creation_item.size() )
+            {
+                std::sort(texture_atlas_creation_item.begin(), texture_atlas_creation_item.end(), TextureAtlasCreation_item());
+                
+                vec4i *atlas_plane = new vec4i(0,0,texture_atlas_size.x,texture_atlas_size.y);
+                LDErectpack *texture_atlas_creation_rectpack = new LDErectpack( atlas_plane );
+                
+                list_texture_atlas_sprites->erase();
+                
+                bool filled_successfully = 1;
+                
+                for ( LDEuint i = 0; i < texture_atlas_creation_item.size(); ++i )
+                {
+                    texture_atlas_creation_item[i].selected = 0;
+                    list_texture_atlas_sprites->addItem( i, texture_atlas_creation_item[i].image.model_name );
+                    
+                    vec4i *imageRectangle = new vec4i(0,0,texture_atlas_creation_item[i].image.size.x,texture_atlas_creation_item[i].image.size.y);
+                    vec4i *resultRect = NULL;
+                    resultRect = texture_atlas_creation_rectpack->insert(imageRectangle, combobox_texture_atlas_spacing->key() );
+                    
+                    if ( resultRect != NULL )
+                    {
+                        texture_atlas_creation_item[i].pos.x = resultRect->x;
+                        texture_atlas_creation_item[i].pos.y = resultRect->y;
+                    }
+                    else
+                        filled_successfully = 0;
+                }
+                
+                delete atlas_plane;
+                atlas_plane = NULL;
+                
+                delete texture_atlas_creation_rectpack;
+                texture_atlas_creation_rectpack = NULL;
+                
+                button_texture_atlas_sprites_delete->lock();
+                
+                if ( filled_successfully )
+                {
+                    combobox_texture_atlas_width->button.text_color = vec3f(1,1,1);
+                    combobox_texture_atlas_height->button.text_color = vec3f(1,1,1);
+                    combobox_texture_atlas_spacing->button.text_color = vec3f(1,1,1);
+                }
+                else
+                {
+                    combobox_texture_atlas_width->button.text_color = vec3f(1,0,0);
+                    combobox_texture_atlas_height->button.text_color = vec3f(1,0,0);
+                    combobox_texture_atlas_spacing->button.text_color = vec3f(1,0,0);
+                }
+            }
+            
+            if ( combobox_texture_atlas_width->changed )
+            {
+                texture_atlas_size.x = combobox_texture_atlas_width->key();
+                
+                scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
+                scrollbar_texture_atlas_horizontal->setPercent(0);
+            }
+            else if ( combobox_texture_atlas_height->changed )
+            {
+                texture_atlas_size.y = combobox_texture_atlas_height->key();
+                
+                scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
+                scrollbar_texture_atlas->setPercent(0);
+            }
+            
+            //////////////////////////////////////////////////////////////
             /////////////////// TEXTURE ATLAS CREATION ///////////////////
             //////////////////////////////////////////////////////////////
             
@@ -1204,6 +1426,365 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
                 spritesheets[sps_id].spriteBatchNode.test_coi = gui.unused && !transf_tool.hover;
             }
             
+            ////////// Sprites Windows
+            if ( !window_spritesheets->closed )
+            {
+                // Resize behaviour
+                if ( window_spritesheets->button_resize.pressed )
+                {
+                    drawable_spritesheets->size = vec2i( window_spritesheets->size.x - 16, window_spritesheets->size.y - 43 );
+                    
+                    scrollbar_spritesheets->pos.x = window_spritesheets->size.x - 16;
+                    scrollbar_spritesheets->size.y = window_spritesheets->size.y-43;
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        vec2i pos_window(5, 5);
+                        
+                        for ( LDEuint s = 0; s < spritesheets[i].frames.size(); ++s )
+                        {
+                            spritesheets[i].frames[s].pos_window = pos_window;
+                            
+                            pos_window.x += 105; // width 100px
+                            
+                            if ( pos_window.x > window_spritesheets->size.x - 116 )
+                            {
+                                pos_window.x = 5;
+                                pos_window.y += 105; // height 100px
+                            }
+                        }
+                        
+                        scrollbar_spritesheets->scroll_height = pos_window.y;
+                        
+                        if ( pos_window.x != 5 )
+                            scrollbar_spritesheets->scroll_height += 100;
+                    }
+                }
+            }
+            
+            // If the window sprites list is not closed
+            if ( !window_sprites_list->closed )
+            {
+                // Resize behaviour
+                if ( window_sprites_list->button_resize.pressed )
+                {
+                    list_sprites->size.x = window_sprites_list->size.x;
+                    list_sprites->size.y = window_sprites_list->size.y-157;
+                    
+                    text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-150 );
+                    editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-153 );
+                    editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-153 );
+                    text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-125 );
+                    editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-128 );
+                    editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-128 );
+                    text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-100 );
+                    editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-103 );
+                    text_sprite_opacity->pos = vec2i( 20, window_sprites_list->size.y-75 );
+                    editbox_sprite_opacity->pos = vec2i( 75, window_sprites_list->size.y-78 );
+                    text_sprite_size->pos = vec2i( 5, window_sprites_list->size.y-50 );
+                    editbox_sprite_size_x->pos = vec2i( 75, window_sprites_list->size.y-53 );
+                    editbox_sprite_size_y->pos = vec2i( 145, window_sprites_list->size.y-53 );
+                    checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
+                }
+                
+                /////////////// CHANGING SELECTION OF SPRITES ///////////////
+                if ( list_sprites->changed_selection )
+                {
+                    num_selected_sprites = 0;
+                    transf_tool_rot = 0;
+                    
+                    // For every spritesheet folder in the list
+                    tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
+                    while ( item_itr_sibling != list_sprites->items_tree.end() )
+                    {
+                        //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                        
+                        // For every sprites in the spritesheet folder
+                        tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
+                        while ( item_itr != list_sprites->items_tree.end(item_itr_sibling) )
+                        {
+                            if ( item_itr->type == 0 )
+                            {
+                                //cout<<"sprite:"<<item_itr->button.name<<"\n";
+                                
+                                spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;
+                                
+                                if ( item_itr->selected )
+                                {
+                                    transf_tool_rot = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].rot;
+                                    transf_tool_size = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].size;
+                                    
+                                    ++num_selected_sprites;
+                                }
+                            }
+                            
+                            ++item_itr;
+                        }
+                        
+                        ++item_itr_sibling;
+                    }
+                    
+                    vec2i min( 999999999, 999999999), max( -999999999, -999999999), pos_temp;
+                    
+                    // For every spritesheet folder in the list
+                    item_itr_sibling = list_sprites->items_tree.begin();
+                    while ( item_itr_sibling != list_sprites->items_tree.end() )
+                    {
+                        //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                        
+                        pos_temp = spritesheets[item_itr_sibling->key].spriteBatchNode.getTransfPos();
+                        
+                        if ( pos_temp.x != 0 && pos_temp.y != 0 )
+                        {
+                            /// MIN
+                            if ( min.x > pos_temp.x )
+                                min.x = pos_temp.x;
+                            
+                            if ( min.y > pos_temp.y )
+                                min.y = pos_temp.y;
+                            
+                            
+                            /// MAX
+                            if ( max.x < pos_temp.x )
+                                max.x = pos_temp.x;
+                            
+                            if ( max.y < pos_temp.y )
+                                max.y = pos_temp.y;
+                        }
+                        
+                        ++item_itr_sibling;
+                    }
+                    
+                    if ( num_selected_sprites > 1 )
+                    {
+                        transf_tool_rot = 0;
+                        transf_tool_size = 0;
+                    }
+                    
+                    transf_tool.rot_offset = -transf_tool_rot;
+                    
+                    transf_tool_pos = vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
+                    
+                    editbox_sprite_pos_x->name = LDEnts(transf_tool_pos.x);
+                    editbox_sprite_pos_y->name = LDEnts(-transf_tool_pos.y);
+                    
+                    editbox_sprite_size_x->name = LDEnts(transf_tool_size.x);
+                    editbox_sprite_size_y->name = LDEnts(transf_tool_size.y);
+                    
+                    editbox_sprite_ap_x->name = LDEnts(transf_tool_size.x/2);
+                    editbox_sprite_ap_y->name = LDEnts(transf_tool_size.y/2);
+                    
+                    editbox_sprite_rot->name = LDEnts( transf_tool_rot );
+                }
+                
+                /////////////// CHANGING ZORDER OF SpriteSheets and Sprites ///////////////
+                if ( list_sprites->changed_order )
+                {
+                    vector<LDEuint>spritesheet_zorder_temp;
+                    spritesheet_zorder_temp.reserve( spritesheets_zorder.size() );
+                    
+                    tree<LDEgui_list_item>::iterator item_itr_sprite, item_itr_sprite_begin;
+                    
+                    tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.end();
+                    --item_itr_sibling;
+                    
+                    tree<LDEgui_list_item>::sibling_iterator item_itr_sibling_begin = list_sprites->items_tree.begin();
+                    --item_itr_sibling_begin;
+                    
+                    // For every spritesheet folder (backwards)
+                    while ( item_itr_sibling != item_itr_sibling_begin )
+                    {
+                        //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
+                        
+                        LDEuint num_sprites = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites.size();
+                        
+                        std::vector<Sprite>sprites_temp;
+                        sprites_temp.reserve( num_sprites );
+                        
+                        item_itr_sprite = list_sprites->items_tree.end(item_itr_sibling);
+                        --item_itr_sprite;
+                        item_itr_sprite_begin = list_sprites->items_tree.begin(item_itr_sibling);
+                        --item_itr_sprite_begin;
+                        while ( item_itr_sprite != item_itr_sprite_begin )
+                        {
+                            if ( item_itr_sprite->type == 0 )
+                            {
+                                //cout<<"sprite:"<<item_itr_sprite->button.name<<"\n";
+                                
+                                sprites_temp.push_back( spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr_sprite->key] );                     
+                                item_itr_sprite->key = sprites_temp.size() - 1;
+                            }
+                            
+                            --item_itr_sprite;
+                        }
+                        
+                        spritesheets[item_itr_sibling->key].spriteBatchNode.sprites = sprites_temp;
+                        
+                        spritesheet_zorder_temp.push_back(item_itr_sibling->key);
+                        
+                        --item_itr_sibling;
+                    }
+                    
+                    spritesheets_zorder = spritesheet_zorder_temp;
+                }
+                
+                ///////// Sprite properties panel /////////
+                
+                // Position editboxes
+                if ( editbox_sprite_pos_x->changed || editbox_sprite_pos_y->changed )
+                {
+                    vec2i new_position;
+                    
+                    // X pos
+                    if ( editbox_sprite_pos_x->name.length() )
+                    {
+                        new_position.x = LDEstn( editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name) );
+                        
+                        editbox_sprite_pos_x->name = LDEnts(new_position.x);
+                    }
+                    else
+                        editbox_sprite_pos_x->name = "0";
+                    
+                    // Y pos
+                    if ( editbox_sprite_pos_y->name.length() )
+                    {
+                        new_position.y = -LDEstn( editbox_sprite_pos_y->name = str_replace(",", ".", editbox_sprite_pos_y->name) );
+                        
+                        editbox_sprite_pos_y->name = LDEnts(-new_position.y);
+                    }
+                    else
+                        editbox_sprite_pos_y->name = "0";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        spritesheets[i].spriteBatchNode.setPosition( new_position );
+                        
+                        transf_tool_pos = new_position;
+                        transf_tool.pos = new_position;
+                    }
+                }
+                
+                // Anchor point editboxes
+                if ( editbox_sprite_ap_x->changed || editbox_sprite_ap_y->changed )
+                {
+                    vec2i new_ap;
+                    
+                    // X pos
+                    if ( editbox_sprite_ap_x->name.length() )
+                    {
+                        new_ap.x = LDEstn( editbox_sprite_ap_x->name = str_replace(",", ".", editbox_sprite_ap_x->name) );
+                        
+                        editbox_sprite_ap_x->name = LDEnts(new_ap.x);
+                    }
+                    else
+                        editbox_sprite_ap_x->name = "0";
+                    
+                    // Y pos
+                    if ( editbox_sprite_ap_y->name.length() )
+                    {
+                        new_ap.y = LDEstn( editbox_sprite_ap_y->name = str_replace(",", ".", editbox_sprite_ap_y->name) );
+                        
+                        editbox_sprite_ap_y->name = LDEnts(new_ap.y);
+                    }
+                    else
+                        editbox_sprite_ap_y->name = "0";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        spritesheets[i].spriteBatchNode.test_coi = 0;
+                        spritesheets[i].spriteBatchNode.setOffset( new_ap );
+                    }
+                }
+                
+                // Size X editbox
+                if ( editbox_sprite_size_x->changed )
+                {
+                    vec2i new_size;
+                    
+                    // X size
+                    if ( editbox_sprite_size_x->name.length() )
+                    {
+                        new_size.x = LDEstn( editbox_sprite_size_x->name = str_replace(",", ".", editbox_sprite_size_x->name) );
+                        
+                        editbox_sprite_size_x->name = LDEnts(new_size.x);
+                    }
+                    else
+                        editbox_sprite_size_x->name = "100";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        new_size.y = spritesheets[i].spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
+                    }
+                    
+                    editbox_sprite_size_y->name = LDEnts(new_size.y);
+                }
+                
+                // Size Y editbox
+                if ( editbox_sprite_size_y->changed )
+                {
+                    vec2i new_size;
+                    
+                    // Y size
+                    if ( editbox_sprite_size_y->name.length() )
+                    {
+                        new_size.y = LDEstn( editbox_sprite_size_y->name = str_replace(",", ".", editbox_sprite_size_y->name) );
+                        
+                        editbox_sprite_size_y->name = LDEnts(new_size.y);
+                    }
+                    else
+                        editbox_sprite_size_y->name = "100";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        new_size.y = spritesheets[i].spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
+                    }
+                    
+                    editbox_sprite_size_x->name = LDEnts(new_size.x);
+                }
+                
+                //
+                if ( editbox_sprite_rot->changed )
+                {
+                    LDEfloat new_rot = 0;
+                    
+                    // Y size
+                    if ( editbox_sprite_rot->name.length() )
+                    {
+                        new_rot = LDEstn( editbox_sprite_rot->name = str_replace(",", ".", editbox_sprite_rot->name) );
+                        
+                        editbox_sprite_rot->name = LDEnts(new_rot);
+                    }
+                    else
+                        editbox_sprite_rot->name = "0";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        spritesheets[i].spriteBatchNode.setRotation( new_rot );
+                    }
+                }
+                
+                //
+                if ( editbox_sprite_opacity->changed )
+                {
+                    LDEfloat new_opacity = 0;
+                    
+                    // Y size
+                    if ( editbox_sprite_opacity->name.length() )
+                    {
+                        new_opacity = LDEstn( editbox_sprite_opacity->name = str_replace(",", ".", editbox_sprite_opacity->name) );
+                        
+                        editbox_sprite_opacity->name = LDEnts(new_opacity);
+                    }
+                    else
+                        editbox_sprite_opacity->name = "1";
+                    
+                    for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+                    {
+                        spritesheets[i].spriteBatchNode.setOpacity( new_opacity );
+                    }
+                }
+            }
+            
             break;
         }
     
@@ -1287,6 +1868,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
+    // Draw meters count next to the grid
     for ( LDEint i = 0; i < 100; i += 5 )
     {
         gui.font_elements->setText( LDEnts(i)+"m");
@@ -1412,6 +1994,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     glDisable(GL_TEXTURE_2D);
     
+    // Draw all the triangulated shapes
     for ( LDEuint i = 0; i < shapes.size(); ++i )
     {
         shapes[i].cursor = vec2i( (LDEfloat)(app.cursor.x/camera_zoom) - camera_pos.x, (LDEfloat)(app.cursor.y/camera_zoom) - camera_pos.y );
@@ -1448,70 +2031,74 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
-    glColor4d(1, 1, 1, 0.4);
-    
-    glBegin(GL_LINES);
-    glVertex2i(0, 0);
-    glVertex2i(0, -1000*PTM_RATIO);
-    
-    glVertex2i(0, 0);
-    glVertex2i(1000*PTM_RATIO, 0);
-    glEnd();
-    
-    glBegin(GL_LINES);
-    for ( LDEuint i = 0; i < 100; ++i )
+    // Draw scene grid
     {
-        glVertex2i(i*PTM_RATIO, 0);
-        glVertex2i(i*PTM_RATIO, 10);
-    }
-    
-    for ( LDEuint i = 0; i < 100; ++i )
-    {
-        glVertex2i(-10, -i*PTM_RATIO);
-        glVertex2i(0, -i*PTM_RATIO);
-    }
-    glEnd();
-    
-    glEnable(GL_LINE_STIPPLE);
-    glLineStipple(1,0x0101);
-    glColor4d(1, 1, 1, 0.2);
-    glBegin(GL_LINES);
-    for ( LDEuint i = 0; i < 100; ++i )
-    {
-        glVertex2i(i*PTM_RATIO,1000*PTM_RATIO);
-        glVertex2i(i*PTM_RATIO,-1000*PTM_RATIO);
+        glColor4d(1, 1, 1, 0.4);
         
-        glVertex2i(0, -i*PTM_RATIO);
-        glVertex2i(1000*PTM_RATIO, -i*PTM_RATIO);
-    }
-    glEnd();
-    
-    glColor4d(1, 1, 1, 0.3);
-    glBegin(GL_LINES);
-    for ( LDEuint i = 0; i < 100; i += 5 )
-    {
-        glVertex2i(i*PTM_RATIO,1000*PTM_RATIO);
-        glVertex2i(i*PTM_RATIO,-1000*PTM_RATIO);
+        glBegin(GL_LINES);
+        glVertex2i(0, 0);
+        glVertex2i(0, -1000*PTM_RATIO);
         
-        glVertex2i(0, -i*PTM_RATIO);
-        glVertex2i(1000*PTM_RATIO, -i*PTM_RATIO);
+        glVertex2i(0, 0);
+        glVertex2i(1000*PTM_RATIO, 0);
+        glEnd();
+        
+        glBegin(GL_LINES);
+        for ( LDEuint i = 0; i < 100; ++i )
+        {
+            glVertex2i(i*PTM_RATIO, 0);
+            glVertex2i(i*PTM_RATIO, 10);
+        }
+        
+        for ( LDEuint i = 0; i < 100; ++i )
+        {
+            glVertex2i(-10, -i*PTM_RATIO);
+            glVertex2i(0, -i*PTM_RATIO);
+        }
+        glEnd();
+        
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(1,0x0101);
+        glColor4d(1, 1, 1, 0.2);
+        glBegin(GL_LINES);
+        for ( LDEuint i = 0; i < 100; ++i )
+        {
+            glVertex2i(i*PTM_RATIO,1000*PTM_RATIO);
+            glVertex2i(i*PTM_RATIO,-1000*PTM_RATIO);
+            
+            glVertex2i(0, -i*PTM_RATIO);
+            glVertex2i(1000*PTM_RATIO, -i*PTM_RATIO);
+        }
+        glEnd();
+        
+        glColor4d(1, 1, 1, 0.3);
+        glBegin(GL_LINES);
+        for ( LDEuint i = 0; i < 100; i += 5 )
+        {
+            glVertex2i(i*PTM_RATIO,1000*PTM_RATIO);
+            glVertex2i(i*PTM_RATIO,-1000*PTM_RATIO);
+            
+            glVertex2i(0, -i*PTM_RATIO);
+            glVertex2i(1000*PTM_RATIO, -i*PTM_RATIO);
+        }
+        glEnd();
+        
+        glColor4d(1, 0, 0, 0.5);
+        glLineWidth(2);
+        glLineStipple(1,0x00FF);
+        glBegin(GL_LINE_STRIP);
+        glVertex2i(0, 0);
+        glVertex2i(0, -640);
+        glVertex2i(960, -640);
+        glVertex2i(960, 0);
+        glVertex2i(0, 0);
+        glEnd();
+        glDisable(GL_LINE_STIPPLE);
+        
+        glColor3f(1, 1, 1);
     }
-    glEnd();
     
-    glColor4d(1, 0, 0, 0.5);
-    glLineWidth(2);
-    glLineStipple(1,0x00FF);
-    glBegin(GL_LINE_STRIP);
-    glVertex2i(0, 0);
-    glVertex2i(0, -640);
-    glVertex2i(960, -640);
-    glVertex2i(960, 0);
-    glVertex2i(0, 0);
-    glEnd();
-    glDisable(GL_LINE_STIPPLE);
-    
-    glColor3f(1, 1, 1);
-    
+    // Draw the vector paths
     for ( LDEuint i = 0; i < paths.size(); ++i )
     {
         paths[i].draw();
@@ -1521,6 +2108,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     glEnable(GL_TEXTURE_2D);
     
+    // The transformation tool (pos, size, rot)
     if ( num_selected_sprites )
     {
         transf_tool.cursor = app.cursor;
@@ -1668,595 +2256,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     glLineWidth(1);
     
-    ////////// File browser
-    if ( !window_tools_texture_atlas->closed )
-    {
-        if ( button_texture_atlas_import_images->click )
-        {
-            // Create the File Open Dialog class.
-            NSOpenPanel* openDlg = [NSOpenPanel openPanel];
-            
-            [openDlg setCanChooseFiles:YES];
-            [openDlg setCanChooseDirectories:YES];
-            [openDlg setAllowsMultipleSelection:YES];
-            
-            NSArray *fileTypes = [NSArray arrayWithObjects:
-                                  @"jpg",
-                                  @"jpeg",
-                                  @"png",
-                                  @"gif",
-                                  NSFileTypeForHFSTypeCode('TEXT'),
-                                  nil];
-            
-            [openDlg setAllowedFileTypes:fileTypes];
-            
-            // Display the dialog.  If the OK button was pressed,
-            // process the files.
-            if ( [openDlg runModal] == NSOKButton )
-            {
-                // Get an array containing the full filenames of all
-                // files and directories selected.
-                NSArray* files = [openDlg URLs];
-                
-                // Loop through all the files and process them.
-                for( LDEuint i = 0; i < [files count]; ++i )
-                {
-                    NSString* fileName = [[files objectAtIndex:i] path];
-                    
-                    TextureAtlasCreation_item texture_atlas_creation_item_temp;
-                    
-                    texture_atlas_creation_item_temp.image.load( [fileName UTF8String] );
-                    
-                    if ( texture_atlas_creation_item_temp.image.size.x && texture_atlas_creation_item_temp.image.size.y )
-                    {
-                        texture_atlas_creation_item_temp.image.crop( texture_atlas_creation_item_temp.image.getEmptyPixels() );
-                        
-                        if ( texture_atlas_creation_item_temp.image.size.y > texture_atlas_size.y )
-                            texture_atlas_size.y = LDEnextPot( texture_atlas_creation_item_temp.image.size.y );
-                        
-                        if ( texture_atlas_creation_item_temp.image.size.x > texture_atlas_size.x )
-                            texture_atlas_size.x = LDEnextPot( texture_atlas_creation_item_temp.image.size.x );
-						
-                        scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
-                        scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
-						
-                        list_texture_atlas_sprites->addItem( texture_atlas_creation_item.size(), texture_atlas_creation_item_temp.image.model_name );
-						
-                        texture_atlas_creation_item_temp.image.opengl(2);
-                        
-                        texture_atlas_creation_item.push_back( texture_atlas_creation_item_temp );
-                    }
-                }
-            }
-        }
-        
-        ///////////// Save the small images to spritesheet /////////////////
-        if ( button_texture_atlas_save->click && texture_atlas_creation_item.size() && combobox_texture_atlas_width->button.text_color.y )
-        {
-            Spritesheet spritframe_temp;
-            
-            spritframe_temp.image.create(texture_atlas_size.x, texture_atlas_size.y, 4);
-            
-            vec2i pos_window(5, 5);
-            
-            for ( LDEuint i = 0; i < texture_atlas_creation_item.size(); ++i )
-            {
-                spritframe_temp.image.copyMerge( texture_atlas_creation_item[i].image, texture_atlas_creation_item[i].pos );
-                
-                Spritesheet_frame frame_temp;
-                
-                frame_temp.pos_window = pos_window;
-                frame_temp.pos = texture_atlas_creation_item[i].pos;
-                frame_temp.size = texture_atlas_creation_item[i].image.size;
-                
-                // Let's calculate the thumbnail's size
-                LDEfloat ratio = 0;
-                
-                // Si la largeur est plus grande que la hauteur
-                if ( frame_temp.size.x > frame_temp.size.y )
-                {
-                    // Déterminer le ratio
-                    ratio = (LDEfloat)100 / frame_temp.size.x;
-                    
-                    frame_temp.size_100.x = 100;
-                    
-                    frame_temp.size_100.y = (LDEint)frame_temp.size.y * ratio;
-                }
-                // Sinon, si la hauteur est plus grande que la largeur
-                else
-                {
-                    // Déterminer le ratio
-                    ratio = (LDEfloat)100 / frame_temp.size.y;
-                    
-                    frame_temp.size_100.y = 100;
-                    
-                    frame_temp.size_100.x = (LDEint)frame_temp.size.x * ratio;
-                }
-                
-                frame_temp.margin = vec2i( 50 - frame_temp.size_100.x / 2, 50 - frame_temp.size_100.y / 2 );
-                
-                frame_temp.name = texture_atlas_creation_item[i].image.model_name;
-                
-                spritframe_temp.frames.push_back( frame_temp );
-                
-                pos_window.x += 105; // width 100px
-                
-                if ( pos_window.x > window_spritesheets->size.x - 116 )
-                {
-                    pos_window.x = 5;
-                    pos_window.y += 105; // height 100px
-                }
-            }
-            
-            scrollbar_spritesheets->scroll_height = pos_window.y + 100;
-            
-            spritframe_temp.image.opengl(2);
-            
-            spritesheets.push_back( spritframe_temp );
-            
-            LDEuint spritesheet_id = spritesheets.size()-1;
-            spritesheets_zorder.push_back( spritesheet_id );
-            
-            string spritesheet_name = "SpriteSheet"+LDEnts( spritesheet_id+1 );
-            
-            combobox_spritesheets->addOption( spritesheet_id, spritesheet_name, 1 );
-            spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheet_name );
-            
-            spritesheets[spritesheet_id].item_group->can_move = 1;
-            spritesheets[spritesheet_id].item_group->key = spritesheet_id;
-            
-            tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
-            list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
-            
-            texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
-            list_texture_atlas_sprites->erase();
-            button_texture_atlas_sprites_delete->lock();
-            
-            // When spritesheet saved, go to World Edit Mode
-            switchEditorMode(2);
-        }
-        
-        // Launch 2D bin packing (rectangle packing in a bigger rectangle)
-        if ( button_texture_atlas_spread->click && texture_atlas_creation_item.size() )
-        {
-            std::sort(texture_atlas_creation_item.begin(), texture_atlas_creation_item.end(), TextureAtlasCreation_item());
-            
-            vec4i *atlas_plane = new vec4i(0,0,texture_atlas_size.x,texture_atlas_size.y);
-            LDErectpack *texture_atlas_creation_rectpack = new LDErectpack( atlas_plane );
-            
-            list_texture_atlas_sprites->erase();
-            
-            bool filled_successfully = 1;
-            
-            for ( LDEuint i = 0; i < texture_atlas_creation_item.size(); ++i )
-            {
-                texture_atlas_creation_item[i].selected = 0;
-                list_texture_atlas_sprites->addItem( i, texture_atlas_creation_item[i].image.model_name );
-                
-                vec4i *imageRectangle = new vec4i(0,0,texture_atlas_creation_item[i].image.size.x,texture_atlas_creation_item[i].image.size.y);
-                vec4i *resultRect = NULL;
-                resultRect = texture_atlas_creation_rectpack->insert(imageRectangle, combobox_texture_atlas_spacing->key() );
-                
-                if ( resultRect != NULL )
-                {
-                    texture_atlas_creation_item[i].pos.x = resultRect->x;
-                    texture_atlas_creation_item[i].pos.y = resultRect->y;
-                }
-                else
-                    filled_successfully = 0;
-            }
-            
-            delete atlas_plane;
-            atlas_plane = NULL;
-            
-            delete texture_atlas_creation_rectpack;
-            texture_atlas_creation_rectpack = NULL;
-            
-            button_texture_atlas_sprites_delete->lock();
-            
-            if ( filled_successfully )
-            {
-                combobox_texture_atlas_width->button.text_color = vec3f(1,1,1);
-                combobox_texture_atlas_height->button.text_color = vec3f(1,1,1);
-                combobox_texture_atlas_spacing->button.text_color = vec3f(1,1,1);
-            }
-            else
-            {
-                combobox_texture_atlas_width->button.text_color = vec3f(1,0,0);
-                combobox_texture_atlas_height->button.text_color = vec3f(1,0,0);
-                combobox_texture_atlas_spacing->button.text_color = vec3f(1,0,0);
-            }
-        }
-        
-        if ( combobox_texture_atlas_width->changed )
-        {
-            texture_atlas_size.x = combobox_texture_atlas_width->key();
-            
-            scrollbar_texture_atlas_horizontal->scroll_height = (texture_atlas_size.x*texture_atlas_zoom)+20;
-            scrollbar_texture_atlas_horizontal->setPercent(0);
-        }
-        else if ( combobox_texture_atlas_height->changed )
-        {
-            texture_atlas_size.y = combobox_texture_atlas_height->key();
-            
-            scrollbar_texture_atlas->scroll_height = (texture_atlas_size.y*texture_atlas_zoom)+20;
-            scrollbar_texture_atlas->setPercent(0);
-        }
-    }
-    
-    ////////// Sprites Windows
-    if ( !window_spritesheets->closed )
-    {
-        // Resize behaviour
-        if ( window_spritesheets->button_resize.pressed )
-        {
-            drawable_spritesheets->size = vec2i( window_spritesheets->size.x - 16, window_spritesheets->size.y - 43 );
-            
-            scrollbar_spritesheets->pos.x = window_spritesheets->size.x - 16;
-            scrollbar_spritesheets->size.y = window_spritesheets->size.y-43;
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                vec2i pos_window(5, 5);
-                
-                for ( LDEuint s = 0; s < spritesheets[i].frames.size(); ++s )
-                {
-                    spritesheets[i].frames[s].pos_window = pos_window;
-                    
-                    pos_window.x += 105; // width 100px
-                    
-                    if ( pos_window.x > window_spritesheets->size.x - 116 )
-                    {
-                        pos_window.x = 5;
-                        pos_window.y += 105; // height 100px
-                    }
-                }
-                
-                scrollbar_spritesheets->scroll_height = pos_window.y;
-                
-                if ( pos_window.x != 5 )
-                    scrollbar_spritesheets->scroll_height += 100;
-            }
-        }
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////                              WORLD EDIT                              //////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    // If the window sprites list is not closed
-    if ( !window_sprites_list->closed )
-    {
-        // Resize behaviour
-        if ( window_sprites_list->button_resize.pressed )
-        {
-            list_sprites->size.x = window_sprites_list->size.x;
-            list_sprites->size.y = window_sprites_list->size.y-157;
-            
-            text_sprite_pos->pos = vec2i( 15, window_sprites_list->size.y-150 );
-            editbox_sprite_pos_x->pos = vec2i( 75, window_sprites_list->size.y-153 );
-            editbox_sprite_pos_y->pos = vec2i( 145, window_sprites_list->size.y-153 );
-            text_sprite_ap->pos = vec2i( 15, window_sprites_list->size.y-125 );
-            editbox_sprite_ap_x->pos = vec2i( 75, window_sprites_list->size.y-128 );
-            editbox_sprite_ap_y->pos = vec2i( 145, window_sprites_list->size.y-128 );
-            text_sprite_rot->pos = vec2i( 10, window_sprites_list->size.y-100 );
-            editbox_sprite_rot->pos = vec2i( 75, window_sprites_list->size.y-103 );
-            text_sprite_opacity->pos = vec2i( 20, window_sprites_list->size.y-75 );
-            editbox_sprite_opacity->pos = vec2i( 75, window_sprites_list->size.y-78 );
-            text_sprite_size->pos = vec2i( 5, window_sprites_list->size.y-50 );
-            editbox_sprite_size_x->pos = vec2i( 75, window_sprites_list->size.y-53 );
-            editbox_sprite_size_y->pos = vec2i( 145, window_sprites_list->size.y-53 );
-            checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
-        }
-        
-        /////////////// CHANGING SELECTION OF SPRITES ///////////////
-        if ( list_sprites->changed_selection )
-        {
-            num_selected_sprites = 0;
-            transf_tool_rot = 0;
-            
-            // For every spritesheet folder in the list
-            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.begin();
-            while ( item_itr_sibling != list_sprites->items_tree.end() )
-            {
-                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
-                
-                // For every sprites in the spritesheet folder
-                tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin(item_itr_sibling);
-                while ( item_itr != list_sprites->items_tree.end(item_itr_sibling) )
-                {
-                    if ( item_itr->type == 0 )
-                    {
-                        //cout<<"sprite:"<<item_itr->button.name<<"\n";
-                        
-                        spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].selected = item_itr->selected;
-                        
-                        if ( item_itr->selected )
-                        {
-                            transf_tool_rot = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].rot;
-                            transf_tool_size = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr->key].size;
-                            
-                            ++num_selected_sprites;
-                        }
-                    }
-                    
-                    ++item_itr;
-                }
-                
-                ++item_itr_sibling;
-            }
-            
-            vec2i min( 999999999, 999999999), max( -999999999, -999999999), pos_temp;
-            
-            // For every spritesheet folder in the list
-            item_itr_sibling = list_sprites->items_tree.begin();
-            while ( item_itr_sibling != list_sprites->items_tree.end() )
-            {
-                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
-                
-                pos_temp = spritesheets[item_itr_sibling->key].spriteBatchNode.getTransfPos();
-                
-                if ( pos_temp.x != 0 && pos_temp.y != 0 )
-                {
-                    /// MIN
-                    if ( min.x > pos_temp.x )
-                        min.x = pos_temp.x;
-                    
-                    if ( min.y > pos_temp.y )
-                        min.y = pos_temp.y;
-                    
-                    
-                    /// MAX
-                    if ( max.x < pos_temp.x )
-                        max.x = pos_temp.x;
-                    
-                    if ( max.y < pos_temp.y )
-                        max.y = pos_temp.y;
-                }
-                
-                ++item_itr_sibling;
-            }
-            
-            if ( num_selected_sprites > 1 )
-            {
-                transf_tool_rot = 0;
-                transf_tool_size = 0;
-            }
-            
-            transf_tool.rot_offset = -transf_tool_rot;
-            
-            transf_tool_pos = vec2i( min.x + ((max.x - min.x)/2), min.y + ((max.y - min.y)/2) );
-            
-            editbox_sprite_pos_x->name = LDEnts(transf_tool_pos.x);
-            editbox_sprite_pos_y->name = LDEnts(-transf_tool_pos.y);
-            
-            editbox_sprite_size_x->name = LDEnts(transf_tool_size.x);
-            editbox_sprite_size_y->name = LDEnts(transf_tool_size.y);
-            
-            editbox_sprite_ap_x->name = LDEnts(transf_tool_size.x/2);
-            editbox_sprite_ap_y->name = LDEnts(transf_tool_size.y/2);
-            
-            editbox_sprite_rot->name = LDEnts( transf_tool_rot );
-        }
-        
-        /////////////// CHANGING ZORDER OF SpriteSheets and Sprites ///////////////
-        if ( list_sprites->changed_order )
-        {
-            vector<LDEuint>spritesheet_zorder_temp;
-            spritesheet_zorder_temp.reserve( spritesheets_zorder.size() );
-            
-            tree<LDEgui_list_item>::iterator item_itr_sprite, item_itr_sprite_begin;
-            
-            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling = list_sprites->items_tree.end();
-            --item_itr_sibling;
-
-            tree<LDEgui_list_item>::sibling_iterator item_itr_sibling_begin = list_sprites->items_tree.begin();
-            --item_itr_sibling_begin;
-            
-            // For every spritesheet folder (backwards)
-            while ( item_itr_sibling != item_itr_sibling_begin )
-            {
-                //cout<<"folder:"<<item_itr_sibling->button.name<<"\n";
-                
-                LDEuint num_sprites = spritesheets[item_itr_sibling->key].spriteBatchNode.sprites.size();
-                
-                std::vector<Sprite>sprites_temp;
-                sprites_temp.reserve( num_sprites );
-                
-                item_itr_sprite = list_sprites->items_tree.end(item_itr_sibling);
-                --item_itr_sprite;
-                item_itr_sprite_begin = list_sprites->items_tree.begin(item_itr_sibling);
-                --item_itr_sprite_begin;
-                while ( item_itr_sprite != item_itr_sprite_begin )
-                {
-                    if ( item_itr_sprite->type == 0 )
-                    {
-                        //cout<<"sprite:"<<item_itr_sprite->button.name<<"\n";
-                        
-                        sprites_temp.push_back( spritesheets[item_itr_sibling->key].spriteBatchNode.sprites[item_itr_sprite->key] );                     
-                        item_itr_sprite->key = sprites_temp.size() - 1;
-                    }
-                    
-                    --item_itr_sprite;
-                }
-                
-                spritesheets[item_itr_sibling->key].spriteBatchNode.sprites = sprites_temp;
-                
-                spritesheet_zorder_temp.push_back(item_itr_sibling->key);
-                
-                --item_itr_sibling;
-            }
-            
-            spritesheets_zorder = spritesheet_zorder_temp;
-        }
-        
-        ///////// Sprite properties panel /////////
-        
-        // Position editboxes
-        if ( editbox_sprite_pos_x->changed || editbox_sprite_pos_y->changed )
-        {
-            vec2i new_position;
-            
-            // X pos
-            if ( editbox_sprite_pos_x->name.length() )
-            {
-                new_position.x = LDEstn( editbox_sprite_pos_x->name = str_replace(",", ".", editbox_sprite_pos_x->name) );
-                
-                editbox_sprite_pos_x->name = LDEnts(new_position.x);
-            }
-            else
-                editbox_sprite_pos_x->name = "0";
-            
-            // Y pos
-            if ( editbox_sprite_pos_y->name.length() )
-            {
-                new_position.y = -LDEstn( editbox_sprite_pos_y->name = str_replace(",", ".", editbox_sprite_pos_y->name) );
-                
-                editbox_sprite_pos_y->name = LDEnts(-new_position.y);
-            }
-            else
-                editbox_sprite_pos_y->name = "0";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                spritesheets[i].spriteBatchNode.setPosition( new_position );
-                
-                transf_tool_pos = new_position;
-                transf_tool.pos = new_position;
-            }
-        }
-        
-        // Anchor point editboxes
-        if ( editbox_sprite_ap_x->changed || editbox_sprite_ap_y->changed )
-        {
-            vec2i new_ap;
-            
-            // X pos
-            if ( editbox_sprite_ap_x->name.length() )
-            {
-                new_ap.x = LDEstn( editbox_sprite_ap_x->name = str_replace(",", ".", editbox_sprite_ap_x->name) );
-                
-                editbox_sprite_ap_x->name = LDEnts(new_ap.x);
-            }
-            else
-                editbox_sprite_ap_x->name = "0";
-            
-            // Y pos
-            if ( editbox_sprite_ap_y->name.length() )
-            {
-                new_ap.y = LDEstn( editbox_sprite_ap_y->name = str_replace(",", ".", editbox_sprite_ap_y->name) );
-                
-                editbox_sprite_ap_y->name = LDEnts(new_ap.y);
-            }
-            else
-                editbox_sprite_ap_y->name = "0";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                spritesheets[i].spriteBatchNode.test_coi = 0;
-                spritesheets[i].spriteBatchNode.setOffset( new_ap );
-            }
-        }
-
-        // Size X editbox
-        if ( editbox_sprite_size_x->changed )
-        {
-            vec2i new_size;
-            
-            // X size
-            if ( editbox_sprite_size_x->name.length() )
-            {
-                new_size.x = LDEstn( editbox_sprite_size_x->name = str_replace(",", ".", editbox_sprite_size_x->name) );
-                
-                editbox_sprite_size_x->name = LDEnts(new_size.x);
-            }
-            else
-                editbox_sprite_size_x->name = "100";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                new_size.y = spritesheets[i].spriteBatchNode.setSizeX( new_size.x, checkbox_sprite_size_keep_ratio->checked );
-            }
-            
-            editbox_sprite_size_y->name = LDEnts(new_size.y);
-        }
-        
-        // Size Y editbox
-        if ( editbox_sprite_size_y->changed )
-        {
-            vec2i new_size;
-            
-            // Y size
-            if ( editbox_sprite_size_y->name.length() )
-            {
-                new_size.y = LDEstn( editbox_sprite_size_y->name = str_replace(",", ".", editbox_sprite_size_y->name) );
-                
-                editbox_sprite_size_y->name = LDEnts(new_size.y);
-            }
-            else
-                editbox_sprite_size_y->name = "100";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                new_size.y = spritesheets[i].spriteBatchNode.setSizeY( new_size.y, checkbox_sprite_size_keep_ratio->checked );
-            }
-            
-            editbox_sprite_size_x->name = LDEnts(new_size.x);
-        }
-        
-        //
-        if ( editbox_sprite_rot->changed )
-        {
-            LDEfloat new_rot = 0;
-            
-            // Y size
-            if ( editbox_sprite_rot->name.length() )
-            {
-                new_rot = LDEstn( editbox_sprite_rot->name = str_replace(",", ".", editbox_sprite_rot->name) );
-                
-                editbox_sprite_rot->name = LDEnts(new_rot);
-            }
-            else
-                editbox_sprite_rot->name = "0";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                spritesheets[i].spriteBatchNode.setRotation( new_rot );
-            }
-        }
-        
-        //
-        if ( editbox_sprite_opacity->changed )
-        {
-            LDEfloat new_opacity = 0;
-            
-            // Y size
-            if ( editbox_sprite_opacity->name.length() )
-            {
-                new_opacity = LDEstn( editbox_sprite_opacity->name = str_replace(",", ".", editbox_sprite_opacity->name) );
-                
-                editbox_sprite_opacity->name = LDEnts(new_opacity);
-            }
-            else
-                editbox_sprite_opacity->name = "1";
-            
-            for ( LDEuint i = 0; i < spritesheets.size(); ++i )
-            {
-                spritesheets[i].spriteBatchNode.setOpacity( new_opacity );
-            }
-        }
-    }
-    
     // Les boutons en haut (leurs actions quand on les clique !)
     pannel_menu->size.x = app.size.x;
     combobox_editor_mode->pos = vec2i( pannel_menu->size.x - combobox_editor_mode->size.x - 20, 2 );
     combobox_editor_zoom->pos = vec2i( pannel_menu->size.x - combobox_editor_zoom->size.x - combobox_editor_mode->size.x - 30, 2 );
     
-    if ( combobox_editor_mode->changed )
-    {
-        switchEditorMode( combobox_editor_mode->key() );
-    }
-    
+    // Save scene to path
     if ( menu_button_save->click )
     {
         NSSavePanel *savePanel = [NSSavePanel savePanel];
@@ -2272,6 +2277,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
+    // Open scene from path
     if ( menu_button_open->click )
     {
         NSOpenPanel *openPanel = [NSOpenPanel openPanel];
@@ -2284,7 +2290,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
         }
     }
     
-    ////////// EXPORT FOR IPHONE ////////////
+    ////////// EXPORT FOR DEVICE ////////////
     if ( menu_button_export->click )
     {    
         NSSavePanel *savePanel = [NSSavePanel savePanel];
@@ -2325,6 +2331,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     gui.draw( app.cursor, 0.01 );
     
+    // Dragged sprite above all
     if ( sprite_drag.size.x )
     {
         sprite_drag_size_temp = sprite_drag.size_100;
