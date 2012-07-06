@@ -95,6 +95,10 @@ LDEgui_window *window_shapes_list = new LDEgui_window();
 LDEgui_list *list_shapes = new LDEgui_list();
 LDEgui_button *button_shapes_delete = new LDEgui_button();
 
+LDEgui_window *window_shape_properties = new LDEgui_window();
+LDEgui_text *text_shape_color = new LDEgui_text();
+LDEgui_sprite *sprite_shape_color = new LDEgui_sprite();
+
 void init_gui()
 {
 	texture_atlas_zoom = 1.0;
@@ -155,7 +159,7 @@ void init_gui()
     
     //////////////// SHAPES MANAGEMENT //////////////////////
     
-    // Window containing triangulated shapes list
+    /// Window containing triangulated shapes list
 	gui.addWindow(window_shapes_list);
 	window_shapes_list->title_pos.x = 10;
 	window_shapes_list->pos = vec2i( 10, 30 );
@@ -177,6 +181,26 @@ void init_gui()
     list_shapes->allow_group = 0;
     list_shapes->allow_reorder = 0;
     list_shapes->allow_multiple_selection = 0;
+    
+    /// Window shape properties
+    gui.addWindow(window_shape_properties);
+	window_shape_properties->title_pos.x = 10;
+	window_shape_properties->pos = vec2i( app.size.x - 280, 30 );
+	window_shape_properties->size = vec2i( 250, 100 );
+	window_shape_properties->title = "Shape properties";
+	window_shape_properties->show_close_button = false;
+    window_shape_properties->close();
+    
+    window_shape_properties->elements.addText(text_shape_color);
+    text_shape_color->value = "Color:";
+    text_shape_color->pos = vec2i( 10, 10 );
+    
+    window_shape_properties->elements.addSprite(sprite_shape_color);
+    sprite_shape_color->color = vec3f( 0, 1, 0 );
+    sprite_shape_color->color_border = vec3f( 1, 1, 1 );
+    sprite_shape_color->borde_width = 2;
+    sprite_shape_color->pos = vec2i( 80, 8 );
+    sprite_shape_color->size = vec2i( 40, 20 );
     
     //////////////// SPRITES WORLD EDITOR MODE //////////////////////
     

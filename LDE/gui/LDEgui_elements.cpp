@@ -24,6 +24,11 @@ LDEgui_elements::~LDEgui_elements()
 
 }
 
+void LDEgui_elements::addSprite(LDEgui_sprite *arg)
+{
+	sprite.push_back( arg );
+}
+
 void LDEgui_elements::addDrawable( LDEgui_drawable *arg )
 {
 	drawable.push_back( arg );
@@ -286,6 +291,15 @@ void LDEgui_elements::draw(  LDEint x, LDEint y, vec2i cursor, LDEfloat frametim
 {
 	active = 0;
 	
+    for ( LDEuint i = 0; i < sprite.size(); ++i )
+    {
+        sprite[i]->x = x;
+        sprite[i]->y = y;
+        sprite[i]->test_coi = test_coi;
+        sprite[i]->mouse = mouse;
+        sprite[i]->draw( cursor, frametime );
+    }
+    
 	for ( LDEuint i = 0; i < drawable.size(); ++i )
     {
         drawable[i]->x = x;

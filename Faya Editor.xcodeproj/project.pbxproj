@@ -117,6 +117,7 @@
 		F5779B11155AE8EE002C8B7B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5779B10155AE8EE002C8B7B /* OpenGL.framework */; };
 		F5B9BAF315A328AE0077026C /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5B9BAF215A328AE0077026C /* Shapes.cpp */; };
 		F5C73C2F1572BB1200535A4B /* liste_traits.ldet in Resources */ = {isa = PBXBuildFile; fileRef = F5C73C2E1572BB1200535A4B /* liste_traits.ldet */; };
+		F5D90C5B15A7058A00C58A75 /* LDEgui_sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D90C5A15A7058A00C58A75 /* LDEgui_sprite.cpp */; };
 		F5E726B4155BBE7E009B8759 /* FayaEditor.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5E726B3155BBE7E009B8759 /* FayaEditor.icns */; };
 /* End PBXBuildFile section */
 
@@ -286,6 +287,8 @@
 		F5B9BAF115A328AE0077026C /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shapes.h; sourceTree = "<group>"; };
 		F5B9BAF215A328AE0077026C /* Shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shapes.cpp; sourceTree = "<group>"; };
 		F5C73C2E1572BB1200535A4B /* liste_traits.ldet */ = {isa = PBXFileReference; lastKnownFileType = file; path = liste_traits.ldet; sourceTree = "<group>"; };
+		F5D90C5915A7058A00C58A75 /* LDEgui_sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDEgui_sprite.h; sourceTree = "<group>"; };
+		F5D90C5A15A7058A00C58A75 /* LDEgui_sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LDEgui_sprite.cpp; sourceTree = "<group>"; };
 		F5E726B3155BBE7E009B8759 /* FayaEditor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FayaEditor.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -468,6 +471,8 @@
 				F5779A61155AE8B5002C8B7B /* LDEgui_window.h */,
 				F548CEE9155E9EFC009BCFF1 /* LDEgui_checkbox.h */,
 				F548CEEA155E9EFC009BCFF1 /* LDEgui_checkbox.cpp */,
+				F5D90C5915A7058A00C58A75 /* LDEgui_sprite.h */,
+				F5D90C5A15A7058A00C58A75 /* LDEgui_sprite.cpp */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -715,6 +720,7 @@
 				F536418715629546000803A9 /* transf_tool.cpp in Sources */,
 				F5B9BAF315A328AE0077026C /* Shapes.cpp in Sources */,
 				F54E642815A33B930060193A /* Triangulate.cpp in Sources */,
+				F5D90C5B15A7058A00C58A75 /* LDEgui_sprite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -25,11 +25,13 @@ using namespace std;
 #include "LDEgui_text.h"
 #include "LDEgui_combobox.h"
 #include "LDEgui_checkbox.h"
+#include "LDEgui_sprite.h"
 
 class LDEgui_elements
 {
     public:
 
+    vector<LDEgui_sprite*>sprite;
 	vector<LDEgui_drawable*>drawable;
     vector<LDEgui_button*>button;
 	vector<LDEgui_editbox*>editbox;
@@ -126,6 +128,7 @@ class LDEgui_elements
 
     LDEgui_menu_item *menu_item;
 
+    void addSprite( LDEgui_sprite *arg );
 	void addText( LDEgui_text *arg );
 	void addDrawable( LDEgui_drawable *arg );
     void addButton( LDEgui_button *arg );

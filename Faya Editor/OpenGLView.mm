@@ -206,8 +206,8 @@ void switchEditorMode( LDEuint mode )
             window_texture_atlas->close();
             window_spritesheets->close();
             window_sprites_list->close();
-            
             window_shapes_list->close();
+            window_shape_properties->close();
             
             window_tools_vector->open();
             window_vector_paths_list->open();
@@ -226,8 +226,8 @@ void switchEditorMode( LDEuint mode )
             window_vector_paths_list->close();
             window_spritesheets->close();
             window_sprites_list->close();
-            
             window_shapes_list->close();
+            window_shape_properties->close();
             
             window_tools_texture_atlas->open();
             window_texture_atlas_sprites_list->open();
@@ -246,11 +246,10 @@ void switchEditorMode( LDEuint mode )
             window_tools_texture_atlas->close();
             window_texture_atlas_sprites_list->close();
             window_texture_atlas->close();
-            
             window_tools_vector->close();
             window_vector_paths_list->close();
-            
             window_shapes_list->close();
+            window_shape_properties->close();
             
             window_spritesheets->open();
             window_sprites_list->open();
@@ -268,14 +267,13 @@ void switchEditorMode( LDEuint mode )
             window_tools_texture_atlas->close();
             window_texture_atlas_sprites_list->close();
             window_texture_atlas->close();
-            
             window_tools_vector->close();
             window_vector_paths_list->close();
-            
             window_spritesheets->close();
             window_sprites_list->close();
             
             window_shapes_list->open();
+            window_shape_properties->open();
             
             editor_mode = 3;
             combobox_editor_mode->select(3);
@@ -1794,6 +1792,11 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             for ( LDEuint i = 0; i < shapes.size(); ++i )
             {
                 shapes[i].test_coi = gui.unused && !transf_tool.hover;
+            }
+            
+            if ( sprite_shape_color->click )
+            {
+                cout<<rand()<<"click:1!\n";
             }
             
             ////////////////////////////////////////////////////////////
