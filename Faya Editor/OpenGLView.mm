@@ -725,6 +725,14 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     
     for ( LDEuint i = 0; i < app.input.size(); ++i )
     {
+        if ( app.input[i].down )
+        {
+            if ( app.input[i].s )
+            {
+                //switchEditorMode(1);
+            }
+        }
+        
         if ( app.input_lcmd && app.input[i].s )
         {
             if ( project_path.size() && project_name.size() )
@@ -2242,6 +2250,7 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Les boutons en haut (leurs actions quand on les clique !)
     pannel_menu->size.x = app.size.x;
     combobox_editor_mode->pos = vec2i( pannel_menu->size.x - combobox_editor_mode->size.x - 20, 2 );
+    combobox_editor_zoom->pos = vec2i( pannel_menu->size.x - combobox_editor_zoom->size.x - combobox_editor_mode->size.x - 30, 2 );
     
     if ( combobox_editor_mode->changed )
     {
