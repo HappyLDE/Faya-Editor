@@ -477,7 +477,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 
 vec3f   color_picker_square_color(1,0,0);
 vec2i   color_picker_cursor_pos;
-LDEint  color_picker_palette_pos = 0;
+LDEint  color_picker_palette_pos = 0,
+        color_picker_assign_to = 0;     // assign color to 1 = shapes
 bool    color_picker_pick_square = 0,
         color_picker_pick_rsquare = 0;
 void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDEfloat myframetime )
@@ -1029,8 +1030,36 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     // Window Color Picker
     if ( !window_color_picker->closed )
     {
-        if ( button_color_picker_cancel->click )
+        switch( color_picker_assign_to )
+        {
+            case 1:
+            {
+                if ( color_picker_pick_square || color_picker_pick_rsquare )
+                {
+                    sprite_shape_color->color = sprite_color_picker->color;
+                    shapes[shape_id_selected].color = sprite_shape_color->color;
+                }
+                
+                if ( button_color_picker_cancel->click )
+                {
+                    window_color_picker->close();
+                    
+                    sprite_shape_color->color = sprite_color_picker_old->color;
+                    shapes[shape_id_selected].color = sprite_shape_color->color;
+                    
+                    color_picker_assign_to = 0;
+                }
+                
+                break;
+            }
+        }
+        
+        if ( button_color_picker_ok->click )
+        {
             window_color_picker->close();
+            
+            color_picker_assign_to = 0;
+        }
     }
     
     switch ( editor_mode )
@@ -1227,6 +1256,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     
                     // Assign it's name
                     shapes[shape_id_selected].name = "Shape"+LDEnts(shape_id_selected);
+                    
+                    sprite_shape_color->color.reset();
                     
                     // Add entry to shapes gui list ////////////////////
                     tree<LDEgui_list_item>::iterator item_list = list_shapes->addItem( shape_id_selected, shapes[shape_id_selected].name );
@@ -2049,6 +2080,10 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             
             if ( sprite_shape_color->click )
             {
+                color_picker_assign_to = 1;
+                
+                sprite_color_picker_old->color = sprite_shape_color->color;
+                
                 window_color_picker->open();
                 window_color_picker->pos = vec2i( app.size.x / 2 - window_color_picker->size.x / 2, app.size.y / 2 - window_color_picker->size.y / 2 );
             }
@@ -2075,6 +2110,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                         // Select the shape (in the world)
                         shape_id_selected = item_itr->key;                    
                         shapes[shape_id_selected].selected = 1;
+                        
+                        sprite_shape_color->color = shapes[shape_id_selected].color;
                         
                         // Break out the loop
                         break;
@@ -2275,6 +2312,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     if ( item_itr->key == i )
                     {
                         shape_id_selected = i;
+                        
+                        sprite_shape_color->color = shapes[shape_id_selected].color;
                         
                         list_shapes->select( item_itr, 0 );
                         

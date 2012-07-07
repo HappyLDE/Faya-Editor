@@ -124,7 +124,7 @@ void init_gui()
 	window_color_picker->pos = vec2i( app.size.x / 2 - window_color_picker->size.x / 2, app.size.y / 2 - window_color_picker->size.y / 2 );
 	window_color_picker->title = "Color Picker";
     window_color_picker->can_resize = 0;
-    //window_color_picker->close();
+    window_color_picker->close();
     
     drawable_color_picker->scene = drawable_color_picker_scene;
 	window_color_picker->elements.addDrawable( drawable_color_picker );
