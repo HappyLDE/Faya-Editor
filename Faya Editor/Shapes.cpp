@@ -23,7 +23,7 @@ Shapes::~Shapes()
 void Shapes::draw()
 {
     // The shape (filled)
-    glColor3f(0.1,0.1,0.2);
+    glColor3f(color.x,color.y,color.z);
     
     bool inside = 0;
     assign_selected = 0;

@@ -196,6 +196,8 @@ void switchEditorMode( LDEuint mode )
         shapes[i].test_coi = 0;
     }
     
+    window_color_picker->close();
+    
     switch ( mode )
     {
             // go to Vector Mode
@@ -473,6 +475,254 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
 	glColor3f(1,1,1);
 }
 
+vec3f   color_picker_square_color(1,0,0);
+vec2i   color_picker_cursor_pos;
+LDEint  color_picker_palette_pos = 0;
+bool    color_picker_pick_square = 0,
+        color_picker_pick_rsquare = 0;
+void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDEfloat myframetime )
+{
+    bool coi_square = app.cursor.x >= mypos.x+10 && app.cursor.x <= mypos.x+110 && app.cursor.y > mypos.y+10 && app.cursor.y <= mypos.y+110;
+    bool coi_rsquare = app.cursor.x >= mypos.x+120 && app.cursor.x <= mypos.x+140 && app.cursor.y > mypos.y+10 && app.cursor.y <= mypos.y+110;
+
+    // If window is on top : interact with mouse
+    if ( mytest_coi && app.mouse.size() )
+    {
+        // For any mouse event
+        for ( LDEuint i = 0; i < app.mouse.size(); ++i )
+        {
+            if ( app.mouse[i].left && app.mouse[i].down )
+            {
+                if ( coi_square )
+                    color_picker_pick_square = 1;
+                
+                if ( coi_rsquare )
+                    color_picker_pick_rsquare = 1;
+            }
+        }
+    }
+    
+    /// SQUARE
+    if ( color_picker_pick_square )
+    {
+        // Stop moving the window
+        window_color_picker->move = 0;
+        
+        color_picker_cursor_pos.x = app.cursor.x-(mypos.x+10);
+        color_picker_cursor_pos.y = app.cursor.y-(mypos.y+10);
+        
+        if ( color_picker_cursor_pos.x < -1 )
+            color_picker_cursor_pos.x = -1;
+        else if ( color_picker_cursor_pos.x > 99 )
+            color_picker_cursor_pos.x = 99;
+        
+        if ( color_picker_cursor_pos.y < 0 )
+            color_picker_cursor_pos.y = 0;
+        else if ( color_picker_cursor_pos.y > 99 )
+            color_picker_cursor_pos.y = 99;
+    }
+    
+    // RIGHT RECTANGLE
+    if ( color_picker_pick_rsquare )
+    {
+        // Stop moving the window
+        window_color_picker->move = 0;
+        
+        color_picker_palette_pos = app.cursor.y-(mypos.y+10);
+        
+        if ( color_picker_palette_pos < 0 )
+            color_picker_palette_pos = 0;
+        else if ( color_picker_palette_pos > 99 )
+            color_picker_palette_pos = 99;
+    }
+    
+    glPushMatrix();
+    glTranslatef( mypos.x, mypos.y, 0 );
+    
+    // Left square
+    glPushMatrix();
+    glTranslatef(10, 10, 0);
+    /*glBindTexture(GL_TEXTURE_2D, texture_shadow.id);
+	LDEcustomrectp( texture_shadow.size,
+                   vec4i( -7, -7, 100+14, 100+14 ),
+                   vec4i( 12, 12, 12, 12) );*/
+    glDisable(GL_TEXTURE_2D);
+    
+    glBegin(GL_QUADS);
+    glColor3f(0,0,0);
+    glVertex2i(-1, -1);
+    glVertex2i(0, -1);
+    glVertex2i(0, 101);
+    glVertex2i(-1, 101);
+    
+    glColor3f(0,0,0);
+    glVertex2i(0, 0);
+
+    glColor3f(color_picker_square_color.x,color_picker_square_color.y,color_picker_square_color.z);
+    glVertex2i(100, 0);
+
+    glColor3f(1,1,1);
+    glVertex2i(100, 100);
+
+    glColor3f(0,0,0);
+    glVertex2i(0, 100);
+    glEnd();
+    
+    glColor3f(1,1,1);
+
+    /*glEnable(GL_LINE_STIPPLE);
+    glLineStipple(1, (short) 0x0101);
+    glColor4f( 1, 1, 1, 0.4 );
+    LDErectw( -1, -1, 102, 102 );
+    glDisable(GL_LINE_STIPPLE);
+    
+    glColor4f( 1, 1, 1, 0.7 );
+    
+    LDErectw( color_picker_cursor_pos.x-3, color_picker_cursor_pos.y-3, 6, 6 );
+    
+    glBegin(GL_LINES);
+    glVertex2i(color_picker_cursor_pos.x, 0);
+    glVertex2i(color_picker_cursor_pos.x, color_picker_cursor_pos.y-3);
+    glVertex2i(color_picker_cursor_pos.x, color_picker_cursor_pos.y+3);
+    glVertex2i(color_picker_cursor_pos.x, 100);
+    
+    glVertex2i(0, color_picker_cursor_pos.y);
+    glVertex2i(color_picker_cursor_pos.x-3, color_picker_cursor_pos.y);
+    glVertex2i(color_picker_cursor_pos.x+3, color_picker_cursor_pos.y);
+    glVertex2i(100, color_picker_cursor_pos.y);
+    glEnd();*/
+    
+    glPopMatrix();
+    
+    // Right colors colon
+    glPushMatrix();
+    glTranslatef( 120, 10, 0);
+    
+    /*glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_shadow.id);
+	LDEcustomrectp( texture_shadow.size,
+                   vec4i( -7, -7, 20+14, 100+14 ),
+                   vec4i( 12, 12, 12, 12) );*/
+    
+    glDisable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+
+    // Red 1,0,0, Purple 1,0,1, Blue 0,0,1, Cyan 0,1,1, Green 0,1,0, Yellow 1,1,0, Red
+    
+    // Quad //////////
+    // Red
+    glColor3f(1,0,0);
+    glVertex2i(0, 0);
+    glVertex2i(20, 0);
+    
+    // Purple
+    glColor3f(1,0,1);
+    glVertex2i(20, 16);
+    glVertex2i(0, 16);
+    
+    // Quad //////////
+    glVertex2i(0, 16);
+    glVertex2i(20, 16);
+    
+    // Blue
+    glColor3f(0,0,1);
+    glVertex2i(20, 32);
+    glVertex2i(0, 32);
+    
+    // Quad //////////
+    glVertex2i(0, 32);
+    glVertex2i(20, 32);
+    
+    // Cyan
+    glColor3f(0,1,1);
+    glVertex2i(20, 48);
+    glVertex2i(0, 48);
+    
+    // Quad //////////
+    glVertex2i(0, 48);
+    glVertex2i(20, 48);
+    
+    // Green
+    glColor3f(0,1,0);
+    glVertex2i(20, 64);
+    glVertex2i(0, 64);
+    
+    // Quad //////////
+    glVertex2i(0, 64);
+    glVertex2i(20, 64);
+    
+    // Yellow
+    glColor3f(1,1,0);
+    glVertex2i(20, 80);
+    glVertex2i(0, 80);
+    
+    // Quad //////////
+    glVertex2i(0, 80);
+    glVertex2i(20, 80);
+    
+    // Red
+    glColor3f(1,0,0);
+    glVertex2i(20, 100);
+    glVertex2i(0, 100);
+    glEnd();
+
+    glEnable(GL_LINE_STIPPLE);
+    glColor4f( 1, 1, 1, 0.4 );
+    LDErectw( -1, -1, 22, 102 );
+    glDisable(GL_LINE_STIPPLE);
+    
+    glColor4f( 1, 1, 1, 0.7 );
+    glBegin(GL_LINES);
+    glVertex2i(-3, color_picker_palette_pos-1);
+    glVertex2i(23, color_picker_palette_pos-1);
+    glVertex2i(-3, color_picker_palette_pos+1);
+    glVertex2i(23, color_picker_palette_pos+1);
+    glEnd();
+    
+    glPopMatrix();
+    
+    glPopMatrix();
+    glEnable(GL_TEXTURE_2D);
+    
+    glColor3f(1,1,1);
+    
+    /// SQUARE
+    if ( color_picker_pick_square )
+    {
+        LDEubyte pick_col[3];
+        glReadPixels( mypos.x+10+color_picker_cursor_pos.x , app.size.y-(mypos.y+11+color_picker_cursor_pos.y), 1 , 1 , GL_RGB , GL_UNSIGNED_BYTE , pick_col);
+         
+        editbox_color_picker_red->name = LDEnts(pick_col[0]);
+        editbox_color_picker_blue->name = LDEnts(pick_col[1]);
+        editbox_color_picker_green->name = LDEnts(pick_col[2]);
+         
+        sprite_color_picker->color.x = pick_col[0]/255.0;
+        sprite_color_picker->color.y = pick_col[1]/255.0;
+        sprite_color_picker->color.z = pick_col[2]/255.0;
+    }
+    
+    // RIGHT RECTANGLE
+    if ( color_picker_pick_rsquare )
+    {
+        LDEubyte pick_col[3];
+        glReadPixels( mypos.x+120, app.size.y-(mypos.y+11+color_picker_palette_pos), 1 , 1 , GL_RGB, GL_UNSIGNED_BYTE , pick_col);
+        
+        color_picker_square_color.x = pick_col[0]/255.0;
+        color_picker_square_color.y = pick_col[1]/255.0;
+        color_picker_square_color.z = pick_col[2]/255.0;
+        
+        glReadPixels( mypos.x+11+color_picker_cursor_pos.x , app.size.y-(mypos.y+11+color_picker_cursor_pos.y), 1 , 1 , GL_RGB , GL_UNSIGNED_BYTE , pick_col);
+        
+        editbox_color_picker_red->name = LDEnts(pick_col[0]);
+        editbox_color_picker_blue->name = LDEnts(pick_col[1]);
+        editbox_color_picker_green->name = LDEnts(pick_col[2]);
+        
+        sprite_color_picker->color.x = pick_col[0]/255.0;
+        sprite_color_picker->color.y = pick_col[1]/255.0;
+        sprite_color_picker->color.z = pick_col[2]/255.0;
+    }
+}
+
 @implementation OpenGLView
 
 -(BOOL) acceptsFirstResponder
@@ -741,6 +991,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     // Get mouse events for moving camera or zoom in and out (with two fingers)
     for ( LDEuint i = 0; i < app.mouse.size(); ++i )
     {
+        if ( app.mouse[i].left && !app.mouse[i].down )
+        {
+            color_picker_pick_square = 0;
+            color_picker_pick_rsquare = 0;
+        }
+        
         if ( gui.unused )
         {
             if (app.mouse[i].scroll_x || app.mouse[i].scroll_y )
@@ -778,7 +1034,12 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
     camera2D.set();
     camera2D.window = app.size;
     
-    //cout<<"editor_mode:"<<editor_mode<<"\n";
+    // Window Color Picker
+    if ( !window_color_picker->closed )
+    {
+        if ( button_color_picker_cancel->click )
+            window_color_picker->close();
+    }
     
     switch ( editor_mode )
     {
@@ -1796,7 +2057,8 @@ void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LD
             
             if ( sprite_shape_color->click )
             {
-                cout<<rand()<<"click:1!\n";
+                window_color_picker->open();
+                window_color_picker->pos = vec2i( app.size.x / 2 - window_color_picker->size.x / 2, app.size.y / 2 - window_color_picker->size.y / 2 );
             }
             
             ////////////////////////////////////////////////////////////

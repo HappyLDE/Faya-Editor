@@ -11,6 +11,7 @@
 
 #include <OpenGL/gl.h>
 #include "LDEvec2i.h"
+#include "LDEvec3f.h"
 #include <vector>
 #include <string>
 #include "LDEmouse_event.h"
@@ -24,6 +25,8 @@ struct Shapes
     ~Shapes();
     
     vec2i cursor;
+    
+    vec3f color;
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     

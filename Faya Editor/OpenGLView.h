@@ -27,6 +27,7 @@ void openFile( std::string filename );
 
 void drawable_texture_atlas_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDEfloat myframetime );
 void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDEfloat myframetime );
+void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDEfloat myframetime );
 
 @interface OpenGLView : NSOpenGLView
 

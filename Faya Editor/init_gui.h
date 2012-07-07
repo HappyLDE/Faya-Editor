@@ -99,11 +99,93 @@ LDEgui_window *window_shape_properties = new LDEgui_window();
 LDEgui_text *text_shape_color = new LDEgui_text();
 LDEgui_sprite *sprite_shape_color = new LDEgui_sprite();
 
+
+//// Color Picker
+LDEgui_window *window_color_picker = new LDEgui_window();
+LDEgui_drawable *drawable_color_picker = new LDEgui_drawable();
+LDEgui_sprite *sprite_color_picker_old = new LDEgui_sprite();
+LDEgui_sprite *sprite_color_picker = new LDEgui_sprite();
+LDEgui_text *text_color_picker_red = new LDEgui_text();
+LDEgui_editbox* editbox_color_picker_red = new LDEgui_editbox();
+LDEgui_text *text_color_picker_green = new LDEgui_text();
+LDEgui_editbox* editbox_color_picker_green = new LDEgui_editbox();
+LDEgui_text *text_color_picker_blue = new LDEgui_text();
+LDEgui_editbox* editbox_color_picker_blue = new LDEgui_editbox();
+LDEgui_button *button_color_picker_ok = new LDEgui_button();
+LDEgui_button *button_color_picker_cancel = new LDEgui_button();
+
 void init_gui()
 {
 	texture_atlas_zoom = 1.0;
 	
-	// Menu
+    /// Window shape properties
+    gui.addWindow(window_color_picker);
+    window_color_picker->size = vec2i( 235, 175 );
+	window_color_picker->pos = vec2i( app.size.x / 2 - window_color_picker->size.x / 2, app.size.y / 2 - window_color_picker->size.y / 2 );
+	window_color_picker->title = "Color Picker";
+    window_color_picker->can_resize = 0;
+    //window_color_picker->close();
+    
+    drawable_color_picker->scene = drawable_color_picker_scene;
+	window_color_picker->elements.addDrawable( drawable_color_picker );
+	drawable_color_picker->size = vec2i( window_color_picker->size.x, window_color_picker->size.y - 43 );
+    
+    // Old Color
+    window_color_picker->elements.addSprite(sprite_color_picker_old);
+    sprite_color_picker_old->color = vec3f( 0, 0, 0 );
+    sprite_color_picker_old->color_border = vec3f( 1, 1, 1 );
+    sprite_color_picker_old->pos = vec2i( 160, 10 );
+    sprite_color_picker_old->size = vec2i( 30, 30 );
+    
+    // New Color
+    window_color_picker->elements.addSprite(sprite_color_picker);
+    sprite_color_picker->color = vec3f( 0, 0, 0 );
+    sprite_color_picker->color_border = vec3f( 1, 1, 1 );
+    sprite_color_picker->pos = vec2i( 190, 10 );
+    sprite_color_picker->size = vec2i( 30, 30 );
+    
+    // Red
+    window_color_picker->elements.addText(text_color_picker_red);
+    text_color_picker_red->value = "R:";
+    text_color_picker_red->pos = vec2i( 160, 48 );
+    
+    window_color_picker->elements.addEditbox(editbox_color_picker_red);
+    editbox_color_picker_red->pos = vec2i( 180, 45 );
+    editbox_color_picker_red->size.x = 45;
+    editbox_color_picker_red->name = "0";
+    
+    // Green
+    window_color_picker->elements.addText(text_color_picker_green);
+    text_color_picker_green->value = "G:";
+    text_color_picker_green->pos = vec2i( 160, 70 );
+    
+    window_color_picker->elements.addEditbox(editbox_color_picker_green);
+    editbox_color_picker_green->pos = vec2i( 180, 67 );
+    editbox_color_picker_green->size.x = 45;
+    editbox_color_picker_green->name = "0";
+    
+    // Blue
+    window_color_picker->elements.addText(text_color_picker_blue);
+    text_color_picker_blue->value = "B:";
+    text_color_picker_blue->pos = vec2i( 160, 92 );
+    
+    window_color_picker->elements.addEditbox(editbox_color_picker_blue);
+    editbox_color_picker_blue->pos = vec2i( 180, 89 );
+    editbox_color_picker_blue->size.x = 45;
+    editbox_color_picker_blue->name = "0";
+    
+    // Button ok (apply color)
+    window_color_picker->elements.addButton(button_color_picker_cancel);
+    button_color_picker_cancel->setText("Cancel");
+    button_color_picker_cancel->pos = vec2i( window_color_picker->size.x - button_color_picker_cancel->size.x - 10, window_color_picker->size.y - 55 );
+    
+    // Button ok (apply color)
+    window_color_picker->elements.addButton(button_color_picker_ok);
+    button_color_picker_ok->setText("Ok");
+    button_color_picker_ok->size.x = button_color_picker_cancel->size.x;
+    button_color_picker_ok->pos = vec2i( window_color_picker->size.x - button_color_picker_cancel->size.x - button_color_picker_ok->size.x - 12, window_color_picker->size.y - 55 );
+    
+	/////////// Menu ///////////////////
 	gui.addPannel( pannel_menu );
     pannel_menu->pos = vec2i( 0, 0 );
     pannel_menu->size = vec2i( app.size.x, 20 );
@@ -196,7 +278,7 @@ void init_gui()
     text_shape_color->pos = vec2i( 10, 10 );
     
     window_shape_properties->elements.addSprite(sprite_shape_color);
-    sprite_shape_color->color = vec3f( 0, 1, 0 );
+    sprite_shape_color->color = vec3f( 0, 0, 0 );
     sprite_shape_color->color_border = vec3f( 1, 1, 1 );
     sprite_shape_color->borde_width = 2;
     sprite_shape_color->pos = vec2i( 80, 8 );
