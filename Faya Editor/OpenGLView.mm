@@ -511,8 +511,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
         color_picker_cursor_pos.x = app.cursor.x-(mypos.x+10);
         color_picker_cursor_pos.y = app.cursor.y-(mypos.y+10);
         
-        if ( color_picker_cursor_pos.x < -1 )
-            color_picker_cursor_pos.x = -1;
+        if ( color_picker_cursor_pos.x < 0 )
+            color_picker_cursor_pos.x = 0;
         else if ( color_picker_cursor_pos.x > 99 )
             color_picker_cursor_pos.x = 99;
         
@@ -542,19 +542,13 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     // Left square
     glPushMatrix();
     glTranslatef(10, 10, 0);
-    /*glBindTexture(GL_TEXTURE_2D, texture_shadow.id);
+    glBindTexture(GL_TEXTURE_2D, texture_shadow.id);
 	LDEcustomrectp( texture_shadow.size,
                    vec4i( -7, -7, 100+14, 100+14 ),
-                   vec4i( 12, 12, 12, 12) );*/
+                   vec4i( 12, 12, 12, 12) );
     glDisable(GL_TEXTURE_2D);
     
     glBegin(GL_QUADS);
-    glColor3f(0,0,0);
-    glVertex2i(-1, -1);
-    glVertex2i(0, -1);
-    glVertex2i(0, 101);
-    glVertex2i(-1, 101);
-    
     glColor3f(0,0,0);
     glVertex2i(0, 0);
 
@@ -567,10 +561,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     glColor3f(0,0,0);
     glVertex2i(0, 100);
     glEnd();
-    
-    glColor3f(1,1,1);
 
-    /*glEnable(GL_LINE_STIPPLE);
+    glEnable(GL_LINE_STIPPLE);
     glLineStipple(1, (short) 0x0101);
     glColor4f( 1, 1, 1, 0.4 );
     LDErectw( -1, -1, 102, 102 );
@@ -590,7 +582,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     glVertex2i(color_picker_cursor_pos.x-3, color_picker_cursor_pos.y);
     glVertex2i(color_picker_cursor_pos.x+3, color_picker_cursor_pos.y);
     glVertex2i(100, color_picker_cursor_pos.y);
-    glEnd();*/
+    glEnd();
     
     glPopMatrix();
     
@@ -598,11 +590,11 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     glPushMatrix();
     glTranslatef( 120, 10, 0);
     
-    /*glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_shadow.id);
 	LDEcustomrectp( texture_shadow.size,
                    vec4i( -7, -7, 20+14, 100+14 ),
-                   vec4i( 12, 12, 12, 12) );*/
+                   vec4i( 12, 12, 12, 12) );
     
     glDisable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
@@ -711,7 +703,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
         color_picker_square_color.y = pick_col[1]/255.0;
         color_picker_square_color.z = pick_col[2]/255.0;
         
-        glReadPixels( mypos.x+11+color_picker_cursor_pos.x , app.size.y-(mypos.y+11+color_picker_cursor_pos.y), 1 , 1 , GL_RGB , GL_UNSIGNED_BYTE , pick_col);
+        glReadPixels( mypos.x+10+color_picker_cursor_pos.x , app.size.y-(mypos.y+11+color_picker_cursor_pos.y), 1 , 1 , GL_RGB , GL_UNSIGNED_BYTE , pick_col);
         
         editbox_color_picker_red->name = LDEnts(pick_col[0]);
         editbox_color_picker_blue->name = LDEnts(pick_col[1]);
