@@ -14,6 +14,7 @@
 #include "LDEvec2i.h"
 #include <vector>
 #include <string>
+#include "LDEfunctions.h"
 #include "LDEprimitives.h"
 #include "LDEinput.h"
 #include "LDEmouse_event.h"

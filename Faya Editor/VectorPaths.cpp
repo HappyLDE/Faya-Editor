@@ -74,10 +74,7 @@ void VectorPaths::draw()
                 }
             }
         }
-        
-        if ( add_to_edge_mode )
-            std::cout<<add_to_edge_mode<<"\n";
-        
+
         glLineWidth(2);
         glBegin(GL_LINE_STRIP);
         for ( LDEuint i = 0; i < vertex.size(); ++i )
@@ -93,6 +90,7 @@ void VectorPaths::draw()
         
         glPointSize(4);
         glLineWidth(1);
+        bool already_highlighted = 0;
         for ( LDEuint i = 0; i < vertex.size(); ++i )
         {
             glColor3f(1,1,0);
@@ -100,16 +98,36 @@ void VectorPaths::draw()
             glVertex2i( vertex[i].x, vertex[i].y );
             glEnd();
             
-            if ( cursor.x > vertex[i].x - 8 && cursor.x < vertex[i].x + 8 &&
-                 cursor.y > vertex[i].y - 8 && cursor.y < vertex[i].y + 8 )
+            if ( test_coi )
             {
-                glColor3f(1,1,1);
-                LDErectw( vertex[i].x - 8, vertex[i].y - 8, 16, 16);
-                
-                if ( clicked )
+                if ( cursor.x > vertex[i].x - 8 && cursor.x < vertex[i].x + 8 &&
+                     cursor.y > vertex[i].y - 8 && cursor.y < vertex[i].y + 8 )
                 {
-                    selected_vertex = i;
-                    changed_selection = 1;
+                    glColor3f(1,1,1);
+                    LDErectw( vertex[i].x - 8, vertex[i].y - 8, 16, 16);
+                    
+                    if ( clicked )
+                    {
+                        selected_vertex = i;
+                        changed_selection = 1;
+                    }
+                }
+                
+                // Check every line
+                if ( add_to_edge_mode && !already_highlighted )
+                if ( i )
+                {
+                    if ( LDEpointLineDist2i( vertex[i-1], vertex[i], cursor ) < 8 )
+                    {
+                        glLineWidth(3);
+                        glColor3f(0, 1, 1);
+                        glBegin(GL_LINES);
+                            glVertex2i( vertex[i-1].x, vertex[i-1].y );
+                            glVertex2i( vertex[i].x, vertex[i].y );
+                        glEnd();
+                        
+                        already_highlighted = 1;
+                    }
                 }
             }
         }

@@ -38,6 +38,15 @@ LDEuint LDEnextPot( LDEuint value )
 	return value;
 }
 
+LDEfloat LDEpointLineDist2i(vec2i A, vec2i B, vec2i P)
+{
+    LDEdouble normalLength = sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
+    
+    return abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
+}
+
+
+
 // Returns random double between min and max
 LDEdouble LDErand(LDEdouble min, LDEdouble max)
 {

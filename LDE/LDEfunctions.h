@@ -65,4 +65,6 @@ LDEfloat LDEdist2f(vec2f start, vec2f end);
 
 LDEdouble LDEangle2i( vec2i a, vec2i b );
 
+LDEfloat LDEpointLineDist2i(vec2i A, vec2i B, vec2i P);
+
 #endif
