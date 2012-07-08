@@ -117,7 +117,9 @@ void VectorPaths::draw()
                 if ( add_to_edge_mode && !already_highlighted )
                 if ( i )
                 {
-                    if ( LDEpointLineDist2i( vertex[i-1], vertex[i], cursor ) < 8 )
+                    LDEfloat distance = LDEpointLineDist2i( vertex[i-1], vertex[i], cursor );
+                    
+                    if ( distance > 0 && distance < 8 )
                     {
                         glLineWidth(3);
                         glColor3f(0, 1, 1);

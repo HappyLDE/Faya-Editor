@@ -42,7 +42,14 @@ LDEfloat LDEpointLineDist2i(vec2i A, vec2i B, vec2i P)
 {
     LDEdouble normalLength = sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
     
-    return abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
+    LDEfloat distance = abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
+    
+    LDEfloat ab_dist = LDEdist2f( vec2f(A), vec2f(B) );
+    
+    if ( LDEdist2f( vec2f(A), vec2f(P) ) > ab_dist || LDEdist2f( vec2f(B), vec2f(P) ) > ab_dist )
+        distance = -1;
+    
+    return distance;
 }
 
 vec2i LDEgetPointLineIntersection2i(vec2i A, vec2i B, vec2i P)
@@ -64,7 +71,6 @@ vec2i LDEgetPointLineIntersection2i(vec2i A, vec2i B, vec2i P)
     
     return point;
 }
-
 
 // Returns random double between min and max
 LDEdouble LDErand(LDEdouble min, LDEdouble max)
