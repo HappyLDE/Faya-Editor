@@ -126,6 +126,11 @@ void VectorPaths::draw()
                             glVertex2i( vertex[i].x, vertex[i].y );
                         glEnd();
                         
+                        vec2i point_pos = LDEgetPointLineIntersection2i( vertex[i-1], vertex[i], cursor );
+                        
+                        glColor3f(0,0,1);
+                        LDErect( point_pos.x-4, point_pos.y-4, 8, 8 );
+                        
                         already_highlighted = 1;
                     }
                 }

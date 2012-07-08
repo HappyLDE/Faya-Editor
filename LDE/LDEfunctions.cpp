@@ -45,6 +45,25 @@ LDEfloat LDEpointLineDist2i(vec2i A, vec2i B, vec2i P)
     return abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
 }
 
+vec2i LDEgetPointLineIntersection2i(vec2i A, vec2i B, vec2i P)
+{
+    vec2i point;
+    
+    LDEfloat distance = LDEdist2f( vec2f(B), vec2f(P) );
+    
+    LDEfloat vx = B.x - A.x;
+    LDEfloat vy = B.y - A.y;
+    
+    LDEfloat mag = sqrt(vx*vx + vy*vy);
+
+    vx /= mag;
+    vy /= mag;
+
+    point.x = (int)((float)A.x + vx * (mag - distance));
+    point.y = (int)((float)A.y + vy * (mag - distance));
+    
+    return point;
+}
 
 
 // Returns random double between min and max
