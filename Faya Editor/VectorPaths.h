@@ -14,15 +14,26 @@
 #include "LDEvec2i.h"
 #include <vector>
 #include <string>
+#include "LDEprimitives.h"
+#include "LDEinput.h"
+#include "LDEmouse_event.h"
 
 // This is used to hold vector paths (for now no curves nor triangulation, but these are to come)
 struct VectorPaths
 {
     std::vector<vec2i>vertex;
     
+    std::vector<LDEinput>input;
+    std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
+    
     std::string name;
     
-    bool active;
+    vec2i   cursor;
+    
+    bool    active,
+            test_coi,
+            moving,
+            add_to_edge_mode;
     
     void addVertex( vec2i pos );
     LDEint selected_vertex;

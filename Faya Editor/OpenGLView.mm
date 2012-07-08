@@ -42,7 +42,7 @@ LDE app;
 LDEgui gui;
 
 string  project_path,
-project_name;
+        project_name;
 
 vector<TextureAtlasCreation_item>texture_atlas_creation_item;
 
@@ -1067,35 +1067,9 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
         // Vector Editor Mode
         case 0:
         {
-            ////////////////////////////////////////////////////////////
-            ///////////// ADD ONE VERTEX TO A VECTOR PATH //////////////
-            ////////////////////////////////////////////////////////////
-            
-            // If cursor is not on the gui
-            if ( gui.unused )
+            for ( LDEuint i = 0; i < paths.size(); ++i )
             {
-                // If there are any mouse events
-                for ( LDEuint i = 0; i < app.mouse.size(); ++i )
-                {
-                    // If left click
-                    if ( app.mouse[i].left )
-                    {
-                        // Mouse down click
-                        if ( app.mouse[i].down )
-                        {
-                            // If we have paths and one is selected, add vertex to it
-                            if ( paths.size() && list_vector_paths->num_selected )
-                            {
-                                vec2i vertex_pos;
-                                
-                                vertex_pos.x = (app.mouse[i].cursor_pos.x/camera_zoom) - camera_pos.x;
-                                vertex_pos.y = (app.mouse[i].cursor_pos.y/camera_zoom) - camera_pos.y;
-                                
-                                paths[path_id_selected].addVertex( vertex_pos );
-                            }
-                        }
-                    }
-                }
+                paths[i].test_coi = gui.unused && !transf_tool.hover;
             }
             
             ////////////////////////////////////////////////////////////
@@ -2397,6 +2371,9 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     // Draw the vector paths
     for ( LDEuint i = 0; i < paths.size(); ++i )
     {
+        paths[i].cursor = vec2i( (LDEfloat)(app.cursor.x/camera_zoom) - camera_pos.x, (LDEfloat)(app.cursor.y/camera_zoom) - camera_pos.y );
+        paths[i].input = app.input;
+        paths[i].mouse = app.mouse;
         paths[i].draw();
     }
     
