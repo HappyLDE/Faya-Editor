@@ -131,6 +131,12 @@ void VectorPaths::draw()
                         glColor3f(0,0,1);
                         LDErect( point_pos.x-4, point_pos.y-4, 8, 8 );
                         
+                        if ( clicked )
+                        {
+                            vertex.insert( vertex.begin() + i, point_pos );
+                            add_to_edge_mode = 0;
+                        }
+                        
                         already_highlighted = 1;
                     }
                 }
