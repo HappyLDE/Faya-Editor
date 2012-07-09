@@ -45,6 +45,7 @@ struct Shapes
             add_to_edge_mode;
     
     void draw();
+    void drawEditMode();
     
     std::string name;
     

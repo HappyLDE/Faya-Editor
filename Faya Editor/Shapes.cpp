@@ -45,45 +45,8 @@ void Shapes::triangulate()
     vertex = result;
 }
 
-void Shapes::draw()
+void Shapes::drawEditMode()
 {
-    // The shape (filled)
-    glColor3f(color.x,color.y,color.z);
-    
-    bool inside = 0;
-         assign_selected = 0;
-    
-    glBegin(GL_TRIANGLES);
-    for ( LDEuint i = 0; i < vertex.size(); i += 3 )
-    {
-        // If left clicked on that one
-        if ( test_coi && can_change_selected )
-        for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
-        {
-            if ( mouse[inp].left && mouse[inp].down )
-            {
-                assign_selected = 1;
-                
-                if ( Triangulate::InsideTriangle( vertex[i].x, vertex[i].y,
-                                                  vertex[i+1].x, vertex[i+1].y,
-                                                  vertex[i+2].x, vertex[i+2].y,
-                                                  cursor.x, cursor.y) )
-                {
-                    
-                    inside = 1;
-                }
-            }
-        }
-        
-        glVertex2i( vertex[i].x, vertex[i].y );
-        glVertex2i( vertex[i+1].x, vertex[i+1].y );
-        glVertex2i( vertex[i+2].x, vertex[i+2].y );
-    }
-    glEnd();
-
-    if ( assign_selected )
-        selected = inside;
-    
     if ( selected )
     {
         glLineWidth(1);
@@ -104,7 +67,7 @@ void Shapes::draw()
         if ( edit_mode )
         {
             bool    clicked = 0,
-                    changed_selection = 0;
+            changed_selection = 0;
             
             // If gui isn't on the way
             if ( test_coi )
@@ -180,7 +143,7 @@ void Shapes::draw()
                 {
                     
                     if ( cursor.x > path_vertex[i].x - 8 && cursor.x < path_vertex[i].x + 8 &&
-                         cursor.y > path_vertex[i].y - 8 && cursor.y < path_vertex[i].y + 8 && !add_to_edge_mode )
+                        cursor.y > path_vertex[i].y - 8 && cursor.y < path_vertex[i].y + 8 && !add_to_edge_mode )
                     {
                         glColor3f(1,1,1);
                         LDErectw( path_vertex[i].x - 8, path_vertex[i].y - 8, 16, 16);
@@ -288,4 +251,44 @@ void Shapes::draw()
     }
     
     glColor3f(1,1,1);
+}
+
+void Shapes::draw()
+{
+    // The shape (filled)
+    glColor3f(color.x,color.y,color.z);
+    
+    bool inside = 0;
+         assign_selected = 0;
+    
+    glBegin(GL_TRIANGLES);
+    for ( LDEuint i = 0; i < vertex.size(); i += 3 )
+    {
+        // If left clicked on that one
+        if ( test_coi && can_change_selected )
+        for ( LDEuint inp = 0; inp < mouse.size(); ++inp )
+        {
+            if ( mouse[inp].left && mouse[inp].down )
+            {
+                assign_selected = 1;
+                
+                if ( Triangulate::InsideTriangle( vertex[i].x, vertex[i].y,
+                                                  vertex[i+1].x, vertex[i+1].y,
+                                                  vertex[i+2].x, vertex[i+2].y,
+                                                  cursor.x, cursor.y) )
+                {
+                    
+                    inside = 1;
+                }
+            }
+        }
+        
+        glVertex2i( vertex[i].x, vertex[i].y );
+        glVertex2i( vertex[i+1].x, vertex[i+1].y );
+        glVertex2i( vertex[i+2].x, vertex[i+2].y );
+    }
+    glEnd();
+
+    if ( assign_selected )
+        selected = inside;
 }

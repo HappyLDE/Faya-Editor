@@ -24,10 +24,10 @@ vec2i camera_pos;
 LDEfloat camera_zoom = 1;
 LDEuint editor_mode = 0; // 0 vector   1 atlas    2 sprites
 
-LDEuint path_id_selected = 0;
+LDEint path_id_selected = -1;
 vector<VectorPaths>paths;
 
-LDEuint shape_id_selected = 0;
+LDEint shape_id_selected = -1;
 vector<Shapes>shapes;
 
 vector<Spritesheet>spritesheets; /// These are the big images containing small images as sheets
@@ -2315,6 +2315,10 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             }
         }
     }
+    
+    if ( shape_id_selected > -1 && shapes.size() )
+        shapes[shape_id_selected].drawEditMode();
+        
     
     // Draw scene grid
     {
