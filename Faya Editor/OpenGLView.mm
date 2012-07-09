@@ -2062,6 +2062,12 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 window_color_picker->pos = vec2i( app.size.x / 2 - window_color_picker->size.x / 2, app.size.y / 2 - window_color_picker->size.y / 2 );
             }
             
+            if ( checkbox_shape_edit->changed )
+            {
+                shapes[shape_id_selected].selected_vertex = shapes[shape_id_selected].path_vertex.size()-1;
+                shapes[shape_id_selected].edit_mode = checkbox_shape_edit->checked;
+            }
+            
             ////////////////////////////////////////////////////////////
             ///////// CHANGING SELECTED SHAPE FROM GUI LIST ////////////
             ////////////////////////////////////////////////////////////
@@ -2069,9 +2075,13 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             // If selection changed from gui list items
             if ( list_shapes->changed_selection )
             {
-                // Unselect the previously selected path
+                // Unselect the previously selected shape
                 if ( shapes.size() && list_shapes->num_selected )
+                {
+                    checkbox_shape_edit->setCheck(0);
+                    shapes[shape_id_selected].edit_mode = 0;
                     shapes[shape_id_selected].selected = 0;
+                }
                 
                 // Assign the selected shape from the gui list items
                 // Loop until we find the first selected one, assign selection and quit loop
@@ -2266,11 +2276,13 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     for ( LDEuint i = 0; i < shapes.size(); ++i )
     {
         shapes[i].cursor = vec2i( (LDEfloat)(app.cursor.x/camera_zoom) - camera_pos.x, (LDEfloat)(app.cursor.y/camera_zoom) - camera_pos.y );
+        shapes[i].input = app.input;
         shapes[i].mouse = app.mouse;
+        shapes[i].can_change_selected = !checkbox_shape_edit->checked;
         shapes[i].draw();
 
         // If selection of shapes changed
-        if ( shapes[i].assign_selected )
+        if ( shapes[i].assign_selected && !checkbox_shape_edit->checked )
         {
             if ( shapes[i].selected )
             {
@@ -2285,6 +2297,9 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     // If selected shape (gui)
                     if ( item_itr->key == i )
                     {
+                        checkbox_shape_edit->setCheck(0);
+                        shapes[shape_id_selected].edit_mode = 0;
+                        
                         shape_id_selected = i;
                         
                         sprite_shape_color->color = shapes[shape_id_selected].color;

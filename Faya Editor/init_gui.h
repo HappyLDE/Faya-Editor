@@ -98,7 +98,8 @@ LDEgui_button *button_shapes_delete = new LDEgui_button();
 LDEgui_window *window_shape_properties = new LDEgui_window();
 LDEgui_text *text_shape_color = new LDEgui_text();
 LDEgui_sprite *sprite_shape_color = new LDEgui_sprite();
-
+LDEgui_text *text_shape_edit = new LDEgui_text();
+LDEgui_checkbox* checkbox_shape_edit = new LDEgui_checkbox();
 
 //// Color Picker
 LDEgui_window *window_color_picker = new LDEgui_window();
@@ -283,6 +284,13 @@ void init_gui()
     sprite_shape_color->borde_width = 2;
     sprite_shape_color->pos = vec2i( 80, 8 );
     sprite_shape_color->size = vec2i( 40, 20 );
+    
+    window_shape_properties->elements.addText(text_shape_edit);
+    text_shape_edit->value = "Edit:";
+    text_shape_edit->pos = vec2i( 20, 35 );
+    
+    window_shape_properties->elements.addCheckbox(checkbox_shape_edit);
+    checkbox_shape_edit->pos = vec2i( 75, 36);
     
     //////////////// SPRITES WORLD EDITOR MODE //////////////////////
     

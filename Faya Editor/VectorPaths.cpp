@@ -118,6 +118,7 @@ void VectorPaths::draw()
                 if ( add_to_edge_mode && !already_highlighted )
                 if ( i )
                 {
+                    // Distance from edge and cursor
                     LDEfloat distance = LDEpointLineDist2i( vertex[i-1], vertex[i], cursor );
                     
                     if ( distance > 0 && distance < 8 )
