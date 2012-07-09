@@ -166,14 +166,10 @@ void openFile(string filename)
         for ( LDEuint i = 0; i < paths_size; ++i )
         {
             VectorPaths path_temp;
-            paths.push_back(path_temp);
             
-            LDEuint path_id = paths.size()-1;
+            path_temp.name = "Path "+LDEnts(paths.size());
             
-            list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
-
-            //if ( paths[path_id].active )
-            //    list_vector_paths->select( path_id, 0 );
+            list_vector_paths->addItem( paths.size(), path_temp.name );
             
             LDEuint vertex_size = 0;
             file.read( (char*)&vertex_size, sizeof(LDEuint) );
@@ -185,8 +181,10 @@ void openFile(string filename)
                 file.read( (char*)&vertex_pos.x, sizeof(LDEint) );
                 file.read( (char*)&vertex_pos.y, sizeof(LDEint) );
                 
-                paths[path_id].addVertex( vertex_pos );
+                path_temp.addVertex( vertex_pos );
             }
+            
+            paths.push_back(path_temp);
         }
     }
     
@@ -227,9 +225,13 @@ void openFile(string filename)
             shape_temp.path.vertex.push_back(vertex_temp);
         }
         
-        shapes.push_back(shape_temp);
+        shape_temp.path.active = 1;
         
-        list_shapes->addItem( shapes.size()-1, "Shape"+LDEnts(shapes.size()-1) );
+        shape_temp.name = "Shape"+LDEnts(shapes.size());
+        
+        list_shapes->addItem( shapes.size(), shape_temp.name );
+        
+        shapes.push_back(shape_temp);
     }
     
     if ( shapes.size() )
