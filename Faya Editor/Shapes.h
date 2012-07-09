@@ -20,7 +20,7 @@
 #include "LDEprimitives.h"
 #include <iostream>
 #include "LDEvariables.h"
-#include "LDEfunctions.h"
+#include "VectorPaths.h"
 
 struct Shapes
 {
@@ -52,10 +52,11 @@ struct Shapes
     bool selected;
     
     void triangulate();
-    void addVertex( vec2i pos );
     
     std::vector<vec2i>vertex;
-    std::vector<vec2i>path_vertex;
+    
+    VectorPaths path;
+
 };
 
 #endif

@@ -7,6 +7,7 @@ VectorPaths::VectorPaths()
     moving = 0;
     test_coi = 0;
     add_to_edge_mode = 0;
+    changed = 0;
 }
 
 VectorPaths::~VectorPaths()
@@ -21,10 +22,14 @@ void VectorPaths::addVertex(vec2i pos)
     vertex.push_back(pos);
     
     selected_vertex = vertex.size()-1;
+    
+    changed = 1;
 }
 
 void VectorPaths::draw()
 {
+    changed = 0;
+    
     if ( active )
     {
         bool    clicked = 0,
@@ -60,6 +65,8 @@ void VectorPaths::draw()
                     if ( input[i].backspace )
                     {
                         vertex.erase( vertex.begin() + selected_vertex );
+                        
+                        changed = 1;
                         
                         selected_vertex = -1;
                     }
@@ -140,6 +147,8 @@ void VectorPaths::draw()
                             vertex.insert( vertex.begin() + i, point_pos );
                             selected_vertex = i;
                             
+                            changed = 1;
+                            
                             add_to_edge_mode = 0;
                         }
                         
@@ -182,7 +191,11 @@ void VectorPaths::draw()
             }
             
             if ( moving )
+            {
                 vertex[selected_vertex] = cursor;
+                
+                changed = 1;
+            }
         }
     }
     else

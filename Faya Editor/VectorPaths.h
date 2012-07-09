@@ -34,6 +34,7 @@ struct VectorPaths
     bool    active,
             test_coi,
             moving,
+            changed,
             add_to_edge_mode;
     
     void addVertex( vec2i pos );

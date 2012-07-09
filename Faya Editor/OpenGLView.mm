@@ -12,8 +12,8 @@
 
 using namespace std;
 
-LDEint  FAYA_VERSION = 1,
-        num_selected_sprites = 0;
+LDEfloat    FAYA_VERSION = 1.12,
+            num_selected_sprites = 0;
 
 LDEfloat transf_tool_rot = 0;
 vec2i   transf_tool_pos,
@@ -65,10 +65,10 @@ void saveFile(string filename)
     
     ofstream file;
     
-    file.open(filename.c_str());
+    file.open(filename.c_str(), ios::out | ios::binary);
     
     // File Version
-    file.write( (char*)&FAYA_VERSION, sizeof(LDEint) );
+    file.write( (char*)&FAYA_VERSION, sizeof(LDEfloat) );
     
     // Editor behavior
     file.write( (char*)&app.size.x, sizeof(LDEint) );
@@ -80,15 +80,12 @@ void saveFile(string filename)
     
     file.write( (char*)&editor_mode, sizeof(bool) );
     
-    // Project data
+    // Paths
     LDEuint paths_size = paths.size();
     file.write( (char*)&paths_size, sizeof(LDEuint) );
     
     for ( LDEuint i = 0; i < paths_size; ++i )
     {
-        file.write( (char*)&paths[i].selected_vertex, sizeof(LDEint) );
-        file.write( (char*)&paths[i].active, sizeof(bool) );
-        
         LDEuint vertex_size = paths[i].vertex.size();
         file.write( (char*)&vertex_size, sizeof(LDEuint) );
         
@@ -98,6 +95,31 @@ void saveFile(string filename)
             file.write( (char*)&paths[i].vertex[v].y, sizeof(LDEint) );
         }
     }
+    
+    // Shapes
+    /*LDEuint shapes_size = shapes.size();
+    file.write( (char*)&shapes_size, sizeof(LDEuint) );
+    
+    for ( LDEuint i = 0; i < shapes_size; ++i )
+    {
+        LDEuint vertex_size = shapes[i].vertex.size();
+        file.write( (char*)&vertex_size, sizeof(LDEuint) );
+        
+        for ( LDEuint v = 0; v < vertex_size; ++v )
+        {
+            file.write( (char*)&shapes[i].vertex[v].x, sizeof(LDEint) );
+            file.write( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
+        }
+        
+        LDEuint path_vertex_size = shapes[i].path_vertex.size();
+        file.write( (char*)&path_vertex_size, sizeof(LDEuint) );
+        
+        for ( LDEuint v = 0; v < path_vertex_size; ++v )
+        {
+            file.write( (char*)&shapes[i].path_vertex[v].x, sizeof(LDEint) );
+            file.write( (char*)&shapes[i].path_vertex[v].y, sizeof(LDEint) );
+        }
+    }*/
 }
 
 void openFile(string filename)
@@ -107,12 +129,12 @@ void openFile(string filename)
     
     ifstream file;
     
-    file.open(filename.c_str());
+    file.open(filename.c_str(), ios::in | ios::binary);
     
-    LDEint read_FAYA_VERSION = 0;
+    LDEfloat read_FAYA_VERSION = 0;
     
     // File Version
-    file.read( (char*)&read_FAYA_VERSION, sizeof(LDEint) );
+    file.read( (char*)&read_FAYA_VERSION, sizeof(LDEfloat) );
     
     // Editor behavior
     file.read( (char*)&app.size.x, sizeof(LDEint) );
@@ -125,13 +147,11 @@ void openFile(string filename)
     file.read( (char*)&camera_zoom, sizeof(LDEfloat) );
     
     file.read( (char*)&editor_mode, sizeof(bool) );
-    
-    switchEditorMode( editor_mode );
-    
+
     paths.erase( paths.begin(), paths.end() );
     list_vector_paths->erase();
     
-    // Project data
+    // Paths
     LDEuint paths_size = 0;
     file.read( (char*)&paths_size, sizeof(LDEuint) );
     
@@ -147,10 +167,7 @@ void openFile(string filename)
             LDEuint path_id = paths.size()-1;
             
             list_vector_paths->addItem(path_id, "Path "+LDEnts(path_id) );
-            
-            file.read( (char*)&paths[path_id].selected_vertex, sizeof(LDEint) );
-            file.read( (char*)&paths[path_id].active, sizeof(bool) );
-            
+
             //if ( paths[path_id].active )
             //    list_vector_paths->select( path_id, 0 );
             
@@ -168,6 +185,44 @@ void openFile(string filename)
             }
         }
     }
+    
+    shapes.erase( shapes.begin(), shapes.end() );
+    list_shapes->erase();
+    
+    // Shapes
+    /*LDEuint shapes_size = 0;
+    file.read( (char*)&shapes_size, sizeof(LDEuint) );
+    
+    for ( LDEuint i = 0; i < shapes_size; ++i )
+    {
+        Shapes shape_temp;
+
+        LDEuint vertex_size = 0;
+        file.read( (char*)&vertex_size, sizeof(LDEuint) );
+        
+        for ( LDEuint v = 0; v < vertex_size; ++v )
+        {
+            vec2i vertex_temp;
+            file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
+            file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
+            shape_temp.vertex.push_back(vertex_temp);
+        }
+        
+        LDEuint path_vertex_size = 0;
+        file.read( (char*)&path_vertex_size, sizeof(LDEuint) );
+        
+        for ( LDEuint v = 0; v < path_vertex_size; ++v )
+        {
+            vec2i vertex_temp;
+            file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
+            file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
+            shape_temp.path_vertex.push_back(vertex_temp);
+        }
+        
+        shapes.push_back(shape_temp);
+    }*/
+    
+    switchEditorMode(editor_mode);
 }
 
 void switchEditorMode( LDEuint mode )
@@ -1210,16 +1265,9 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     Shapes shape_temp;
                     
                     // Pass in the path vertices
-                    shape_temp.path_vertex = paths[path_id_selected].vertex;
+                    shape_temp.path = paths[path_id_selected];
                     
-                    // allocate an STL vector to hold the answer.
-                    Vector2dVector result;
-                    
-                    // Invoke the triangulator to triangulate this polygon.
-                    Triangulate::Process( paths[path_id_selected].vertex, result );
-                    
-                    // Pass in the triangulated shape's vertices
-                    shape_temp.vertex = result;
+                    shape_temp.triangulate();
                     
                     // Make it selected (world)
                     shape_temp.selected = 1;
@@ -2064,7 +2112,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             
             if ( checkbox_shape_edit->changed )
             {
-                shapes[shape_id_selected].selected_vertex = shapes[shape_id_selected].path_vertex.size()-1;
+                shapes[shape_id_selected].path.selected_vertex = shapes[shape_id_selected].path.vertex.size()-1;
                 shapes[shape_id_selected].edit_mode = checkbox_shape_edit->checked;
             }
             
@@ -2622,6 +2670,10 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
     gui.app_size = app.size;
     
     gui.draw( app.cursor, 0.01 );
+    
+    gui.font_elements->setText( "v"+LDEnts(FAYA_VERSION) );
+    gui.font_elements->pos = vec2i( app.size.x - gui.font_elements->size.x, app.size.y - 15 );
+    gui.font_elements->draw();
     
     // Dragged sprite above all
     if ( sprite_drag.size.x )

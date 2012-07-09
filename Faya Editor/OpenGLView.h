@@ -12,7 +12,6 @@
 #include "TextureAtlasCreation_item.h"
 #include "Spritesheet.h"
 #include "VectorPaths.h"
-#include "Triangulate.h"
 #include "Shapes.h"
 #include "SpriteBatchNode.h"
 #include "transf_tool.h"
