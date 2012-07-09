@@ -18,7 +18,7 @@ Shapes::Shapes()
     add_to_edge_mode = 0;
     moving = 0;
     assign_selected = 0;
-    can_change_selected = 0;
+    can_change_selected = 1;
 }
 
 Shapes::~Shapes()

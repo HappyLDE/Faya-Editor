@@ -97,11 +97,15 @@ void saveFile(string filename)
     }
     
     // Shapes
-    /*LDEuint shapes_size = shapes.size();
+    LDEuint shapes_size = shapes.size();
     file.write( (char*)&shapes_size, sizeof(LDEuint) );
     
     for ( LDEuint i = 0; i < shapes_size; ++i )
     {
+        file.write( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
+        file.write( (char*)&shapes[i].color.y, sizeof(LDEfloat) );
+        file.write( (char*)&shapes[i].color.z, sizeof(LDEfloat) );
+        
         LDEuint vertex_size = shapes[i].vertex.size();
         file.write( (char*)&vertex_size, sizeof(LDEuint) );
         
@@ -111,15 +115,15 @@ void saveFile(string filename)
             file.write( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
         }
         
-        LDEuint path_vertex_size = shapes[i].path_vertex.size();
+        LDEuint path_vertex_size = shapes[i].path.vertex.size();
         file.write( (char*)&path_vertex_size, sizeof(LDEuint) );
         
         for ( LDEuint v = 0; v < path_vertex_size; ++v )
         {
-            file.write( (char*)&shapes[i].path_vertex[v].x, sizeof(LDEint) );
-            file.write( (char*)&shapes[i].path_vertex[v].y, sizeof(LDEint) );
+            file.write( (char*)&shapes[i].path.vertex[v].x, sizeof(LDEint) );
+            file.write( (char*)&shapes[i].path.vertex[v].y, sizeof(LDEint) );
         }
-    }*/
+    }
 }
 
 void openFile(string filename)
@@ -190,13 +194,17 @@ void openFile(string filename)
     list_shapes->erase();
     
     // Shapes
-    /*LDEuint shapes_size = 0;
+    LDEuint shapes_size = 0;
     file.read( (char*)&shapes_size, sizeof(LDEuint) );
     
     for ( LDEuint i = 0; i < shapes_size; ++i )
     {
         Shapes shape_temp;
 
+        file.read( (char*)&shape_temp.color.x, sizeof(LDEfloat) );
+        file.read( (char*)&shape_temp.color.y, sizeof(LDEfloat) );
+        file.read( (char*)&shape_temp.color.z, sizeof(LDEfloat) );
+        
         LDEuint vertex_size = 0;
         file.read( (char*)&vertex_size, sizeof(LDEuint) );
         
@@ -216,11 +224,16 @@ void openFile(string filename)
             vec2i vertex_temp;
             file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
             file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
-            shape_temp.path_vertex.push_back(vertex_temp);
+            shape_temp.path.vertex.push_back(vertex_temp);
         }
         
         shapes.push_back(shape_temp);
-    }*/
+        
+        list_shapes->addItem( shapes.size()-1, "Shape"+LDEnts(shapes.size()-1) );
+    }
+    
+    if ( shapes.size() )
+        button_shapes_delete->unlock();
     
     switchEditorMode(editor_mode);
 }
