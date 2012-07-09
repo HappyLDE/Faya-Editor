@@ -100,8 +100,9 @@ void VectorPaths::draw()
             
             if ( test_coi )
             {
+                
                 if ( cursor.x > vertex[i].x - 8 && cursor.x < vertex[i].x + 8 &&
-                     cursor.y > vertex[i].y - 8 && cursor.y < vertex[i].y + 8 )
+                     cursor.y > vertex[i].y - 8 && cursor.y < vertex[i].y + 8 && !add_to_edge_mode )
                 {
                     glColor3f(1,1,1);
                     LDErectw( vertex[i].x - 8, vertex[i].y - 8, 16, 16);
@@ -136,6 +137,8 @@ void VectorPaths::draw()
                         if ( clicked )
                         {
                             vertex.insert( vertex.begin() + i, point_pos );
+                            selected_vertex = i;
+                            
                             add_to_edge_mode = 0;
                         }
                         
