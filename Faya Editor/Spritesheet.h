@@ -17,6 +17,7 @@
 #include "LDEmouse_event.h"
 #include "LDEgui_list.h"
 #include "SpriteBatchNode.h"
+#include <string>
 
 struct Spritesheet_frame
 {
@@ -49,6 +50,8 @@ struct Spritesheet
     SpriteBatchNode spriteBatchNode;
     
     tree<LDEgui_list_item>::iterator item_group;
+    
+    std::string name;
     
     std::vector<LDEmouse_event>mouse; // list of mouse events in one frame
     

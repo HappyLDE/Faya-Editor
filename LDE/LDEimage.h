@@ -43,7 +43,7 @@ class LDEimage
     bool create( LDEuint width, LDEuint height, LDEuint bpp_ );
     void deleteLocalData();
 	void reset();
-	
+
 	vec4i getEmptyPixels();
 	void  crop( vec4i emptyPixels );
     void  copyMerge( LDEimage &source, vec2i cp_pos );
@@ -54,7 +54,8 @@ class LDEimage
     LDEuint load( std::string path );
     LDEuint opengl( LDEuint mode );
 	void save( std::string path );
-
+    bool savePNG( std::string path );
+    
 	LDEimage();
 	~LDEimage();
 };

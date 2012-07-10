@@ -67,61 +67,73 @@ void saveFile(string filename)
     
     file.open(filename.c_str(), ios::out | ios::binary);
     
-    // File Version
-    file.write( (char*)&FAYA_VERSION, sizeof(LDEfloat) );
     
-    // Editor behavior
-    file.write( (char*)&app.size.x, sizeof(LDEint) );
-    file.write( (char*)&app.size.y, sizeof(LDEint) );
-    
-    file.write( (char*)&camera_pos.x, sizeof(LDEfloat) );
-    file.write( (char*)&camera_pos.y, sizeof(LDEfloat) );
-    file.write( (char*)&camera_zoom, sizeof(LDEfloat) );
-    
-    file.write( (char*)&editor_mode, sizeof(bool) );
-    
-    // Paths
-    LDEuint paths_size = paths.size();
-    file.write( (char*)&paths_size, sizeof(LDEuint) );
-    
-    for ( LDEuint i = 0; i < paths_size; ++i )
+    if ( file.is_open() )
     {
-        LDEuint vertex_size = paths[i].vertex.size();
-        file.write( (char*)&vertex_size, sizeof(LDEuint) );
+        // File Version
+        file.write( (char*)&FAYA_VERSION, sizeof(LDEfloat) );
         
-        for ( LDEuint v = 0; v < vertex_size; ++v )
+        // Editor behavior
+        file.write( (char*)&app.size.x, sizeof(LDEint) );
+        file.write( (char*)&app.size.y, sizeof(LDEint) );
+        
+        file.write( (char*)&camera_pos.x, sizeof(LDEfloat) );
+        file.write( (char*)&camera_pos.y, sizeof(LDEfloat) );
+        file.write( (char*)&camera_zoom, sizeof(LDEfloat) );
+        
+        file.write( (char*)&editor_mode, sizeof(bool) );
+        
+        // Paths
+        LDEuint paths_size = paths.size();
+        file.write( (char*)&paths_size, sizeof(LDEuint) );
+        
+        for ( LDEuint i = 0; i < paths_size; ++i )
         {
-            file.write( (char*)&paths[i].vertex[v].x, sizeof(LDEint) );
-            file.write( (char*)&paths[i].vertex[v].y, sizeof(LDEint) );
-        }
-    }
-    
-    // Shapes
-    LDEuint shapes_size = shapes.size();
-    file.write( (char*)&shapes_size, sizeof(LDEuint) );
-    
-    for ( LDEuint i = 0; i < shapes_size; ++i )
-    {
-        file.write( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
-        file.write( (char*)&shapes[i].color.y, sizeof(LDEfloat) );
-        file.write( (char*)&shapes[i].color.z, sizeof(LDEfloat) );
-        
-        LDEuint vertex_size = shapes[i].vertex.size();
-        file.write( (char*)&vertex_size, sizeof(LDEuint) );
-        
-        for ( LDEuint v = 0; v < vertex_size; ++v )
-        {
-            file.write( (char*)&shapes[i].vertex[v].x, sizeof(LDEint) );
-            file.write( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
+            LDEuint vertex_size = paths[i].vertex.size();
+            file.write( (char*)&vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < vertex_size; ++v )
+            {
+                file.write( (char*)&paths[i].vertex[v].x, sizeof(LDEint) );
+                file.write( (char*)&paths[i].vertex[v].y, sizeof(LDEint) );
+            }
         }
         
-        LDEuint path_vertex_size = shapes[i].path.vertex.size();
-        file.write( (char*)&path_vertex_size, sizeof(LDEuint) );
+        // Shapes
+        LDEuint shapes_size = shapes.size();
+        file.write( (char*)&shapes_size, sizeof(LDEuint) );
         
-        for ( LDEuint v = 0; v < path_vertex_size; ++v )
+        for ( LDEuint i = 0; i < shapes_size; ++i )
         {
-            file.write( (char*)&shapes[i].path.vertex[v].x, sizeof(LDEint) );
-            file.write( (char*)&shapes[i].path.vertex[v].y, sizeof(LDEint) );
+            file.write( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
+            file.write( (char*)&shapes[i].color.y, sizeof(LDEfloat) );
+            file.write( (char*)&shapes[i].color.z, sizeof(LDEfloat) );
+            
+            LDEuint vertex_size = shapes[i].vertex.size();
+            file.write( (char*)&vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < vertex_size; ++v )
+            {
+                file.write( (char*)&shapes[i].vertex[v].x, sizeof(LDEint) );
+                file.write( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
+            }
+            
+            LDEuint path_vertex_size = shapes[i].path.vertex.size();
+            file.write( (char*)&path_vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < path_vertex_size; ++v )
+            {
+                file.write( (char*)&shapes[i].path.vertex[v].x, sizeof(LDEint) );
+                file.write( (char*)&shapes[i].path.vertex[v].y, sizeof(LDEint) );
+            }
+        }
+        
+        file.close();
+        
+        //// SAVING SPRITESHEETS TO SEPARATED PNG AND PLIST FILES
+        for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+        {
+            spritesheets[i].image.savePNG( project_path+"/"+spritesheets[i].name+".png" );
         }
     }
 }
@@ -1476,11 +1488,10 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 LDEuint spritesheet_id = spritesheets.size()-1;
                 spritesheets_zorder.push_back( spritesheet_id );
                 
-                string spritesheet_name = "SpriteSheet"+LDEnts( spritesheet_id+1 );
+                spritesheets[spritesheet_id].name = "SpriteSheet"+LDEnts( spritesheet_id+1 );
                 
-                combobox_spritesheets->addOption( spritesheet_id, spritesheet_name, 1 );
-                spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheet_name );
-                
+                combobox_spritesheets->addOption( spritesheet_id, spritesheets[spritesheet_id].name, 1 );
+                spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheets[spritesheet_id].name );
                 spritesheets[spritesheet_id].item_group->can_move = 1;
                 spritesheets[spritesheet_id].item_group->key = spritesheet_id;
                 

@@ -109,6 +109,48 @@ void LDEimage::setPixel( LDEuint x, LDEuint y, LDEubyte r, LDEubyte g, LDEubyte 
 	}
 }
 
+bool LDEimage::savePNG( std::string path )
+{
+    model_path = path.substr( 0, path.rfind("/") );
+	model_name = path.substr( path.rfind("/")+1, path.rfind(".")-(path.rfind("/")+1) );
+	model_format = path.substr( path.rfind(".")+1, path.length()-path.rfind(".")+1 );
+
+	NSString *path_objc = [NSString stringWithCString:path.c_str() encoding:NSUTF8StringEncoding];
+
+    NSBitmapImageRep *imgRep= [[NSBitmapImageRep alloc] 
+							initWithBitmapDataPlanes:NULL
+							pixelsWide:size.x
+							pixelsHigh:size.y
+							bitsPerSample:8 
+							samplesPerPixel:bpp
+							hasAlpha:YES isPlanar:NO 
+							colorSpaceName:NSDeviceRGBColorSpace 
+							bytesPerRow:0
+							bitsPerPixel:0];
+
+    NSUInteger val[4]= { 0, 0, 0, 0 };
+    LDEubyte r = 0, g = 0, b = 0, a = 0;
+    
+    for ( LDEuint x = 0; x < size.x; ++x )
+    for ( LDEuint y = 0; y < size.y; ++y )
+    {
+        getPixel( x, size.y-y, &r, &g, &b, &a );
+
+        val[0] = r;
+        val[1] = g;
+        val[2] = b;
+        val[3] = a;
+        
+        [imgRep setPixel:val atX:x y:y];
+    }
+    
+    NSData *data = [imgRep representationUsingType:NSPNGFileType properties: nil];
+
+    [data writeToFile:path_objc atomically: NO];
+    
+    return 1;
+}
+
 LDEuint LDEimage::load( string path )
 {
 	model_path = path.substr( 0, path.rfind("/") );
