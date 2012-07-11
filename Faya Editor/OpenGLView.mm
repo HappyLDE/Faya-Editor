@@ -11,6 +11,7 @@
 #include "tree.hh"
 
 using namespace std;
+using namespace tinyxml2;
 
 LDEfloat    FAYA_VERSION = 1.12,
             num_selected_sprites = 0;
@@ -218,142 +219,325 @@ void openFile(string filename)
     
     file.open(filename.c_str(), ios::in | ios::binary);
     
-    LDEfloat read_FAYA_VERSION = 0;
-    
-    // File Version
-    file.read( (char*)&read_FAYA_VERSION, sizeof(LDEfloat) );
-    
-    // Editor behavior
-    file.read( (char*)&app.size.x, sizeof(LDEint) );
-    file.read( (char*)&app.size.y, sizeof(LDEint) );
-    
-    //[[self window] setContentSize:NSMakeSize(app.size.x,app.size.y)];
-    
-    file.read( (char*)&camera_pos.x, sizeof(LDEfloat) );
-    file.read( (char*)&camera_pos.y, sizeof(LDEfloat) );
-    file.read( (char*)&camera_zoom, sizeof(LDEfloat) );
-    
-    file.read( (char*)&editor_mode, sizeof(bool) );
-
-    paths.erase( paths.begin(), paths.end() );
-    list_vector_paths->erase();
-    
-    // Paths
-    LDEuint paths_size = 0;
-    file.read( (char*)&paths_size, sizeof(LDEuint) );
-    
-    if ( paths_size )
+    if ( file.is_open() )
     {
-        button_vector_paths_delete->unlock();
+        LDEfloat read_FAYA_VERSION = 0;
         
-        for ( LDEuint i = 0; i < paths_size; ++i )
+        // File Version
+        file.read( (char*)&read_FAYA_VERSION, sizeof(LDEfloat) );
+        
+        // Editor behavior
+        file.read( (char*)&app.size.x, sizeof(LDEint) );
+        file.read( (char*)&app.size.y, sizeof(LDEint) );
+        
+        //[[self window] setContentSize:NSMakeSize(app.size.x,app.size.y)];
+        
+        file.read( (char*)&camera_pos.x, sizeof(LDEfloat) );
+        file.read( (char*)&camera_pos.y, sizeof(LDEfloat) );
+        file.read( (char*)&camera_zoom, sizeof(LDEfloat) );
+        
+        file.read( (char*)&editor_mode, sizeof(bool) );
+
+        paths.erase( paths.begin(), paths.end() );
+        list_vector_paths->erase();
+        
+        // Paths
+        LDEuint paths_size = 0;
+        file.read( (char*)&paths_size, sizeof(LDEuint) );
+        
+        if ( paths_size )
         {
-            VectorPaths path_temp;
+            button_vector_paths_delete->unlock();
             
-            path_temp.name = "Path "+LDEnts(paths.size());
-            
-            list_vector_paths->addItem( paths.size(), path_temp.name );
+            for ( LDEuint i = 0; i < paths_size; ++i )
+            {
+                VectorPaths path_temp;
+                
+                path_temp.name = "Path "+LDEnts(paths.size());
+                
+                list_vector_paths->addItem( paths.size(), path_temp.name );
+                
+                LDEuint vertex_size = 0;
+                file.read( (char*)&vertex_size, sizeof(LDEuint) );
+                
+                for ( LDEuint v = 0; v < vertex_size; ++v )
+                {
+                    vec2i vertex_pos;
+                    
+                    file.read( (char*)&vertex_pos.x, sizeof(LDEint) );
+                    file.read( (char*)&vertex_pos.y, sizeof(LDEint) );
+                    
+                    path_temp.addVertex( vertex_pos );
+                }
+                
+                paths.push_back(path_temp);
+            }
+        }
+        
+        shapes.erase( shapes.begin(), shapes.end() );
+        list_shapes->erase();
+        
+        // Shapes
+        LDEuint shapes_size = 0;
+        file.read( (char*)&shapes_size, sizeof(LDEuint) );
+        
+        for ( LDEuint i = 0; i < shapes_size; ++i )
+        {
+            Shapes shape_temp;
+
+            file.read( (char*)&shape_temp.color.x, sizeof(LDEfloat) );
+            file.read( (char*)&shape_temp.color.y, sizeof(LDEfloat) );
+            file.read( (char*)&shape_temp.color.z, sizeof(LDEfloat) );
             
             LDEuint vertex_size = 0;
             file.read( (char*)&vertex_size, sizeof(LDEuint) );
             
             for ( LDEuint v = 0; v < vertex_size; ++v )
             {
-                vec2i vertex_pos;
-                
-                file.read( (char*)&vertex_pos.x, sizeof(LDEint) );
-                file.read( (char*)&vertex_pos.y, sizeof(LDEint) );
-                
-                path_temp.addVertex( vertex_pos );
+                vec2i vertex_temp;
+                file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
+                file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
+                shape_temp.vertex.push_back(vertex_temp);
             }
             
-            paths.push_back(path_temp);
+            LDEuint path_vertex_size = 0;
+            file.read( (char*)&path_vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < path_vertex_size; ++v )
+            {
+                vec2i vertex_temp;
+                file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
+                file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
+                shape_temp.path.vertex.push_back(vertex_temp);
+            }
+            
+            shape_temp.path.active = 1;
+            
+            shape_temp.name = "Shape"+LDEnts(shapes.size());
+            
+            list_shapes->addItem( shapes.size(), shape_temp.name );
+            
+            shapes.push_back(shape_temp);
         }
-    }
-    
-    shapes.erase( shapes.begin(), shapes.end() );
-    list_shapes->erase();
-    
-    // Shapes
-    LDEuint shapes_size = 0;
-    file.read( (char*)&shapes_size, sizeof(LDEuint) );
-    
-    for ( LDEuint i = 0; i < shapes_size; ++i )
-    {
-        Shapes shape_temp;
-
-        file.read( (char*)&shape_temp.color.x, sizeof(LDEfloat) );
-        file.read( (char*)&shape_temp.color.y, sizeof(LDEfloat) );
-        file.read( (char*)&shape_temp.color.z, sizeof(LDEfloat) );
         
-        LDEuint vertex_size = 0;
-        file.read( (char*)&vertex_size, sizeof(LDEuint) );
+        if ( shapes.size() )
+            button_shapes_delete->unlock();
         
-        for ( LDEuint v = 0; v < vertex_size; ++v )
+        // Sprites
+        LDEuint spritesheets_size = 0;
+        file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
+        
+        for ( LDEuint i = 0; i < spritesheets_size; ++i )
         {
-            vec2i vertex_temp;
-            file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
-            file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
-            shape_temp.vertex.push_back(vertex_temp);
-        }
-        
-        LDEuint path_vertex_size = 0;
-        file.read( (char*)&path_vertex_size, sizeof(LDEuint) );
-        
-        for ( LDEuint v = 0; v < path_vertex_size; ++v )
-        {
-            vec2i vertex_temp;
-            file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
-            file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
-            shape_temp.path.vertex.push_back(vertex_temp);
-        }
-        
-        shape_temp.path.active = 1;
-        
-        shape_temp.name = "Shape"+LDEnts(shapes.size());
-        
-        list_shapes->addItem( shapes.size(), shape_temp.name );
-        
-        shapes.push_back(shape_temp);
-    }
-    
-    if ( shapes.size() )
-        button_shapes_delete->unlock();
-    
-    // Sprites
-    LDEuint spritesheets_size = 0;
-    file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
-    
-    for ( LDEuint i = 0; i < spritesheets_size; ++i )
-    {
-        Spritesheet spritesheet_temp;
-        
-        // First, we need to save the name of the spritesheets .plist files
-        LDEuint name_length = 0;
-        file.read( (char*)&name_length, sizeof(LDEuint) );
-        
-        spritesheet_temp.name.resize(name_length);
+            Spritesheet spritesheet_temp;
+            
+            // First, we need to save the name of the spritesheets .plist files
+            LDEuint name_length = 0;
+            file.read( (char*)&name_length, sizeof(LDEuint) );
+            
+            spritesheet_temp.name.resize(name_length);
 
-        file.read( &spritesheet_temp.name[0], name_length );
+            file.read( &spritesheet_temp.name[0], name_length );
+            
+            spritesheets.push_back( spritesheet_temp );
+            
+            LDEuint spritesheet_id = spritesheets.size()-1;
+            spritesheets_zorder.push_back( spritesheet_id );
+            
+            combobox_spritesheets->addOption( spritesheet_id, spritesheets[spritesheet_id].name, 1 );
+            spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheets[spritesheet_id].name );
+            spritesheets[spritesheet_id].item_group->can_move = 1;
+            spritesheets[spritesheet_id].item_group->key = spritesheet_id;
+            
+            tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
+            list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
+            
+            texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
+            list_texture_atlas_sprites->erase();
+            button_texture_atlas_sprites_delete->lock();
+        }
         
-        spritesheets.push_back( spritesheet_temp );
+        file.close();
         
-        LDEuint spritesheet_id = spritesheets.size()-1;
+        // Loading PNG and PLIST files for spritesheets
+        for ( LDEuint i = 0; i < spritesheets.size(); ++i )
+        {
+            XMLDocument doc;
+            doc.LoadFile( LDEstc(project_path+"/"+spritesheets[i].name+".plist") );
+
+            XMLElement* element = doc.FirstChildElement("plist")->FirstChildElement("dict")->FirstChildElement("key");
+            
+            // Let's load metadata
+            string value = element->GetText();
+            
+            if ( value != "metadata" )
+            while ( value != "metadata" )
+            {
+                element = element->NextSiblingElement("key");
+                
+                if ( element != NULL )
+                {
+                    value = element->GetText();
+                }
+                else
+                    break;
+            }
+            
+            // If we have the metadata element
+            if ( element != NULL )
+            {
+                element = element->NextSiblingElement()->FirstChildElement("key");
+                value = element->GetText();
+                
+                if ( value != "realTextureFileName" )
+                while ( value != "realTextureFileName" )
+                {
+                    element = element->NextSiblingElement("key");
+                    
+                    if ( element != NULL )
+                    {
+                        value = element->GetText();
+                    }
+                    else
+                        break;
+                }
+                
+                // If we have the realTextureFileName element
+                if ( element != NULL )
+                {
+                    element = element->NextSiblingElement();
+                    
+                    if ( element != NULL )
+                    {
+                        // Load the big PNG image spritesheet containing all the small images
+                        spritesheets[i].image.load( project_path+"/"+element->GetText() );
+                        
+                        if ( spritesheets[i].image.loaded )
+                        {
+                            spritesheets[i].image.opengl(2);
+
+                            ////// NOW HERE assign every frame
+                            element = doc.FirstChildElement("plist")->FirstChildElement("dict")->FirstChildElement("key");
+                            
+                            value = element->GetText();
+                            
+                            if ( value != "frames" )
+                            while ( value != "frames" )
+                            {
+                                element = element->NextSiblingElement("key");
+                                
+                                if ( element != NULL )
+                                {
+                                    value = element->GetText();
+                                }
+                                else
+                                    break;
+                            }
+                            
+                            // If we have the frames key
+                            if ( element != NULL )
+                            {
+                                element = element->NextSiblingElement("dict")->FirstChildElement();
+                                
+                                vec2i pos_window(5, 5);
+                                
+                                while ( element != NULL )
+                                {
+                                    string frame_name = element->GetText();
+                                    
+                                    XMLElement* element_dict = element->NextSiblingElement("dict")->FirstChildElement("key");
+                                    
+                                    value = element_dict->GetText();
+                                    
+                                    if ( value != "frame" )
+                                    while ( value != "frame" )
+                                    {
+                                        element_dict = element_dict->NextSiblingElement("key");
+                                        
+                                        if ( element_dict != NULL )
+                                        {
+                                            value = element_dict->GetText();
+                                        }
+                                        else
+                                            break;
+                                    }
+                                    
+                                    // If we have the frames key
+                                    if ( element_dict != NULL )
+                                    {
+                                        element_dict = element_dict->NextSiblingElement();
+                                        
+                                        if ( element_dict != NULL )
+                                        {
+                                            string text = element_dict->GetText();
+
+                                            LDEuint step1 = text.find(",");
+                                            LDEuint step2 = text.find("}",step1);
+                                            LDEuint step3 = text.find("{",step2);
+                                            LDEuint step4 = text.find(",",step3);
+                                            LDEuint step5 = text.find("}",step4);
+                                            
+                                            Spritesheet_frame frame_temp;
+                                            
+                                            frame_temp.pos_window = pos_window;
+                                            
+                                            frame_temp.pos = vec2i( LDEstn(text.substr( 2, step1-2 )), LDEstn(text.substr( step1+1, step2-step1-1 ) ) );
+                                            frame_temp.size = vec2i( LDEstn(text.substr( step3+1, step4-step3-1 )), LDEstn(text.substr( step4+1, step5-step4-1 ) ) );
+                                            
+                                            // Let's calculate the thumbnail's size
+                                            LDEfloat ratio = 0;
+                                            
+                                            // Si la largeur est plus grande que la hauteur
+                                            if ( frame_temp.size.x > frame_temp.size.y )
+                                            {
+                                                // Déterminer le ratio
+                                                ratio = (LDEfloat)100 / frame_temp.size.x;
+                                                
+                                                frame_temp.size_100.x = 100;
+                                                
+                                                frame_temp.size_100.y = (LDEint)frame_temp.size.y * ratio;
+                                            }
+                                            // Sinon, si la hauteur est plus grande que la largeur
+                                            else
+                                            {
+                                                // Déterminer le ratio
+                                                ratio = (LDEfloat)100 / frame_temp.size.y;
+                                                
+                                                frame_temp.size_100.y = 100;
+                                                
+                                                frame_temp.size_100.x = (LDEint)frame_temp.size.x * ratio;
+                                            }
+                                            
+                                            frame_temp.margin = vec2i( 50 - frame_temp.size_100.x / 2, 50 - frame_temp.size_100.y / 2 );
+                                            
+                                            frame_temp.name = frame_name;
+                                            
+                                            spritesheets[i].frames.push_back( frame_temp );
+                                            
+                                            pos_window.x += 105; // width 100px
+                                            
+                                            if ( pos_window.x > window_spritesheets->size.x - 116 )
+                                            {
+                                                pos_window.x = 5;
+                                                pos_window.y += 105; // height 100px
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Next
+                                    element = element->NextSiblingElement("key");
+                                }
+                                
+                                scrollbar_spritesheets->scroll_height = pos_window.y + 100;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
-        combobox_spritesheets->addOption( spritesheet_id, spritesheets[spritesheet_id].name, 1 );
-        spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheets[spritesheet_id].name );
-        spritesheets[spritesheet_id].item_group->can_move = 1;
-        spritesheets[spritesheet_id].item_group->key = spritesheet_id;
-        
-        tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
-        list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
-        
-        texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
-        list_texture_atlas_sprites->erase();
-        button_texture_atlas_sprites_delete->lock();
+        switchEditorMode(editor_mode);
     }
-    
-    switchEditorMode(editor_mode);
 }
 
 void switchEditorMode( LDEuint mode )

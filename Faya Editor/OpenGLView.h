@@ -16,6 +16,7 @@
 #include "SpriteBatchNode.h"
 #include "transf_tool.h"
 #include <math.h>
+#include "tinyxml2.h"
 
 // Pixel to Meter Ratio
 #define PTM_RATIO 64
