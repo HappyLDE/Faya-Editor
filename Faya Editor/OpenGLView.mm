@@ -134,6 +134,64 @@ void saveFile(string filename)
         for ( LDEuint i = 0; i < spritesheets.size(); ++i )
         {
             spritesheets[i].image.savePNG( project_path+"/"+spritesheets[i].name+".png" );
+            
+            // Exporting .plist file
+            file.open( LDEstc(project_path+"/"+spritesheets[i].name+".plist") );
+            
+            if ( file.is_open() )
+            {
+                file<<"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"<<std::endl;
+                file<<"<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"<<std::endl;
+                file<<"<plist version=\"1.0\">"<<std::endl;
+                file<<"\t<dict>"<<std::endl;
+                
+                // Frames
+                file<<"\t\t<key>frames</key>"<<std::endl;
+                file<<"\t\t<dict>"<<std::endl;
+                
+                // For every frame in the spritesheet
+                for ( LDEuint f = 0; f < spritesheets[i].frames.size(); ++f )
+                {
+                    file<<"\t\t\t<key>"<<spritesheets[i].frames[f].name<<".png</key>"<<std::endl;
+                    file<<"\t\t\t<dict>"<<std::endl;
+                        file<<"\t\t\t\t<key>frame</key>"<<std::endl;
+                        file<<"\t\t\t\t<string>{{"<<spritesheets[i].frames[f].pos.x<<","<<spritesheets[i].frames[f].pos.y<<"},{"<<spritesheets[i].frames[f].size.x<<","<<spritesheets[i].frames[f].size.y<<"}}</string>"<<std::endl;
+                        
+                        file<<"\t\t\t\t<key>offset</key>"<<std::endl;
+                        file<<"\t\t\t\t<string>{0,0}</string>"<<std::endl;
+                        
+                        file<<"\t\t\t\t<key>rotated</key>"<<std::endl;
+                        file<<"\t\t\t\t<false/>"<<std::endl;
+                        
+                        file<<"\t\t\t\t<key>sourceColorRect</key>"<<std::endl;
+                        file<<"\t\t\t\t<string>{{0,0},{"<<spritesheets[i].frames[f].size.x<<","<<spritesheets[i].frames[f].size.y<<"}}</string>"<<std::endl;
+                        
+                        file<<"\t\t\t\t<key>sourceSize</key>"<<std::endl;
+                        file<<"\t\t\t\t<string>{"<<spritesheets[i].frames[f].size.x<<","<<spritesheets[i].frames[f].size.y<<"}</string>"<<std::endl;
+                    file<<"\t\t\t</dict>"<<std::endl;
+                }
+                
+                file<<"\t\t</dict>"<<std::endl;
+                
+                // Metadata
+                file<<"\t\t<key>metadata</key>"<<std::endl;
+                file<<"\t\t<dict>"<<std::endl;
+                    file<<"\t\t\t<key>format</key>"<<std::endl;
+                    file<<"\t\t\t<integer>2</integer>"<<std::endl;
+                    file<<"\t\t\t<key>realTextureFileName</key>"<<std::endl;
+                    file<<"\t\t\t<string>"<<spritesheets[i].name+".png</string>"<<std::endl;
+                    file<<"\t\t\t<key>size</key>"<<std::endl;
+                    file<<"\t\t\t<string>{"<<spritesheets[i].image.size.x<<","<<spritesheets[i].image.size.y<<"}</string>"<<std::endl;
+                    file<<"\t\t\t<key>smartupdate</key>"<<std::endl;
+                    file<<"\t\t\t<string>$FayaEditor:SmartUpdate:"<<rand()<<"$</string>"<<std::endl;
+                    file<<"\t\t\t<key>textureFileName</key>"<<std::endl;
+                    file<<"\t\t\t<string>"<<spritesheets[i].name+".png</string>"<<std::endl;
+                file<<"\t\t</dict>"<<std::endl;
+                
+                file<<"\t</dict>"<<std::endl;
+                
+                file<<"</plist>"<<std::endl;
+            }
         }
     }
 }
