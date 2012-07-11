@@ -128,6 +128,19 @@ void saveFile(string filename)
             }
         }
         
+        // Sprites
+        LDEuint spritesheets_size = spritesheets.size();
+        file.write( (char*)&spritesheets_size, sizeof(LDEuint) );
+        
+        for ( LDEuint i = 0; i < spritesheets_size; ++i )
+        {
+            // First, we need to save the name of the spritesheets .plist files
+            LDEuint name_length = spritesheets[i].name.size();
+            file.write( (char*)&name_length, sizeof(LDEuint) );
+            
+            file.write( spritesheets[i].name.data(), name_length );
+        }
+        
         file.close();
         
         //// SAVING SPRITESHEETS TO SEPARATED PNG AND PLIST FILES
@@ -135,7 +148,7 @@ void saveFile(string filename)
         {
             spritesheets[i].image.savePNG( project_path+"/"+spritesheets[i].name+".png" );
             
-            // Exporting .plist file
+            // Exporting .plist XML file
             file.open( LDEstc(project_path+"/"+spritesheets[i].name+".plist") );
             
             if ( file.is_open() )
@@ -306,6 +319,39 @@ void openFile(string filename)
     
     if ( shapes.size() )
         button_shapes_delete->unlock();
+    
+    // Sprites
+    LDEuint spritesheets_size = 0;
+    file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
+    
+    for ( LDEuint i = 0; i < spritesheets_size; ++i )
+    {
+        Spritesheet spritesheet_temp;
+        
+        // First, we need to save the name of the spritesheets .plist files
+        LDEuint name_length = 0;
+        file.read( (char*)&name_length, sizeof(LDEuint) );
+        
+        spritesheet_temp.name.resize(name_length);
+
+        file.read( &spritesheet_temp.name[0], name_length );
+        
+        spritesheets.push_back( spritesheet_temp );
+        
+        LDEuint spritesheet_id = spritesheets.size()-1;
+        
+        combobox_spritesheets->addOption( spritesheet_id, spritesheets[spritesheet_id].name, 1 );
+        spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheets[spritesheet_id].name );
+        spritesheets[spritesheet_id].item_group->can_move = 1;
+        spritesheets[spritesheet_id].item_group->key = spritesheet_id;
+        
+        tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
+        list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
+        
+        texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
+        list_texture_atlas_sprites->erase();
+        button_texture_atlas_sprites_delete->lock();
+    }
     
     switchEditorMode(editor_mode);
 }
