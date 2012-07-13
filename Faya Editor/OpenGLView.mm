@@ -205,6 +205,8 @@ void saveFile(string filename)
                 file<<"\t</dict>"<<std::endl;
                 
                 file<<"</plist>"<<std::endl;
+                
+                file.close();
             }
         }
     }
