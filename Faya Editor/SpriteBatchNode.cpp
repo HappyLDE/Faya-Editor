@@ -14,7 +14,6 @@ Sprite::Sprite()
 {
     rot = 0;
     opacity = 1;
-    image_id = 0;
     selected = 0;
     dist = 0;
     init_dist = 0;
@@ -30,7 +29,7 @@ Sprite::~Sprite()
 /////////// SPRITES ////////////
 SpriteBatchNode::SpriteBatchNode()
 {
-    last_texture_id = 0;
+    texture_id = 0;
     test_coi = 0;
     changed = 0;
     keep_select = 0;
@@ -249,16 +248,11 @@ void SpriteBatchNode::draw()
         
     }
     
+    glBindTexture(GL_TEXTURE_2D, texture_id );
+    
     glEnable(GL_TEXTURE_2D);
     for ( LDEuint i = 0; i < sprites.size(); ++i )
     {
-        //if ( last_texture_id != sprites[i].image_id )
-        {
-            glBindTexture(GL_TEXTURE_2D, sprites[i].image_id );
-            
-            //last_texture_id = sprites[i].image_id;
-        }
-        
         glColor4f(1, 1, 1, sprites[i].opacity);
         glPushMatrix();
         glTranslatef( (sprites[i].pos.x+sprites[i].pos_offset.x), (sprites[i].pos.y+sprites[i].pos_offset.y), 0);

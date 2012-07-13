@@ -27,7 +27,7 @@ struct Sprite
             size,   // Size in px
             size_100,
             image_size,
-            offset,
+            offset, // Offset from 0, 0
             flip;   // Texture orientation
     
     bool    selected,
@@ -36,8 +36,6 @@ struct Sprite
     std::string name;
     
     vec4i   texture_uv;
-    
-    LDEuint image_id;
     
     LDEfloat rot,       // Rotation in degrees
             rot_offset,
@@ -68,7 +66,7 @@ struct SpriteBatchNode
             selected_size,
             selected_ap;
     
-    LDEuint last_texture_id;
+    LDEuint texture_id;
     
     void deselect();
     

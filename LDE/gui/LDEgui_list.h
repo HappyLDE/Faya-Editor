@@ -93,6 +93,7 @@ struct LDEgui_list
             changed,
             changed_selection,
             changed_order,
+            changed_names,
             test_coi,
             hide_indicator,
             show_indicator,

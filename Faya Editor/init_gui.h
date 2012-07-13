@@ -22,7 +22,7 @@ LDEgui_button *button_path_triangulate = new LDEgui_button();
 // Window texture atlas list of sprites
 LDEgui_window *window_vector_paths_list = new LDEgui_window();
 LDEgui_list *list_vector_paths = new LDEgui_list();
-LDEgui_button *button_vector_paths_delete = new LDEgui_button();
+LDEgui_button *button_path_delete = new LDEgui_button();
 
 //////////////// TEXTURE ATLAS MODE (new spritesheet) //////////////////////
 
@@ -440,11 +440,11 @@ void init_gui()
     list_vector_paths->allow_reorder = 0;
     list_vector_paths->allow_multiple_selection = 0;
     
-	window_vector_paths_list->elements.addButton(button_vector_paths_delete);
-	button_vector_paths_delete->pos.x = 8;
-	button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
-	button_vector_paths_delete->setText("Delete");
-	button_vector_paths_delete->lock();
+	window_vector_paths_list->elements.addButton(button_path_delete);
+	button_path_delete->pos.x = 8;
+	button_path_delete->pos.y = window_vector_paths_list->size.y-54;
+	button_path_delete->setText("Delete");
+	button_path_delete->lock();
     
     //////////////// ATLAS MODE //////////////////////
     

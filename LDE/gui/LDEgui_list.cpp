@@ -51,6 +51,7 @@ LDEgui_list::LDEgui_list()
 	changed = 0;
     changed_selection = 0;
     changed_order = 0;
+    changed_names = 0;
     
 	focus = 0;
 	test_coi = 0;
@@ -814,6 +815,7 @@ void LDEgui_list::draw( vec2i cursor, LDEfloat frametime )
 	changed = 0;
     changed_selection = 0;
     changed_order = 0;
+    changed_names = 0;
     cursor_over_selected = 0;
     hide_indicator = 0;
 	
@@ -1035,6 +1037,8 @@ void LDEgui_list::draw( vec2i cursor, LDEfloat frametime )
                 item_itr->editbox.button.clicked_away = 0;
                 
                 item_itr->renaming = 0;
+                
+                changed_names = 1;
             }
         }
         

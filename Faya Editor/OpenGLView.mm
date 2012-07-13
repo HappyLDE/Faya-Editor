@@ -84,12 +84,18 @@ void saveFile(string filename)
         
         file.write( (char*)&editor_mode, sizeof(bool) );
         
-        // Paths
+        // Saving Vector Paths
         LDEuint paths_size = paths.size();
         file.write( (char*)&paths_size, sizeof(LDEuint) );
         
         for ( LDEuint i = 0; i < paths_size; ++i )
         {
+            // Saving path name
+            LDEuint name_length = paths[i].name.size();
+            file.write( (char*)&name_length, sizeof(LDEuint) );
+            file.write( paths[i].name.data(), name_length );
+            
+            // Saving path vertices
             LDEuint vertex_size = paths[i].vertex.size();
             file.write( (char*)&vertex_size, sizeof(LDEuint) );
             
@@ -100,16 +106,23 @@ void saveFile(string filename)
             }
         }
         
-        // Shapes
+        // Saving Triangulated Shapes
         LDEuint shapes_size = shapes.size();
         file.write( (char*)&shapes_size, sizeof(LDEuint) );
         
         for ( LDEuint i = 0; i < shapes_size; ++i )
         {
+            // Saving shape name
+            LDEuint name_length = shapes[i].name.size();
+            file.write( (char*)&name_length, sizeof(LDEuint) );
+            file.write( shapes[i].name.data(), name_length );
+            
+            // Saving shape color
             file.write( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
             file.write( (char*)&shapes[i].color.y, sizeof(LDEfloat) );
             file.write( (char*)&shapes[i].color.z, sizeof(LDEfloat) );
             
+            // Saving shape triangulated vertices
             LDEuint vertex_size = shapes[i].vertex.size();
             file.write( (char*)&vertex_size, sizeof(LDEuint) );
             
@@ -119,6 +132,7 @@ void saveFile(string filename)
                 file.write( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
             }
             
+            // Saving shape creation path
             LDEuint path_vertex_size = shapes[i].path.vertex.size();
             file.write( (char*)&path_vertex_size, sizeof(LDEuint) );
             
@@ -129,7 +143,7 @@ void saveFile(string filename)
             }
         }
         
-        // Sprites
+        // Spritesheets
         LDEuint spritesheets_size = spritesheets.size();
         file.write( (char*)&spritesheets_size, sizeof(LDEuint) );
         
@@ -140,6 +154,47 @@ void saveFile(string filename)
             file.write( (char*)&name_length, sizeof(LDEuint) );
             
             file.write( spritesheets[i].name.data(), name_length );
+            
+            // Saving the sprites
+            LDEuint spriteBatchNode_size = spritesheets[i].spriteBatchNode.sprites.size();
+            file.write( (char*)&spriteBatchNode_size, sizeof(LDEuint) );
+            
+            for ( LDEuint s = 0; s < spriteBatchNode_size; ++s )
+            {
+                // Saving sprite position
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.x, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.y, sizeof(LDEint) );
+                
+                // Saving sprite offset
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.x, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.y, sizeof(LDEint) );
+                
+                // Saving sprite size
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.x, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.y, sizeof(LDEint) );
+                
+                // Saving sprite image_size
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.x, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.y, sizeof(LDEint) );
+                
+                // Saving sprite texture uv
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.x, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.y, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.z, sizeof(LDEint) );
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.w, sizeof(LDEint) );
+                
+                // Saving sprite rotation
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].rot, sizeof(LDEfloat) );
+                
+                // Saving sprite opacity
+                file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
+                
+                // Saving sprite name
+                name_length = spritesheets[i].spriteBatchNode.sprites[s].name.size();
+                file.write( (char*)&name_length, sizeof(LDEuint) );
+                
+                file.write( spritesheets[i].spriteBatchNode.sprites[s].name.data(), name_length );
+            }
         }
         
         file.close();
@@ -166,7 +221,7 @@ void saveFile(string filename)
                 // For every frame in the spritesheet
                 for ( LDEuint f = 0; f < spritesheets[i].frames.size(); ++f )
                 {
-                    file<<"\t\t\t<key>"<<spritesheets[i].frames[f].name<<".png</key>"<<std::endl;
+                    file<<"\t\t\t<key>"<<spritesheets[i].frames[f].name<<"</key>"<<std::endl;
                     file<<"\t\t\t<dict>"<<std::endl;
                         file<<"\t\t\t\t<key>frame</key>"<<std::endl;
                         file<<"\t\t\t\t<string>{{"<<spritesheets[i].frames[f].pos.x<<","<<spritesheets[i].frames[f].pos.y<<"},{"<<spritesheets[i].frames[f].size.x<<","<<spritesheets[i].frames[f].size.y<<"}}</string>"<<std::endl;
@@ -243,44 +298,123 @@ void openFile(string filename)
         paths.erase( paths.begin(), paths.end() );
         list_vector_paths->erase();
         
-        // Paths
+        // Loading Vector Paths
         LDEuint paths_size = 0;
         file.read( (char*)&paths_size, sizeof(LDEuint) );
         
-        if ( paths_size )
+        for ( LDEuint i = 0; i < paths_size; ++i )
         {
-            button_vector_paths_delete->unlock();
+            VectorPaths path_temp;
+            paths.push_back( path_temp );
             
-            for ( LDEuint i = 0; i < paths_size; ++i )
+            // Loading path name
+            LDEuint name_length = 0;
+            file.read( (char*)&name_length, sizeof(LDEuint) );
+
+            paths[i].name.resize( name_length );
+            
+            file.read( &paths[i].name[0], name_length );
+
+            // Loading path vertices
+            LDEuint vertex_size = 0;
+            file.read( (char*)&vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < vertex_size; ++v )
             {
-                VectorPaths path_temp;
+                paths[i].vertex.push_back( vec2i(0, 0) );
                 
-                path_temp.name = "Path "+LDEnts(paths.size());
-                
-                list_vector_paths->addItem( paths.size(), path_temp.name );
-                
-                LDEuint vertex_size = 0;
-                file.read( (char*)&vertex_size, sizeof(LDEuint) );
-                
-                for ( LDEuint v = 0; v < vertex_size; ++v )
-                {
-                    vec2i vertex_pos;
-                    
-                    file.read( (char*)&vertex_pos.x, sizeof(LDEint) );
-                    file.read( (char*)&vertex_pos.y, sizeof(LDEint) );
-                    
-                    path_temp.addVertex( vertex_pos );
-                }
-                
-                paths.push_back(path_temp);
+                file.read( (char*)&paths[i].vertex[v].x, sizeof(LDEint) );
+                file.read( (char*)&paths[i].vertex[v].y, sizeof(LDEint) );
             }
+        }
+        
+        if ( paths.size() )
+        {
+            path_id_selected = -1;
+            
+            paths[path_id_selected].active = 1;
+            
+            // Clear the gui list of paths
+            list_vector_paths->items_tree.clear();
+            
+            // Repopulate the gui list of paths
+            for ( LDEuint i = 0; i < paths.size(); ++i )
+            {
+                list_vector_paths->addItem( i, paths[i].name );
+            }
+            
+            button_path_delete->unlock();
         }
         
         shapes.erase( shapes.begin(), shapes.end() );
         list_shapes->erase();
         
-        // Shapes
+        // Loading Triangulated Shapes
         LDEuint shapes_size = 0;
+        file.read( (char*)&shapes_size, sizeof(LDEuint) );
+        
+        for ( LDEuint i = 0; i < shapes_size; ++i )
+        {
+            Shapes shape_temp;
+            shapes.push_back( shape_temp );
+            
+            // Saving shape name
+            LDEuint name_length = shapes[i].name.size();
+            file.read( (char*)&name_length, sizeof(LDEuint) );
+            shapes[i].name.resize( name_length );
+            file.read( &shapes[i].name[0], name_length );
+            cout<<shapes[i].name<<"\n";
+            
+            // Saving shape color
+            file.read( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
+            file.read( (char*)&shapes[i].color.y, sizeof(LDEfloat) );
+            file.read( (char*)&shapes[i].color.z, sizeof(LDEfloat) );
+            
+            // Saving shape triangulated vertices
+            LDEuint vertex_size = shapes[i].vertex.size();
+            file.read( (char*)&vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < vertex_size; ++v )
+            {
+                shapes[i].vertex.push_back( vec2i(0,0) );
+                
+                file.read( (char*)&shapes[i].vertex[v].x, sizeof(LDEint) );
+                file.read( (char*)&shapes[i].vertex[v].y, sizeof(LDEint) );
+            }
+            
+            // Saving shape creation path
+            LDEuint path_vertex_size = shapes[i].path.vertex.size();
+            file.read( (char*)&path_vertex_size, sizeof(LDEuint) );
+            
+            for ( LDEuint v = 0; v < path_vertex_size; ++v )
+            {
+                shapes[i].path.vertex.push_back( vec2i(0,0) );
+                
+                file.read( (char*)&shapes[i].path.vertex[v].x, sizeof(LDEint) );
+                file.read( (char*)&shapes[i].path.vertex[v].y, sizeof(LDEint) );
+            }
+            
+            shapes[i].path.active = 1;
+        }
+        
+        if ( shapes.size() )
+        {
+            // Repopulate the gui list of shapes            
+            for ( LDEuint i = 0; i < shapes.size(); ++i )
+            {
+                list_shapes->addItem( i, shapes[i].name );
+            }
+            
+            // Unselect all gui list items
+            list_shapes->deselect();
+            
+            shape_id_selected = -1;
+            
+            button_shapes_delete->unlock();
+        }
+        
+        // Shapes
+        /*LDEuint shapes_size = 0;
         file.read( (char*)&shapes_size, sizeof(LDEuint) );
         
         for ( LDEuint i = 0; i < shapes_size; ++i )
@@ -320,12 +454,9 @@ void openFile(string filename)
             list_shapes->addItem( shapes.size(), shape_temp.name );
             
             shapes.push_back(shape_temp);
-        }
+        }*/
         
-        if ( shapes.size() )
-            button_shapes_delete->unlock();
-        
-        // Sprites
+        // Spritesheets
         LDEuint spritesheets_size = 0;
         file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
         
@@ -353,6 +484,50 @@ void openFile(string filename)
             
             tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
             list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
+            
+            // Loading the sprites
+            LDEuint spriteBatchNode_size = 0;
+            file.read( (char*)&spriteBatchNode_size, sizeof(LDEuint) );
+            
+            for ( LDEuint s = 0; s < spriteBatchNode_size; ++s )
+            {
+                Sprite sprite_temp;
+                spritesheets[i].spriteBatchNode.sprites.push_back( sprite_temp );
+                
+                // Loading sprite position
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.x, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.y, sizeof(LDEint) );
+                
+                // Loading sprite offset
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.x, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.y, sizeof(LDEint) );
+                
+                // Loading sprite size
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.x, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.y, sizeof(LDEint) );
+                
+                // Loading sprite image_size
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.x, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.y, sizeof(LDEint) );
+                
+                // Loading sprite texture uv
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.x, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.y, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.z, sizeof(LDEint) );
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.w, sizeof(LDEint) );
+                
+                // Loading sprite rotation
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].rot, sizeof(LDEfloat) );
+                
+                // Loading sprite opacity
+                file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
+                
+                // Saving sprite name
+                name_length = 0;
+                file.read( (char*)&name_length, sizeof(LDEuint) );
+                
+                file.read( &spritesheets[i].spriteBatchNode.sprites[s].name[0], name_length );
+            }
             
             texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
             list_texture_atlas_sprites->erase();
@@ -417,6 +592,7 @@ void openFile(string filename)
                         if ( spritesheets[i].image.loaded )
                         {
                             spritesheets[i].image.opengl(2);
+                            spritesheets[i].spriteBatchNode.texture_id = spritesheets[i].image.id;
 
                             ////// NOW HERE assign every frame
                             element = doc.FirstChildElement("plist")->FirstChildElement("dict")->FirstChildElement("key");
@@ -533,6 +709,8 @@ void openFile(string filename)
                                 scrollbar_spritesheets->scroll_height = pos_window.y + 100;
                             }
                         }
+                        else
+                            cout<<"Error loading spritesheet texture!";
                     }
                 }
             }
@@ -723,7 +901,6 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             // If we are actually draging the sprite, show one temporary sprite under the cursor
             if ( spritesheets[i].selected > -1 && spritesheets[i].mouse_down )
             {
-                sprite_drag.image_id = spritesheets[i].image.id;
                 sprite_drag.image_size = spritesheets[i].image.size;
                 sprite_drag.name = spritesheets[i].frames[spritesheets[i].selected].name;
                 sprite_drag.texture_uv = vec4i( spritesheets[i].frames[spritesheets[i].selected].pos.x, spritesheets[i].frames[spritesheets[i].selected].pos.y,
@@ -780,7 +957,6 @@ void drawable_spritesheets_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 transf_tool.reset();
             }
             
-            sprite_drag.image_id = 0;
             sprite_drag.image_size.reset();
             sprite_drag.texture_uv.reset();
             sprite_drag.size.reset();
@@ -1478,7 +1654,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 list_vector_paths->select( item_path, 0 );
                 
                 // Unlock the delete path button because we have paths in the array now
-                button_vector_paths_delete->unlock();
+                button_path_delete->unlock();
             }
             
             ////////////////////////////////////////////////////////////
@@ -1513,11 +1689,27 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             }
             
             ////////////////////////////////////////////////////////////
+            ////////// CHANGING NAME OF PATH FROM GUI LIST /////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If selection changed from gui list items
+            if ( list_vector_paths->changed_names )
+            {
+                tree<LDEgui_list_item>::iterator item_itr = list_vector_paths->items_tree.begin();
+                while ( item_itr != list_vector_paths->items_tree.end() )
+                {
+                    paths[item_itr->key].name = item_itr->button.name;
+                    
+                    ++item_itr;
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
             ////////////////// DELETE A VECTOR PATH ////////////////////
             ////////////////////////////////////////////////////////////
             
             // If we click the delete button
-            if ( button_vector_paths_delete->click )
+            if ( button_path_delete->click )
             {
                 // If there is a path selected
                 if ( paths.size() && list_vector_paths->num_selected )
@@ -1540,7 +1732,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     
                     // Lock the delete button if there aren't any paths in the array
                     if ( !paths.size() )
-                        button_vector_paths_delete->lock();
+                        button_path_delete->lock();
                 }
             }
             
@@ -1637,7 +1829,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     list_vector_paths->size.x = window_vector_paths_list->size.x;
                     list_vector_paths->size.y = window_vector_paths_list->size.y-60;
                     
-                    button_vector_paths_delete->pos.y = window_vector_paths_list->size.y-54;
+                    button_path_delete->pos.y = window_vector_paths_list->size.y-54;
                 }
             }
             
@@ -1772,6 +1964,7 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                 scrollbar_spritesheets->scroll_height = pos_window.y + 100;
                 
                 spritframe_temp.image.opengl(2);
+                spritframe_temp.spriteBatchNode.texture_id = spritframe_temp.image.id;
                 
                 spritesheets.push_back( spritframe_temp );
                 
@@ -2470,6 +2663,24 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             }
             
             ////////////////////////////////////////////////////////////
+            ///////// CHANGING NAME OF SHAPE FROM GUI LIST /////////////
+            ////////////////////////////////////////////////////////////
+            
+            // If a shape name changed from gui list items
+            if ( list_shapes->changed_names )
+            {
+                // Assign the selected shape from the gui list items
+                // Loop until we find the first selected one, assign selection and quit loop
+                tree<LDEgui_list_item>::iterator item_itr = list_shapes->items_tree.begin();
+                while ( item_itr != list_shapes->items_tree.end() )
+                {
+                    shapes[item_itr->key].name = item_itr->button.name;
+                    
+                    ++item_itr;
+                }
+            }
+            
+            ////////////////////////////////////////////////////////////
             ///////////////////// DELETE A SHAPE ///////////////////////
             ////////////////////////////////////////////////////////////
             
@@ -3003,8 +3214,8 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
             sprite_drag_size_temp.x = (LDEfloat)sprite_drag_size_temp.x * camera_zoom;
             sprite_drag_size_temp.y = (LDEfloat)sprite_drag_size_temp.y * camera_zoom;
         }
-        
-        glBindTexture(GL_TEXTURE_2D, sprite_drag.image_id );
+
+        glBindTexture(GL_TEXTURE_2D, spritesheets[combobox_spritesheets->key()].image.id );
         LDErectp( sprite_drag.image_size,
                  vec4i( sprite_drag.texture_uv.x, sprite_drag.texture_uv.y, sprite_drag.texture_uv.z, sprite_drag.texture_uv.w),
                  vec4i( app.cursor.x - sprite_drag_size_temp.x/2, app.cursor.y - sprite_drag_size_temp.y/2, sprite_drag_size_temp.x, sprite_drag_size_temp.y) );
