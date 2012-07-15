@@ -143,7 +143,7 @@ void saveFile(string filename)
         }
         
         // Spritesheets
-        LDEuint spritesheets_size = spritesheets.size();
+        /*LDEuint spritesheets_size = spritesheets.size();
         file.write( (char*)&spritesheets_size, sizeof(LDEuint) );
         
         for ( LDEuint i = 0; i < spritesheets_size; ++i )
@@ -194,7 +194,7 @@ void saveFile(string filename)
                 
                 //file.write( spritesheets[i].spriteBatchNode.sprites[s].name.data(), name_length );
             }
-        }
+        }*/
         
         ////// Exporting list of sprites with their groups ////
         
@@ -217,6 +217,46 @@ void saveFile(string filename)
             LDEuint name_length = item_itr->button.name.size();
             file.write( (char*)&name_length, sizeof(LDEuint) );
             file.write( item_itr->button.name.data(), name_length );
+            
+            if ( depth == 0 )
+            {
+                LDEuint i = item_itr->key;
+                
+                // Saving the sprites
+                LDEuint spriteBatchNode_size = spritesheets[i].spriteBatchNode.sprites.size();
+                file.write( (char*)&spriteBatchNode_size, sizeof(LDEuint) );
+                
+                for ( LDEuint s = 0; s < spriteBatchNode_size; ++s )
+                {
+                    // Saving sprite position
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.x, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.y, sizeof(LDEint) );
+                    
+                    // Saving sprite offset
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.x, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.y, sizeof(LDEint) );
+                    
+                    // Saving sprite size
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.x, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.y, sizeof(LDEint) );
+                    
+                    // Saving sprite image_size
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.x, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.y, sizeof(LDEint) );
+                    
+                    // Saving sprite texture uv
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.x, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.y, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.z, sizeof(LDEint) );
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.w, sizeof(LDEint) );
+                    
+                    // Saving sprite rotation
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].rot, sizeof(LDEfloat) );
+                    
+                    // Saving sprite opacity
+                    file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
+                }
+            }
 
             ++item_itr;
         }
@@ -437,7 +477,7 @@ void openFile(string filename)
         }
         
         // Spritesheets
-        LDEuint spritesheets_size = 0;
+        /*LDEuint spritesheets_size = 0;
         file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
         
         for ( LDEuint i = 0; i < spritesheets_size; ++i )
@@ -500,7 +540,7 @@ void openFile(string filename)
             texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
             list_texture_atlas_sprites->erase();
             button_texture_atlas_sprites_delete->lock();
-        }
+        }*/
         
         ////// Importing list of sprites with their groups ////
         
@@ -545,14 +585,68 @@ void openFile(string filename)
             // sprite
             else
                 item_itr = list_sprites->addItemTo( item_itr_folder_last, 0, "" );
-            
+
             // Loading item name
             LDEuint name_length = 0;
             file.read( (char*)&name_length, sizeof(LDEuint) );
             item_itr->button.name.resize( name_length );
             file.read( &item_itr->button.name[0], name_length );
             
-            cout<<"name:"<<item_itr->button.name<<" depth:"<<depth<<"\n";
+            //cout<<"name:"<<item_itr->button.name<<" depth:"<<depth<<"\n";
+            
+            if ( depth == 0 )
+            {
+                Spritesheet spritesheet_temp;
+                spritesheet_temp.name = item_itr->button.name;
+                spritesheets.push_back( spritesheet_temp );
+                
+                LDEuint i = item_itr->key = spritesheets.size()-1;
+                
+                spritesheets_zorder.push_back( i );
+                
+                spritesheets[i].item_group = item_itr;
+                
+                // Saving the sprites
+                LDEuint spriteBatchNode_size = 0;
+                file.read( (char*)&spriteBatchNode_size, sizeof(LDEuint) );
+                
+                for ( LDEuint s = 0; s < spriteBatchNode_size; ++s )
+                {
+                    Sprite sprite_temp;
+                    spritesheets[i].spriteBatchNode.sprites.push_back( sprite_temp );
+                    
+                    // Saving sprite name
+                    spritesheets[i].spriteBatchNode.sprites[s].name = item_itr->button.name;
+
+                    // Saving sprite position
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.x, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].pos.y, sizeof(LDEint) );
+                    
+                    // Saving sprite offset
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.x, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].offset.y, sizeof(LDEint) );
+                    
+                    // Saving sprite size
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.x, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].size.y, sizeof(LDEint) );
+                    
+                    // Saving sprite image_size
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.x, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].image_size.y, sizeof(LDEint) );
+                    
+                    // Saving sprite texture uv
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.x, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.y, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.z, sizeof(LDEint) );
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].texture_uv.w, sizeof(LDEint) );
+                    
+                    // Saving sprite rotation
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].rot, sizeof(LDEfloat) );
+                    
+                    // Saving sprite opacity
+                    file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
+                }
+            }
             
             depth_last = depth;
             
