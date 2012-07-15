@@ -68,7 +68,6 @@ void saveFile(string filename)
     
     file.open(filename.c_str(), ios::out | ios::binary);
     
-    
     if ( file.is_open() )
     {
         // File Version
@@ -190,11 +189,36 @@ void saveFile(string filename)
                 file.write( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
                 
                 // Saving sprite name
-                name_length = spritesheets[i].spriteBatchNode.sprites[s].name.size();
-                file.write( (char*)&name_length, sizeof(LDEuint) );
+                //name_length = spritesheets[i].spriteBatchNode.sprites[s].name.size();
+                //file.write( (char*)&name_length, sizeof(LDEuint) );
                 
-                file.write( spritesheets[i].spriteBatchNode.sprites[s].name.data(), name_length );
+                //file.write( spritesheets[i].spriteBatchNode.sprites[s].name.data(), name_length );
             }
+        }
+        
+        ////// Exporting list of sprites with their groups ////
+        
+        // Saving number of items in list
+        LDEuint list_sprites_size = list_sprites->items_tree.size();
+        file.write( (char*)&list_sprites_size, sizeof(LDEuint) );
+
+        // For every sprites in the spritesheet folder
+        tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin();
+        while ( item_itr != list_sprites->items_tree.end() )
+        {
+            // Saving item type
+            file.write( (char*)&item_itr->type, sizeof(bool) );
+            
+            // Saving item depth
+            LDEuint depth = list_sprites->items_tree.depth( item_itr );
+            file.write( (char*)&depth, sizeof(LDEuint) );
+            
+            // Saving item name
+            LDEuint name_length = item_itr->button.name.size();
+            file.write( (char*)&name_length, sizeof(LDEuint) );
+            file.write( item_itr->button.name.data(), name_length );
+
+            ++item_itr;
         }
         
         file.close();
@@ -363,7 +387,6 @@ void openFile(string filename)
             file.read( (char*)&name_length, sizeof(LDEuint) );
             shapes[i].name.resize( name_length );
             file.read( &shapes[i].name[0], name_length );
-            cout<<shapes[i].name<<"\n";
             
             // Saving shape color
             file.read( (char*)&shapes[i].color.x, sizeof(LDEfloat) );
@@ -413,49 +436,6 @@ void openFile(string filename)
             button_shapes_delete->unlock();
         }
         
-        // Shapes
-        /*LDEuint shapes_size = 0;
-        file.read( (char*)&shapes_size, sizeof(LDEuint) );
-        
-        for ( LDEuint i = 0; i < shapes_size; ++i )
-        {
-            Shapes shape_temp;
-
-            file.read( (char*)&shape_temp.color.x, sizeof(LDEfloat) );
-            file.read( (char*)&shape_temp.color.y, sizeof(LDEfloat) );
-            file.read( (char*)&shape_temp.color.z, sizeof(LDEfloat) );
-            
-            LDEuint vertex_size = 0;
-            file.read( (char*)&vertex_size, sizeof(LDEuint) );
-            
-            for ( LDEuint v = 0; v < vertex_size; ++v )
-            {
-                vec2i vertex_temp;
-                file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
-                file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
-                shape_temp.vertex.push_back(vertex_temp);
-            }
-            
-            LDEuint path_vertex_size = 0;
-            file.read( (char*)&path_vertex_size, sizeof(LDEuint) );
-            
-            for ( LDEuint v = 0; v < path_vertex_size; ++v )
-            {
-                vec2i vertex_temp;
-                file.read( (char*)&vertex_temp.x, sizeof(LDEint) );
-                file.read( (char*)&vertex_temp.y, sizeof(LDEint) );
-                shape_temp.path.vertex.push_back(vertex_temp);
-            }
-            
-            shape_temp.path.active = 1;
-            
-            shape_temp.name = "Shape"+LDEnts(shapes.size());
-            
-            list_shapes->addItem( shapes.size(), shape_temp.name );
-            
-            shapes.push_back(shape_temp);
-        }*/
-        
         // Spritesheets
         LDEuint spritesheets_size = 0;
         file.read( (char*)&spritesheets_size, sizeof(LDEuint) );
@@ -478,12 +458,6 @@ void openFile(string filename)
             spritesheets_zorder.push_back( spritesheet_id );
             
             combobox_spritesheets->addOption( spritesheet_id, spritesheets[spritesheet_id].name, 1 );
-            spritesheets[spritesheet_id].item_group = list_sprites->addGroup( spritesheets[spritesheet_id].name );
-            spritesheets[spritesheet_id].item_group->can_move = 1;
-            spritesheets[spritesheet_id].item_group->key = spritesheet_id;
-            
-            tree<LDEgui_list_item>::sibling_iterator item_group_to = list_sprites->items_tree.begin();
-            list_sprites->items_tree.move_before( item_group_to, spritesheets[spritesheet_id].item_group );
             
             // Loading the sprites
             LDEuint spriteBatchNode_size = 0;
@@ -521,17 +495,70 @@ void openFile(string filename)
                 
                 // Loading sprite opacity
                 file.read( (char*)&spritesheets[i].spriteBatchNode.sprites[s].opacity, sizeof(LDEfloat) );
-                
-                // Saving sprite name
-                name_length = 0;
-                file.read( (char*)&name_length, sizeof(LDEuint) );
-                
-                file.read( &spritesheets[i].spriteBatchNode.sprites[s].name[0], name_length );
             }
             
             texture_atlas_creation_item.erase( texture_atlas_creation_item.begin(), texture_atlas_creation_item.end() );
             list_texture_atlas_sprites->erase();
             button_texture_atlas_sprites_delete->lock();
+        }
+        
+        ////// Importing list of sprites with their groups ////
+        
+        // Saving number of items in list
+        LDEuint list_sprites_size = 0;
+        file.read( (char*)&list_sprites_size, sizeof(LDEuint) );
+        
+        LDEuint depth_last = 0;
+        
+        // For every sprites in the spritesheet folder
+        tree<LDEgui_list_item>::iterator item_itr = list_sprites->items_tree.begin();
+        tree<LDEgui_list_item>::iterator item_itr_folder_last = list_sprites->items_tree.begin();
+        for ( LDEuint i = 0; i < list_sprites_size; ++i )
+        {
+            // Loading item type
+            bool type = 0;
+            file.read( (char*)&type, sizeof(bool) );
+            
+            // Loading item depth
+            LDEuint depth = 0;
+            file.read( (char*)&depth, sizeof(LDEuint) );
+            
+            if ( depth < depth_last )
+            {
+                item_itr_folder_last = list_sprites->items_tree.parent( item_itr_folder_last );
+            }
+            
+            // folder
+            if ( type )
+            {
+                item_itr = list_sprites->addGroup( "" );
+                
+                if ( depth != 0 )
+                {
+                    tree<LDEgui_list_item>::iterator item_itr_temp = list_sprites->addItemTo( item_itr_folder_last, 0, "" );
+
+                    list_sprites->items_tree.move_before( item_itr_temp, item_itr );
+                    
+                    list_sprites->items_tree.erase( item_itr_temp );
+                }
+            }
+            // sprite
+            else
+                item_itr = list_sprites->addItemTo( item_itr_folder_last, 0, "" );
+            
+            // Loading item name
+            LDEuint name_length = 0;
+            file.read( (char*)&name_length, sizeof(LDEuint) );
+            item_itr->button.name.resize( name_length );
+            file.read( &item_itr->button.name[0], name_length );
+            
+            cout<<"name:"<<item_itr->button.name<<" depth:"<<depth<<"\n";
+            
+            depth_last = depth;
+            
+            // folder
+            if ( type )
+                item_itr_folder_last = item_itr;
         }
         
         file.close();
@@ -2300,7 +2327,10 @@ void drawable_color_picker_scene(vec2i mypos, vec2i mysize, bool mytest_coi, LDE
                     checkbox_sprite_size_keep_ratio->pos = vec2i( 200, window_sprites_list->size.y-49 );
                 }
                 
-                /////////////// CHANGING SELECTION OF SPRITES ///////////////
+                //////////////////////////////////////////////////////////////////////
+                /////////////// CHANGING SELECTION OF SPRITES FROM GUI ///////////////
+                //////////////////////////////////////////////////////////////////////
+                
                 if ( list_sprites->changed_selection )
                 {
                     num_selected_sprites = 0;
